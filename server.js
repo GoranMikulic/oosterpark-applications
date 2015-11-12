@@ -2,6 +2,13 @@
 //  OpenShift sample Node application
 var express = require('express');
 var fs      = require('fs');
+var mysql   = require('mysql');
+var connection = mysql.createConnection({
+    host     : 'oege.ie.hva.nl',
+    user     : 'serdijj001',
+    password : 'N75gUB9lki0wcM',
+    database : 'zserdijj001'
+});
 
 
 /**
@@ -104,6 +111,24 @@ var SampleApp = function() {
             res.setHeader('Content-Type', 'text/html');
             res.send(self.cache_get('index.html') );
         };
+
+        self.app.get('/wifidevices',function(req,res){
+            var data = {
+                "error":1,
+                "Wifi-Devices":""
+            };
+
+            connection.query("SELECT * from piwifi",function(err, rows, fields){
+                if(rows.length != 0){
+                    data["error"] = 0;
+                    data["Devices"] = rows;
+                    res.json(data);
+                }else{
+                    data["Devices"] = 'No devices Found..';
+                    res.json(data);
+                }
+            });
+        });
     };
 
 
@@ -156,4 +181,3 @@ var SampleApp = function() {
 var zapp = new SampleApp();
 zapp.initialize();
 zapp.start();
-
