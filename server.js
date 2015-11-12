@@ -112,7 +112,23 @@ var SampleApp = function() {
             res.send(self.cache_get('index.html') );
         };
 
-        
+        self.app.get('/wifidevices',function(req,res){
+            var data = {
+                "error":1,
+                "Wifi-Devices":""
+            };
+
+            connection.query("SELECT * from piwifi",function(err, rows, fields){
+                if(rows.length != 0){
+                    data["error"] = 0;
+                    data["Devices"] = rows;
+                    res.json(data);
+                }else{
+                    data["Devices"] = 'No devices Found..';
+                    res.json(data);
+                }
+            });
+        });
     };
 
 
@@ -121,8 +137,8 @@ var SampleApp = function() {
      *  the handlers.
      */
     self.initializeServer = function() {
+        self.app = express();
         self.createRoutes();
-        self.app = express.createServer();
 
         //  Add handlers for the app (from the routes).
         for (var r in self.routes) {
