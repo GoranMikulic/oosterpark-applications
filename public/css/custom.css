@@ -1,0 +1,80 @@
+html {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+}
+
+header {
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  display: table;
+  text-align: center;
+  background: url(../img/header-bg.jpg) no-repeat bottom center scroll;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+}
+
+.navbar {
+  text-transform: uppercase;
+  border-top: 3px solid #49A34B;
+  border-bottom: none;
+}
+
+
+.header-body {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.navbar-default .navbar-brand,
+.navbar-default .navbar-nav>li>a {
+  color: #49A34B;
+}
+
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-nav>li>a:hover {
+    color: grey;
+}
+
+section {
+  padding-top: 5em;
+}
+
+.section-headline {
+    position: relative;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 2em;
+}
+
+.section-headline:before {
+    position: absolute;
+    top: 60%;
+    display: block;
+    content: "";
+    width: 100%;
+    height: 1px;
+    background-color: grey;
+}
+
+.section-headline-text {
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+    padding-left: 1em;
+    padding-right: 1em;
+    vertical-align: middle;
+    background-color: #FFFFFF;
+    font-size: 1.6em;
+}
