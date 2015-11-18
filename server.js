@@ -3,18 +3,12 @@
 var express = require('express');
 var fs      = require('fs');
 var mysql   = require('mysql');
-var connection = mysql.createConnection({
-    host     : 'oege.ie.hva.nl',
-    user     : 'serdijj001',
-    password : 'N75gUB9lki0wcM',
-    database : 'zserdijj001'
-});
-
+var routes = require('./modules/routes.js');
 
 /**
  *  Define the sample application.
  */
-var SampleApp = function() {
+var App = function() {
 
     //  Scope.
     var self = this;
@@ -40,25 +34,6 @@ var SampleApp = function() {
         };
     };
 
-
-    /**
-     *  Populate the cache.
-     */
-    self.populateCache = function() {
-        if (typeof self.zcache === "undefined") {
-            self.zcache = { 'index.html': '' };
-        }
-
-        //  Local cache for static content.
-        self.zcache['index.html'] = fs.readFileSync('./index.html');
-    };
-
-
-    /**
-     *  Retrieve entry (content) from cache.
-     *  @param {string} key  Key identifying content to retrieve from cache.
-     */
-    self.cache_get = function(key) { return self.zcache[key]; };
 
 
     /**
@@ -92,103 +67,14 @@ var SampleApp = function() {
     };
 
 
-    /*  ================================================================  */
-    /*  App server functions (main app logic here).                       */
-    /*  ================================================================  */
-
-    /**
-     *  Create the routing table entries + handlers for the application.
-     */
-    self.createRoutes = function() {
-        self.routes = { };
-        var wifiDevices = "Wifi-Devices";
-
-
-        self.routes['/asciimo'] = function(req, res) {
-            var link = "http://i.imgur.com/kmbjB.png";
-            res.send("<html><body><img src='" + link + "'></body></html>");
-        };
-
-        self.routes['/'] = function(req, res) {
-            res.setHeader('Content-Type', 'text/html');
-            res.send(self.cache_get('index.html') );
-        };
-
-        self.app.get('/wifidevices',function(req,res){
-            var data = {};
-            data["error"] = 1;
-            data[wifiDevices] = "";
-
-            connection.query("SELECT * from piwifi",function(err, rows, fields){
-                if(rows.length != 0){
-                    data["error"] = 0;
-                    data[wifiDevices] = rows;
-                    res.json(data);
-                }else{
-                    data["Devices"] = 'No devices Found..';
-                    res.json(data);
-                }
-            });
-        });
-
-        self.app.get('/wifidevices/:device_id',function(req,res){
-            var data = {
-                "error":1,
-                "Wifi-Devices":""
-            };
-
-            var query = "SELECT * FROM piwifi WHERE id=?";
-            query = mysql.format(query,req.params.device_id);
-
-            connection.query(query,function(err, rows, fields){
-                if(rows.length != 0){
-                    data["error"] = 0;
-                    data["Wifi-Devices"] = rows;
-                    res.json(data);
-                }else{
-                    data["Devices"] = 'No devices Found..';
-                    res.json(data);
-                }
-            });
-        });
-
-        self.app.get('/wifidevices/:start_time/:end_time',function(req,res){
-            var data = {
-                "error":1,
-                "Devices":""
-            };
-
-            var query = "SELECT * FROM piwifi WHERE first_time_seen > DATE(FROM_UNIXTIME(?)) && first_time_seen < DATE(FROM_UNIXTIME(?))";
-            var params = [req.params.start_time, req.params.end_time];
-            query = mysql.format(query,params);
-
-            connection.query(query,function(err, rows, fields){
-                if(rows.length != 0){
-                    data["error"] = 0;
-                    data["Wifi-Devices"] = rows;
-                    res.json(data);
-                }else{
-                    data["Wifi-Devices"] = 'No devices Found..';
-                    res.json(data);
-                }
-            });
-        });
-
-    };
-
-
     /**
      *  Initialize the server (express) and create the routes and register
      *  the handlers.
      */
     self.initializeServer = function() {
         self.app = express();
-        self.createRoutes();
-
-        //  Add handlers for the app (from the routes).
-        for (var r in self.routes) {
-            self.app.get(r, self.routes[r]);
-        }
+        //initialize route for REST API
+        self.app.use('/', routes);
     };
 
 
@@ -197,7 +83,6 @@ var SampleApp = function() {
      */
     self.initialize = function() {
         self.setupVariables();
-        self.populateCache();
         self.setupTerminationHandlers();
 
         // Create the express server and routes.
@@ -206,9 +91,13 @@ var SampleApp = function() {
 
 
     /**
-     *  Start the server (starts up the sample application).
+     *  Start the server.
      */
     self.start = function() {
+
+        //set public html directory
+        self.app.use('/', express.static(__dirname + '/public'));
+
         //  Start the app on the specific interface (and port).
         self.app.listen(self.port, self.ipaddress, function() {
             console.log('%s: Node server started on %s:%d ...',
@@ -216,13 +105,11 @@ var SampleApp = function() {
         });
     };
 
-};   /*  Sample Application.  */
-
-
+};
 
 /**
  *  main():  Main code.
  */
-var zapp = new SampleApp();
-zapp.initialize();
-zapp.start();
+var app = new App();
+app.initialize();
+app.start();
