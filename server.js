@@ -101,6 +101,8 @@ var SampleApp = function() {
      */
     self.createRoutes = function() {
         self.routes = { };
+        var wifiDevices = "Wifi-Devices";
+
 
         self.routes['/asciimo'] = function(req, res) {
             var link = "http://i.imgur.com/kmbjB.png";
@@ -113,15 +115,14 @@ var SampleApp = function() {
         };
 
         self.app.get('/wifidevices',function(req,res){
-            var data = {
-                "error":1,
-                "Wifi-Devices":""
-            };
+            var data = {};
+            data["error"] = 1;
+            data[wifiDevices] = "";
 
             connection.query("SELECT * from piwifi",function(err, rows, fields){
                 if(rows.length != 0){
                     data["error"] = 0;
-                    data["Devices"] = rows;
+                    data[wifiDevices] = rows;
                     res.json(data);
                 }else{
                     data["Devices"] = 'No devices Found..';
@@ -129,6 +130,50 @@ var SampleApp = function() {
                 }
             });
         });
+
+        self.app.get('/wifidevices/:device_id',function(req,res){
+            var data = {
+                "error":1,
+                "Wifi-Devices":""
+            };
+
+            var query = "SELECT * FROM piwifi WHERE id=?";
+            query = mysql.format(query,req.params.device_id);
+
+            connection.query(query,function(err, rows, fields){
+                if(rows.length != 0){
+                    data["error"] = 0;
+                    data["Wifi-Devices"] = rows;
+                    res.json(data);
+                }else{
+                    data["Devices"] = 'No devices Found..';
+                    res.json(data);
+                }
+            });
+        });
+
+        self.app.get('/wifidevices/:start_time/:end_time',function(req,res){
+            var data = {
+                "error":1,
+                "Devices":""
+            };
+
+            var query = "SELECT * FROM piwifi WHERE first_time_seen > DATE(FROM_UNIXTIME(?)) && first_time_seen < DATE(FROM_UNIXTIME(?))";
+            var params = [req.params.start_time, req.params.end_time];
+            query = mysql.format(query,params);
+
+            connection.query(query,function(err, rows, fields){
+                if(rows.length != 0){
+                    data["error"] = 0;
+                    data["Wifi-Devices"] = rows;
+                    res.json(data);
+                }else{
+                    data["Wifi-Devices"] = 'No devices Found..';
+                    res.json(data);
+                }
+            });
+        });
+
     };
 
 
