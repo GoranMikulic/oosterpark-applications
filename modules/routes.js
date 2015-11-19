@@ -10,8 +10,6 @@ router.route('/wifidevices')
 router.route('/wifidevices/:device_id')
   .get(WifiDevice.getWifiDeviceById);
 
-//Route to return all captured devices in a period
-router.route('/wifidevices/:start_time/:end_time')
-  .get(WifiDevice.getWifiDevicesInPeriod);
+router.route('/wifidevicescount').get(WifiDevice.getWifiDevicesCountInPeriod);
 
 module.exports = router;
