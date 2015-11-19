@@ -102,7 +102,7 @@ function queryAllDevices(fn) {
 }
 
 function queryDeivcesInPeriod(fromYear, fromMonth, fromDay, toYear, toMonth, toDay, fn) {
-    var query = "SELECT * FROM piwifi WHERE first_time_seen > ? && first_time_seen < ?";
+    var query = "SELECT * FROM piwifi WHERE first_time_seen > ? && first_time_seen < ? GROUP BY address";
     var startDate = fromYear + '-' +  fromMonth + '-' + fromDay;
     var endDate = toYear + '-' + toMonth + '-' + toDay;
     var params = [startDate, endDate];
