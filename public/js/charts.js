@@ -37,5 +37,5 @@ var jsonResponse = JSON.parse(this.responseText);
         });
 };
 
-oReq.open("get", "http://localhost:8080/wifidevicescount?fy=2015&fm=11&fd=10&ty=2015&tm=11&td=20", true);
+oReq.open("get", "http://nodejs-mikugo.rhcloud.com/wifidevicescount?fy=2015&fm=11&fd=10&ty=2015&tm=11&td=20", true);
 oReq.send();
