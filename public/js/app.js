@@ -36,6 +36,7 @@ app.directive('ngSparkline', function() {
         // the `$watch` function will fire even if the
         // weather property is undefined, so we'll
         // check for it
+
         if (newVal) {
           timeSeriesGraph(scope.dates, scope.counts);
         }
@@ -56,6 +57,7 @@ app.directive('ngSparkline', function() {
 });
 
 var timeSeriesGraph = function(dates, counts) {
+
   var chart = c3.generate({
       bindto: '#chart',
       data: {
@@ -75,8 +77,3 @@ var timeSeriesGraph = function(dates, counts) {
       }
   });
 }
-
-$('.datepicker').datepicker({
-    format: 'yyyy-mm-dd',
-    startDate: '-3d'
-})
