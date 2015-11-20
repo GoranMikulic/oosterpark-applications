@@ -34,14 +34,14 @@
       </div>
     </nav>
 
-    <div class="container sections-container col-md-12">
+    <div class="container sections-container col-md-12" ng-app="chartsApp">
 
       <!-- About Section -->
       <section id="correlations" class="container text-center col-md-10 col-md-offset-1">
         <div class="section-headline">
           <h2 class="section-headline-text">How many people are in the park?</h2>
         </div>
-          <form>
+          <!--<form>
             <button type="button" class="btn btn-default btn-md">
               Choose a start date
               <span class="glyphicon glyphicon-calendar"></span>
@@ -53,6 +53,14 @@
           </form>
 
           <div id="chart"></div>
+          -->
+          <form class="form-inline">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Start Date" ng-model="startdate">
+              <input type="text" class="form-control" placeholder="End Date" ng-model="enddate">
+            </div>
+          </form>
+          <div ng-sparkline ng-model="startdate"></div>
       </section>
 
     </div>
@@ -60,9 +68,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="bootstrap/js/bootstrap.min.js"></script>
-
+    <!-- Angular -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+    <!-- D3 chart library required for c3  -->
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <!-- C3 chart library -->
     <script src="c3/c3.min.js"></script>
     <script src="js/charts.js" charset="utf-8"></script>
+    <script src="js/app.js" charset="utf-8"></script>
   </body>
 </html>

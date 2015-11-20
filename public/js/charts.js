@@ -37,5 +37,5 @@ var jsonResponse = JSON.parse(this.responseText);
         });
 };
 
-oReq.open("get", "/wifidevicescount?fy=2015&fm=11&fd=10&ty=2015&tm=11&td=20", true);
-oReq.send();
+//oReq.open("get", "/wifidevicescount?fy=2015&fm=11&fd=10&ty=2015&tm=11&td=20", true);
+//oReq.send();
