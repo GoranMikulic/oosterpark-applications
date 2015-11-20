@@ -1,22 +1,17 @@
 var app = angular.module('chartsApp', []);
 
 app.directive('ngSparkline', function() {
-  var url = "/wifidevicescount?fy=2015&fm=11&fd=10&ty=2015&tm=11&td=20";
+  var url = "/wifidevicescount?";
 
   return {
     restrict: 'A',
     templateUrl: 'templates/ng-timeseries-chart.html',
-    require: '^ngStartdate',
-    scope: {
-      ngStartdate: '@'
-    },
     controller: ['$scope', '$http', function($scope, $http){
-      $scope.getChartData = function(startdate) {
+      $scope.getChartData = function(startdate, enddate) {
         $http({
           method: 'GET',
-          url: url
+          url: url + 'startdate=' + startdate + '&enddate=' + enddate
         }).success(function(data) {
-          var result = new Array();
           //array for date values
           var dates = new Array();
           dates.push('x');
@@ -29,14 +24,14 @@ app.directive('ngSparkline', function() {
             counts.push(value.count);
           });
           console.log('start'+startdate);
+          console.log('end'+enddate);
           $scope.dates = dates;
           $scope.counts = counts;
-          $scope.result = result;
         });
       }
     }],
     link: function(scope, iElement, iAttrs, ctrl) {
-      scope.getChartData(iAttrs.ngStartdate);
+      scope.getChartData(scope.startdate, scope.enddate);
       scope.$watch('dates', function(newVal) {
         // the `$watch` function will fire even if the
         // weather property is undefined, so we'll
@@ -47,22 +42,16 @@ app.directive('ngSparkline', function() {
       });
 
       //  watch date changes
-      scope.$watch('ngStartdate', function(newVal) {
-        scope.getChartData(iAttrs.ngStartdate);
-        console.log(scope.ngStartdate);
+      scope.$watch('startdate', function(newVal) {
+
+        console.log(scope.startdate);
       });
 
       scope.refresh = function() {
-          alert('inside click');
+          scope.getChartData(scope.startdate, scope.enddate);
+          console.log('clicked');
       }
     }
-  }
-});
-
-//enabling custom directive attributes
-app.directive('ngStartdate', function() {
-  return {
-    controller: function($scope) {}
   }
 });
 

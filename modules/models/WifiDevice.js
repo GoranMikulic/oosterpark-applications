@@ -14,21 +14,17 @@ module.exports = {
   * If a period is set, it returns all devices between the dates
   */
   getWifiDevices: function(req, res) {
-    var fromYear = req.query.fy;
-    var fromMonth = req.query.fm;
-    var fromDay = req.query.fd;
-    var toYear = req.query.ty;
-    var toMonth = req.query.tm;
-    var toDay = req.query.td;
+    var startDate = req.query.startdate;
+    var endDate = req.query.enddate;
 
-    var isValidPeriodQuery = checkPeriodQuery(fromYear, fromMonth, fromDay, toYear, toMonth, toDay);
+    var isValidPeriodQuery = checkPeriodQuery(startDate, endDate);
 
     if(!isValidPeriodQuery) {
       queryAllDevices(function(rows){
           returnResult(res, rows)
       });
     } else {
-      queryDeivcesInPeriod(fromYear, fromMonth, fromDay, toYear, toMonth, toDay, function(rows){
+      queryDeivcesInPeriod(startDate, endDate, function(rows){
           returnResult(res, rows);
       });
     }
@@ -39,20 +35,14 @@ module.exports = {
   *  Returns the amount of devices for every day in the given period
   */
   getWifiDevicesCountInPeriod: function(req, res) {
-    var fromYear = req.query.fy;
-    var fromMonth = req.query.fm;
-    var fromDay = req.query.fd;
-    var toYear = req.query.ty;
-    var toMonth = req.query.tm;
-    var toDay = req.query.td;
+    var startDate = req.query.startdate;
+    var endDate = req.query.enddate;
 
-    var isValidPeriodQuery = checkPeriodQuery(fromYear, fromMonth, fromDay, toYear, toMonth, toDay);
+    var isValidPeriodQuery = checkPeriodQuery(startDate, endDate);
 
     if(isValidPeriodQuery) {
-      queryDeivcesInPeriod(fromYear, fromMonth, fromDay, toYear, toMonth, toDay, function(rows){
+      queryDeivcesInPeriod(startDate, endDate, function(rows){
 
-        var startDate = fromYear + '-' +  fromMonth + '-' + fromDay;
-        var endDate = toYear + '-' +  toMonth + '-' + toDay;
         var dateArray = getDatesBetween(new Date(startDate), new Date(endDate));
         var result = new Array();
 
@@ -101,13 +91,12 @@ function queryAllDevices(fn) {
   });
 }
 
-function queryDeivcesInPeriod(fromYear, fromMonth, fromDay, toYear, toMonth, toDay, fn) {
+function queryDeivcesInPeriod(startDate, endDate, fn) {
     var query = "SELECT * FROM piwifi WHERE first_time_seen > ? && first_time_seen < ? GROUP BY address";
-    var startDate = fromYear + '-' +  fromMonth + '-' + fromDay;
-    var endDate = toYear + '-' + toMonth + '-' + toDay;
+
     var params = [startDate, endDate];
     query = mysql.format(query,params);
-
+    
     connection.query(query,function(err, rows, fields){
       fn(rows);
     });
@@ -140,13 +129,9 @@ function returnResult(res, rows) {
   }
 }
 
-function checkPeriodQuery(fromYear, fromMonth, fromDay, toYear, toMonth, toDay) {
-  return typeof fromYear !== 'undefined'
-  && typeof fromMonth !== 'undefined'
-  && typeof fromDay !== 'undefined'
-  && typeof toYear !== 'undefined'
-  && typeof toMonth !== 'undefined'
-  && typeof toDay !== 'undefined';
+function checkPeriodQuery(startDate, endDate) {
+  return typeof startDate !== 'undefined'
+  && typeof endDate !== 'undefined';
 }
 
 Date.prototype.addDays = function(days) {
