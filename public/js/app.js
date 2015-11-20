@@ -6,7 +6,10 @@ app.directive('ngSparkline', function() {
   return {
     restrict: 'A',
     templateUrl: 'templates/ng-timeseries-chart.html',
-    require: '^ngModel',
+    require: '^ngStartdate',
+    scope: {
+      ngStartdate: '@'
+    },
     controller: ['$scope', '$http', function($scope, $http){
       $scope.getChartData = function() {
         $http({
@@ -22,11 +25,9 @@ app.directive('ngSparkline', function() {
           counts.push('Amount of Wifi-Devices');
 
           angular.forEach(data['Wifi-Devices'], function(value){
-            dates.push(value.date);
+            dates.push(new Date(value.date));
             counts.push(value.count);
           });
-          console.log(dates)
-          console.log(counts)
 
           $scope.dates = dates;
           $scope.counts = counts;
@@ -36,15 +37,48 @@ app.directive('ngSparkline', function() {
     }],
     link: function(scope, iElement, iAttrs, ctrl) {
       scope.getChartData();
-      scope.$watch('startdate', function(newVal) {
+      scope.$watch('dates', function(newVal) {
         // the `$watch` function will fire even if the
         // weather property is undefined, so we'll
         // check for it
         if (newVal) {
 
-          // chart
+          timeSeriesGraph(scope.dates, scope.counts);
+          console.log('newvals')
+          console.log(iElement)
+          console.log(scope.dates)
+          console.log(scope.counts)
+
         }
       });
     }
   }
 });
+
+//enabling custom directive attributes
+app.directive('ngStartdate', function() {
+  return {
+    controller: function($scope) {}
+  }
+});
+
+var timeSeriesGraph = function(dates, counts) {
+  var chart = c3.generate({
+      bindto: '#chart',
+      data: {
+          x: 'x',
+          columns: [
+              dates,
+              counts
+          ]
+      },
+      axis: {
+          x: {
+              type: 'timeseries',
+              tick: {
+                  format: '%d.%m.%Y'
+              }
+          }
+      }
+  });
+}
