@@ -11,7 +11,7 @@ app.directive('ngSparkline', function() {
       ngStartdate: '@'
     },
     controller: ['$scope', '$http', function($scope, $http){
-      $scope.getChartData = function() {
+      $scope.getChartData = function(startdate) {
         $http({
           method: 'GET',
           url: url
@@ -28,7 +28,7 @@ app.directive('ngSparkline', function() {
             dates.push(new Date(value.date));
             counts.push(value.count);
           });
-
+          console.log('start'+startdate);
           $scope.dates = dates;
           $scope.counts = counts;
           $scope.result = result;
@@ -36,21 +36,25 @@ app.directive('ngSparkline', function() {
       }
     }],
     link: function(scope, iElement, iAttrs, ctrl) {
-      scope.getChartData();
+      scope.getChartData(iAttrs.ngStartdate);
       scope.$watch('dates', function(newVal) {
         // the `$watch` function will fire even if the
         // weather property is undefined, so we'll
         // check for it
         if (newVal) {
-
           timeSeriesGraph(scope.dates, scope.counts);
-          console.log('newvals')
-          console.log(iElement)
-          console.log(scope.dates)
-          console.log(scope.counts)
-
         }
       });
+
+      //  watch date changes
+      scope.$watch('ngStartdate', function(newVal) {
+        scope.getChartData(iAttrs.ngStartdate);
+        console.log(scope.ngStartdate);
+      });
+
+      scope.refresh = function() {
+          alert('inside click');
+      }
     }
   }
 });
