@@ -43,7 +43,13 @@ module.exports = {
       WifiDevice.queryDeivcesInPeriod(startDate, endDate, function(rows){
 
         var dateArray = MyUtils.getDatesBetween(new Date(startDate), new Date(endDate));
-        var result = new Array();
+        //var result = new Array();
+        //array for date values
+        var dates = new Array();
+        dates.push('x');
+        //array for amount of devices
+        var counts = new Array();
+        counts.push('Amount of Wifi-Devices');
 
         for(var date in dateArray) {
 
@@ -59,8 +65,15 @@ module.exports = {
             }
 
           }
-          result.push({date: dateArray[date], count: counter});
+          dates.push(dateArray[date]);
+          counts.push(counter);
+
         }
+        var result = {
+          x: dates,
+          counts: counts
+        }
+
 
         MyUtils.returnResult(res, result);
       });

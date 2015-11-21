@@ -16,20 +16,17 @@ app.directive('ngLinechart', ['$compile', function($compile) {
           method: 'GET',
           url: url + 'startdate=' + startdate + '&enddate=' + enddate
         }).success(function(data) {
-          //array for date values
-          var dates = new Array();
-          dates.push('x');
-          //array for amount of devices
-          var counts = new Array();
-          counts.push('Amount of Wifi-Devices');
 
-          angular.forEach(data['Wifi-Devices'], function(value){
-            dates.push(new Date(value.date));
-            counts.push(value.count);
-          });
+          //Workaround for date parsing issue
+          //c3 can't parse date format YYYY-MM-DDThh:mm:ss.sTZD
+          var dates = data['Wifi-Devices'].x;
+          for (i = 1; i < dates.length; i++) {
+              dates[i] = new Date(dates[i]);
+          }
 
           $scope.dates = dates;
-          $scope.counts = counts;
+          $scope.counts = data['Wifi-Devices'].counts;
+
         });
       },
       $scope.addChart = function () {
@@ -57,6 +54,10 @@ app.directive('ngLinechart', ['$compile', function($compile) {
   }
 }]);
 
+
+/**
+* Creating C3 Line Chart
+*/
 var timeSeriesGraph = function(dates, counts, uniqueId) {
 
   var chart = c3.generate({
