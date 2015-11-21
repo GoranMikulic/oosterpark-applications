@@ -1,6 +1,6 @@
 <form class="form-inline date-form">
+  <h3>Chart {{uniqueId}}</h3>
   <div class="row">
-
     <div class="col-md-9">
       <label>Start Date</label>
       <input type="text" class="form-control datepicker" placeholder="Start Date" data-provide="datepicker" ng-model="startdate" ng-init="startdate='2015-11-10'">
@@ -26,6 +26,7 @@
 <script>
 $('.datepicker').datepicker({
     format: 'yyyy-mm-dd',
-    startDate: '-1y'
+    startDate: '-1y',
+    autoclose: true
 })
 </script>
