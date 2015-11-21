@@ -1,15 +1,16 @@
 var app = angular.module('chartsApp', []);
 
-app.directive('ngSparkline', function() {
+app.directive('ngSparkline', ['$compile', function($compile) {
   var url = "/wifidevicescount?";
   var uniqueId = 1;
+
   return {
     restrict: 'A',
     templateUrl: 'templates/ng-timeseries-chart.html',
     scope: {
       uniqueId: '='
     },
-    controller: ['$scope', '$http', function($scope, $http){
+    controller: ['$scope', '$http', '$element', function($scope, $http, $element){
       $scope.getChartData = function(startdate, enddate) {
         $http({
           method: 'GET',
@@ -26,11 +27,14 @@ app.directive('ngSparkline', function() {
             dates.push(new Date(value.date));
             counts.push(value.count);
           });
-          console.log('start'+startdate);
-          console.log('end'+enddate);
+
           $scope.dates = dates;
           $scope.counts = counts;
         });
+      },
+      $scope.addChart = function () {
+        var el = $compile( "<div ng-sparkline ></div>" )( $scope );
+        $element.parent().append(el);
       }
     }],
     link: function(scope, iElement, iAttrs, ctrl) {
@@ -43,23 +47,15 @@ app.directive('ngSparkline', function() {
 
         if (newVal) {
           timeSeriesGraph(scope.dates, scope.counts, scope.uniqueId);
-          console.log(scope.uniqueId);
         }
-      });
-
-      //  watch date changes
-      scope.$watch('startdate', function(newVal) {
-
-        console.log(scope.startdate);
       });
 
       scope.refresh = function() {
           scope.getChartData(scope.startdate, scope.enddate);
-          console.log('clicked');
       }
     }
   }
-});
+}]);
 
 var timeSeriesGraph = function(dates, counts, uniqueId) {
 
