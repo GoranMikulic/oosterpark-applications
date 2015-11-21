@@ -13,6 +13,8 @@ app.directive('ngLinechart', ['$compile', function($compile) {
     },
     controller: ['$scope', '$http', '$element', function($scope, $http, $element){
       $scope.getChartData = function(startdate, enddate) {
+        $scope.dataLoading = true;
+
         $http({
           method: 'GET',
           url: url + 'startdate=' + startdate + '&enddate=' + enddate
@@ -27,6 +29,7 @@ app.directive('ngLinechart', ['$compile', function($compile) {
 
           $scope.dates = dates;
           $scope.counts = data['Wifi-Devices'].counts;
+          $scope.dataLoading = false;
 
         });
       },
@@ -43,7 +46,6 @@ app.directive('ngLinechart', ['$compile', function($compile) {
       scope.getChartData(scope.startdate, scope.enddate);
 
 
-      console.log(scope.lineChart);
       //listen if chart data changes
       scope.$watch('dates', function(newVal) {
         // the `$watch` function will fire even if the
@@ -52,7 +54,6 @@ app.directive('ngLinechart', ['$compile', function($compile) {
 
         if (newVal) {
           if(scope.lineChart){
-            console.log('1');
             scope.lineChart.load({
               columns: [
                   scope.dates,
@@ -60,7 +61,6 @@ app.directive('ngLinechart', ['$compile', function($compile) {
               ]
             });
           } else {
-            console.log('2');
             scope.lineChart = timeSeriesGraph(scope.dates, scope.counts, scope.uniqueId);
           }
 
