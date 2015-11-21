@@ -75,6 +75,12 @@ var timeSeriesGraph = function(dates, counts, uniqueId) {
                   format: '%d.%m.%Y'
               }
           }
+      },
+      legend: {
+        position: 'inset',
+        inset: {
+          anchor: 'top-right'
+        }
       }
   });
 }
