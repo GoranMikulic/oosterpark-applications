@@ -2,10 +2,13 @@ var app = angular.module('chartsApp', []);
 
 app.directive('ngSparkline', function() {
   var url = "/wifidevicescount?";
-
+  var uniqueId = 1;
   return {
     restrict: 'A',
     templateUrl: 'templates/ng-timeseries-chart.html',
+    scope: {
+      uniqueId: '='
+    },
     controller: ['$scope', '$http', function($scope, $http){
       $scope.getChartData = function(startdate, enddate) {
         $http({
@@ -31,6 +34,7 @@ app.directive('ngSparkline', function() {
       }
     }],
     link: function(scope, iElement, iAttrs, ctrl) {
+      scope.uniqueId = uniqueId++;
       scope.getChartData(scope.startdate, scope.enddate);
       scope.$watch('dates', function(newVal) {
         // the `$watch` function will fire even if the
@@ -38,7 +42,8 @@ app.directive('ngSparkline', function() {
         // check for it
 
         if (newVal) {
-          timeSeriesGraph(scope.dates, scope.counts);
+          timeSeriesGraph(scope.dates, scope.counts, scope.uniqueId);
+          console.log(scope.uniqueId);
         }
       });
 
@@ -56,10 +61,10 @@ app.directive('ngSparkline', function() {
   }
 });
 
-var timeSeriesGraph = function(dates, counts) {
+var timeSeriesGraph = function(dates, counts, uniqueId) {
 
   var chart = c3.generate({
-      bindto: '#chart',
+      bindto: '#chart' + uniqueId,
       data: {
           x: 'x',
           columns: [
