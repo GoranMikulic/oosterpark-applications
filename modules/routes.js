@@ -1,15 +1,16 @@
 var express = require('express');
 var router = express.Router();
 var WifiDevice = require('./models/WifiDevice');
+var WifiDeviceService = require('./services/WifiDeviceService');
 
 //Route to return all devices
 router.route('/wifidevices')
-  .get(WifiDevice.getWifiDevices);
+  .get(WifiDeviceService.getWifiDevices);
 
 //Route to return device with the given ID
 router.route('/wifidevices/:device_id')
-  .get(WifiDevice.getWifiDeviceById);
+  .get(WifiDeviceService.getWifiDeviceById);
 
-router.route('/wifidevicescount').get(WifiDevice.getWifiDevicesCountInPeriod);
+router.route('/wifidevicescount').get(WifiDeviceService.getWifiDevicesCountInPeriod);
 
 module.exports = router;

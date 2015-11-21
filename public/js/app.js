@@ -33,7 +33,7 @@ app.directive('ngLinechart', ['$compile', function($compile) {
         });
       },
       $scope.addChart = function () {
-        var el = $compile( "<div ng-sparkline ></div>" )( $scope );
+        var el = $compile( "<div ng-linechart ></div>" )( $scope );
         $element.parent().append(el);
       }
     }],
