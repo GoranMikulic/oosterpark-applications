@@ -1,6 +1,6 @@
 var MyUtils = require('../utils/Utils');
 var mysql = require('mysql');
-var connection = require('../utils/MySql').connection()
+var connection = require('../utils/MySql').connection();
 
 module.exports = {
 
