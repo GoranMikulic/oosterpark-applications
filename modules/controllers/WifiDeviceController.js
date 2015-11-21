@@ -64,7 +64,7 @@ var getDevicesCountsForDays = function(datesBetween, devicesArray, datePropertyN
 
   for(var date in datesBetween) {
 
-    var day = datesBetween[date].getUTCDate();
+    var day = datesBetween[date];
     var counter = getDevicesCountForDay(day, devicesArray, datePropertyName);
 
     dates.push(datesBetween[date]);
@@ -82,9 +82,11 @@ var getDevicesCountForDay = function(day, devicesArray, datePropertyName) {
   var counter = 0;
 
   for(var row in devicesArray) {
-    var dayCaptured = devicesArray[row][datePropertyName].getUTCDate();
-
-    if(dayCaptured == day) {
+    var dayCaptured = devicesArray[row][datePropertyName];
+    dayCaptured.setHours(0,0,0,0);
+    day.setHours(0,0,0,0);
+    console.log(dayCaptured);
+    if(dayCaptured.getTime() == day.getTime()) {
       counter++;
     }
 

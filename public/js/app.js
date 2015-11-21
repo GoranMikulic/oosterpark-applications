@@ -67,6 +67,7 @@ var timeSeriesGraph = function(dates, counts, uniqueId) {
       bindto: '#chart' + uniqueId,
       data: {
           x: 'x',
+          onclick: function(e) { console.log(e.x); },
           columns: [
               dates,
               counts
