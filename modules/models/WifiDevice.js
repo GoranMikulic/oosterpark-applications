@@ -14,7 +14,7 @@ module.exports = {
 
       var params = [startDate, endDate];
       query = mysql.format(query,params);
-
+      console.log(query);
       connection.query(query,function(err, rows, fields){
         fn(rows);
       });

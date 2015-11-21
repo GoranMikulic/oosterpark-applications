@@ -15,6 +15,8 @@ router.route('/wifidevices/:device_id')
 //Route to return count of wifidevices in a period
 router.route('/wifidevicescount').get(WifiDeviceService.getWifiDevicesCountInPeriod);
 
+router.route('/wifidevicescountdetail').get(WifiDeviceService.getWifiDevicesCountForDay);
+
 router.route('/btdevices').get(BluetoothDeviceController.getDevices);
 
 module.exports = router;

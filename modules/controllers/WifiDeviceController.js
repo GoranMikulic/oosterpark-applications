@@ -45,7 +45,28 @@ module.exports = {
       WifiDevice.queryDeivcesInPeriod(startDate, endDate, function(queryResult) {
 
         var datesBetween = MyUtils.getDatesBetween(new Date(startDate), new Date(endDate));
-        var result = getDevicesCountsForDays(datesBetween, queryResult, 'first_time_seen');
+        var result = getDevicesCountsForDays(datesBetween, queryResult, 'first_time_seen', getDevicesCountForDay);
+
+        MyUtils.returnResult(res, result);
+      });
+    } else {
+      MyUtils.returnResult(res, {});
+    }
+
+  },
+  /**
+   *  Returns the amount of wifi devices for every day in the given period
+   */
+  getWifiDevicesCountForDay: function(req, res) {
+    var day = req.query.day;
+    console.log(day);
+    if (typeof day !== 'undefined') {
+      var start = day + ' 00:01:00';
+      var end = day + ' 23:00:00';
+
+      WifiDevice.queryDeivcesInPeriod(start, end, function(queryResult) {
+        console.log(queryResult);
+        var result = getDevicesCountForHours(day, queryResult, 'first_time_seen');
 
         MyUtils.returnResult(res, result);
       });
@@ -59,7 +80,7 @@ module.exports = {
 /**
  * Returns the amounts of devices for a period of days
  */
-var getDevicesCountsForDays = function(datesBetween, devicesArray, datePropertyName) {
+var getDevicesCountsForDays = function(datesBetween, devicesArray, datePropertyName, countCalculatorFunction) {
   //array for date values
   var dates = new Array();
   dates.push('x');
@@ -70,7 +91,7 @@ var getDevicesCountsForDays = function(datesBetween, devicesArray, datePropertyN
   for (var date in datesBetween) {
 
     var day = datesBetween[date];
-    var counter = getDevicesCountForDay(day, devicesArray, datePropertyName);
+    var counter = countCalculatorFunction(day, devicesArray, datePropertyName);
 
     dates.push(datesBetween[date]);
     counts.push(counter);
@@ -81,6 +102,40 @@ var getDevicesCountsForDays = function(datesBetween, devicesArray, datePropertyN
     x: dates,
     counts: counts
   };
+}
+
+var getDevicesCountForHours = function(day, devicesArray, datePropertyName) {
+  var hours = new Array();
+  var hoursResult = new Array();
+  hoursResult.push('x');
+
+  var counts = new Array();
+  counts.push('Amount of Wifi-Devices');
+
+  for (var i = 0; i < 24; i++) {
+    hours.push(i);
+  }
+  console.log(hours);
+  for (var hour in hours) {
+    var counter = 0;
+
+    for (var device in devicesArray) {
+      var timeCaptured = devicesArray[device][datePropertyName].getHours();
+
+      if (timeCaptured == hour) {
+        counter++;
+      }
+    }
+    console.log(day);
+    hoursResult.push(day + ' ' + hour + ':00:00');
+    counts.push(counter);
+  }
+
+  return {
+    x: hoursResult,
+    counts: counts
+  };
+
 }
 
 /**

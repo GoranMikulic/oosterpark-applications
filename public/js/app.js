@@ -37,14 +37,54 @@ app.directive('ngLinechart', ['$compile', function($compile) {
         var el = $compile( "<div ng-linechart ></div>" )( $scope );
         $element.parent().append(el);
       },
+      $scope.getDefaultEndDate = function () {
+        var curdate = new Date();
+        var day = curdate.getDate();
+        var month = curdate.getMonth()+1;
+        var year = curdate.getFullYear();
+        return year + '-' + month + '-' + day;
+      },
+      $scope.getDefaultStartDate = function () {
+        var curdate = new Date();
+        curdate.setDate(curdate.getDate()-30);
+        var day = curdate.getDate();
+        var month = curdate.getMonth()+1;
+        var year = curdate.getFullYear();
+        return year + '-' + month + '-' + day;
+      },
       $scope.deleteChart = function () {
         $element.remove();
+      },
+      $scope.showDayDetails = function (daySelected) {
+        var date = daySelected.getDate();
+        var month = daySelected.getMonth()+1;
+        var year = daySelected.getFullYear();
+
+        var dateString = year + '-' + month + '-' + date;
+        $http({
+          method: 'GET',
+          url: '/wifidevicescountdetail?' + 'day=' + dateString
+        }).success(function(data) {
+
+          //Workaround for date parsing issue
+          //c3 can't parse date format YYYY-MM-DDThh:mm:ss.sTZD
+          var dates = data['Wifi-Devices'].x;
+          console.log(dates);
+          for (i = 1; i < dates.length; i++) {
+              dates[i] = new Date(dates[i]);
+          }
+
+          $scope.dates = dates;
+          $scope.counts = data['Wifi-Devices'].counts;
+          $scope.dataLoading = false;
+          updateFormatter(true);
+
+        });
       }
     }],
     link: function(scope, iElement, iAttrs, ctrl) {
       scope.uniqueId = uniqueId++;
       scope.getChartData(scope.startdate, scope.enddate);
-
 
       //listen if chart data changes
       scope.$watch('dates', function(newVal) {
@@ -61,7 +101,8 @@ app.directive('ngLinechart', ['$compile', function($compile) {
               ]
             });
           } else {
-            scope.lineChart = timeSeriesGraph(scope.dates, scope.counts, scope.uniqueId);
+            scope.lineChart = timeSeriesGraph(scope.dates, scope.counts, scope.uniqueId, scope.showDayDetails);
+
           }
 
         }
@@ -69,6 +110,7 @@ app.directive('ngLinechart', ['$compile', function($compile) {
 
       scope.refresh = function() {
           scope.getChartData(scope.startdate, scope.enddate);
+          updateFormatter();
       }
     }
   }
@@ -78,13 +120,21 @@ app.directive('ngLinechart', ['$compile', function($compile) {
 /**
 * Creating C3 Line Chart
 */
-var timeSeriesGraph = function(dates, counts, uniqueId) {
+
+var formatter;
+
+function updateFormatter(days) {
+  formatter = d3.time.format(days ? '%H' : '%d.%m.%Y');
+}
+
+var timeSeriesGraph = function(dates, counts, uniqueId, callback) {
+  updateFormatter();
 
   var chart = c3.generate({
       bindto: '#chart' + uniqueId,
       data: {
           x: 'x',
-          onclick: function(e) { console.log(e.x); },
+          onclick: function(e) { callback(e.x); },
           columns: [
               dates,
               counts
@@ -94,7 +144,9 @@ var timeSeriesGraph = function(dates, counts, uniqueId) {
           x: {
               type: 'timeseries',
               tick: {
-                  format: '%d.%m.%Y'
+                  format: function (x) { // x comes in as a time string.
+                    return formatter(x);
+                  }
               }
           }
       },
