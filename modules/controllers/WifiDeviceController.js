@@ -40,40 +40,10 @@ module.exports = {
     var isValidPeriodQuery = MyUtils.checkPeriodQuery(startDate, endDate);
 
     if(isValidPeriodQuery) {
-      WifiDevice.queryDeivcesInPeriod(startDate, endDate, function(rows){
+      WifiDevice.queryDeivcesInPeriod(startDate, endDate, function(queryResult){
 
-        var dateArray = MyUtils.getDatesBetween(new Date(startDate), new Date(endDate));
-        //var result = new Array();
-        //array for date values
-        var dates = new Array();
-        dates.push('x');
-        //array for amount of devices
-        var counts = new Array();
-        counts.push('Amount of Wifi-Devices');
-
-        for(var date in dateArray) {
-
-          var day = dateArray[date].getUTCDate();
-          var counter = 0;
-
-
-          for(var row in rows) {
-            var dayCaptured = rows[row]['first_time_seen'].getUTCDate();
-
-            if(dayCaptured == day) {
-              counter++;
-            }
-
-          }
-          dates.push(dateArray[date]);
-          counts.push(counter);
-
-        }
-        var result = {
-          x: dates,
-          counts: counts
-        }
-
+        var datesBetween = MyUtils.getDatesBetween(new Date(startDate), new Date(endDate));
+        var result = getDevicesCountsForDays(datesBetween, queryResult, 'first_time_seen');
 
         MyUtils.returnResult(res, result);
       });
@@ -82,4 +52,42 @@ module.exports = {
     }
 
   },
+}
+
+var getDevicesCountsForDays = function(datesBetween, devicesArray, datePropertyName) {
+  //array for date values
+  var dates = new Array();
+  dates.push('x');
+  //array for amount of devices
+  var counts = new Array();
+  counts.push('Amount of Wifi-Devices');
+
+  for(var date in datesBetween) {
+
+    var day = datesBetween[date].getUTCDate();
+    var counter = getDevicesCountForDay(day, devicesArray, datePropertyName);
+
+    dates.push(datesBetween[date]);
+    counts.push(counter);
+
+  }
+
+  return {
+    x: dates,
+    counts: counts
+  };
+}
+
+var getDevicesCountForDay = function(day, devicesArray, datePropertyName) {
+  var counter = 0;
+
+  for(var row in devicesArray) {
+    var dayCaptured = devicesArray[row][datePropertyName].getUTCDate();
+
+    if(dayCaptured == day) {
+      counter++;
+    }
+
+  }
+  return counter;
 }

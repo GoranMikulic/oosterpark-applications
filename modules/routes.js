@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var WifiDevice = require('./models/WifiDevice');
-var WifiDeviceService = require('./services/WifiDeviceService');
+var WifiDeviceService = require('./controllers/WifiDeviceController');
 
 //Route to return all devices
 router.route('/wifidevices')
