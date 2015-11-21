@@ -80,6 +80,17 @@ section {
 }
 
 /**
+**  Chart Section
+**/
+.date-form {
+  margin-bottom: 2em;
+}
+
+.chart {
+  margin-bottom: 4em;
+}
+
+/**
 **  C3-Chart styles
 **/
 path {

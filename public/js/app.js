@@ -1,6 +1,6 @@
 var app = angular.module('chartsApp', []);
 
-app.directive('ngSparkline', ['$compile', function($compile) {
+app.directive('ngLinechart', ['$compile', function($compile) {
   var url = "/wifidevicescount?";
   var uniqueId = 1;
 
