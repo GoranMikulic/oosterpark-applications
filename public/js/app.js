@@ -40,13 +40,21 @@ app.directive('ngLinechart', ['$compile', function($compile) {
     link: function(scope, iElement, iAttrs, ctrl) {
       scope.uniqueId = uniqueId++;
       scope.getChartData(scope.startdate, scope.enddate);
+
+      //listen if chart data changes
       scope.$watch('dates', function(newVal) {
         // the `$watch` function will fire even if the
-        // weather property is undefined, so we'll
+        // dates property is undefined, so we'll
         // check for it
 
         if (newVal) {
-          timeSeriesGraph(scope.dates, scope.counts, scope.uniqueId);
+          timeSeriesGraph(scope.dates, scope.counts, scope.uniqueId, scope.showSubchart);
+        }
+      });
+      //liste if subchart config changes
+      scope.$watch('showSubchart', function(newVal) {
+        if (newVal === true || newVal === false) {
+          timeSeriesGraph(scope.dates, scope.counts, scope.uniqueId, newVal);
         }
       });
 
@@ -61,7 +69,7 @@ app.directive('ngLinechart', ['$compile', function($compile) {
 /**
 * Creating C3 Line Chart
 */
-var timeSeriesGraph = function(dates, counts, uniqueId) {
+var timeSeriesGraph = function(dates, counts, uniqueId, showSubchart) {
 
   var chart = c3.generate({
       bindto: '#chart' + uniqueId,
@@ -86,6 +94,12 @@ var timeSeriesGraph = function(dates, counts, uniqueId) {
         inset: {
           anchor: 'top-right'
         }
+      },
+      zoom: {
+        enabled: true
+      },
+      subchart: {
+        show: showSubchart
       }
   });
 }
