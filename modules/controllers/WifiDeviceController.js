@@ -2,7 +2,9 @@ var WifiDevice = require('../models/WifiDevice');
 var MyUtils = require('../utils/Utils');
 
 module.exports = {
-
+  /**
+  * Returns a wifi device by id
+  */
   getWifiDeviceById: function(req, res) {
     WifiDevice.getWifiDeviceById(req.params.device_id, function(rows){
         MyUtils.returnResult(res, rows);
@@ -31,7 +33,7 @@ module.exports = {
 
   },
   /**
-  *  Returns the amount of devices for every day in the given period
+  *  Returns the amount of wifi devices for every day in the given period
   */
   getWifiDevicesCountInPeriod: function(req, res) {
     var startDate = req.query.startdate;
@@ -54,6 +56,9 @@ module.exports = {
   },
 }
 
+/**
+* Returns the amounts of devices for a period of days
+*/
 var getDevicesCountsForDays = function(datesBetween, devicesArray, datePropertyName) {
   //array for date values
   var dates = new Array();
@@ -78,14 +83,18 @@ var getDevicesCountsForDays = function(datesBetween, devicesArray, datePropertyN
   };
 }
 
+/**
+* Returns the amount of devices for a day
+*/
 var getDevicesCountForDay = function(day, devicesArray, datePropertyName) {
   var counter = 0;
 
   for(var row in devicesArray) {
     var dayCaptured = devicesArray[row][datePropertyName];
+
+    //Set time to 00:00:00 to compare days only
     dayCaptured.setHours(0,0,0,0);
     day.setHours(0,0,0,0);
-    console.log(dayCaptured);
     if(dayCaptured.getTime() == day.getTime()) {
       counter++;
     }
