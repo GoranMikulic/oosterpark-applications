@@ -1,12 +1,6 @@
-var mysql   = require('mysql');
 var MyUtils = require('../utils/Utils');
-
-var connection = mysql.createConnection({
-    host     : 'oege.ie.hva.nl',
-    user     : 'serdijj001',
-    password : 'N75gUB9lki0wcM',
-    database : 'zserdijj001'
-});
+var mysql = require('mysql');
+var connection = require('../utils/MySql').connection()
 
 module.exports = {
 
