@@ -4,6 +4,7 @@ app.directive('ngLinechart', ['$compile', function($compile) {
   var url = "/wifidevicescount?";
   var uniqueId = 1;
 
+
   return {
     restrict: 'A',
     templateUrl: 'templates/ng-timeseries-chart.html',
@@ -41,6 +42,8 @@ app.directive('ngLinechart', ['$compile', function($compile) {
       scope.uniqueId = uniqueId++;
       scope.getChartData(scope.startdate, scope.enddate);
 
+
+      console.log(scope.lineChart);
       //listen if chart data changes
       scope.$watch('dates', function(newVal) {
         // the `$watch` function will fire even if the
@@ -48,13 +51,19 @@ app.directive('ngLinechart', ['$compile', function($compile) {
         // check for it
 
         if (newVal) {
-          timeSeriesGraph(scope.dates, scope.counts, scope.uniqueId, scope.showSubchart);
-        }
-      });
-      //liste if subchart config changes
-      scope.$watch('showSubchart', function(newVal) {
-        if (newVal === true || newVal === false) {
-          timeSeriesGraph(scope.dates, scope.counts, scope.uniqueId, newVal);
+          if(scope.lineChart){
+            console.log('1');
+            scope.lineChart.load({
+              columns: [
+                  scope.dates,
+                  scope.counts
+              ]
+            });
+          } else {
+            console.log('2');
+            scope.lineChart = timeSeriesGraph(scope.dates, scope.counts, scope.uniqueId);
+          }
+
         }
       });
 
@@ -69,7 +78,7 @@ app.directive('ngLinechart', ['$compile', function($compile) {
 /**
 * Creating C3 Line Chart
 */
-var timeSeriesGraph = function(dates, counts, uniqueId, showSubchart) {
+var timeSeriesGraph = function(dates, counts, uniqueId) {
 
   var chart = c3.generate({
       bindto: '#chart' + uniqueId,
@@ -97,9 +106,9 @@ var timeSeriesGraph = function(dates, counts, uniqueId, showSubchart) {
       },
       zoom: {
         enabled: true
-      },
-      subchart: {
-        show: showSubchart
       }
   });
+
+  return chart;
+
 }
