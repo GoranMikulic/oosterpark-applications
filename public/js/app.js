@@ -36,6 +36,8 @@ app.directive('ngLinechart', ['$compile', function($compile) {
       $scope.addChart = function () {
         var el = $compile( "<div ng-linechart ></div>" )( $scope );
         $element.parent().append(el);
+        el.hide().fadeIn(1000);
+        $("body").animate({scrollTop: el.offset().top}, "slow");
       },
       $scope.getDefaultEndDate = function () {
         var curdate = new Date();
@@ -56,6 +58,8 @@ app.directive('ngLinechart', ['$compile', function($compile) {
         $element.remove();
       },
       $scope.showDayDetails = function (daySelected) {
+        $scope.dataLoading = true;
+
         var date = daySelected.getDate();
         var month = daySelected.getMonth()+1;
         var year = daySelected.getFullYear();
@@ -69,7 +73,7 @@ app.directive('ngLinechart', ['$compile', function($compile) {
           //Workaround for date parsing issue
           //c3 can't parse date format YYYY-MM-DDThh:mm:ss.sTZD
           var dates = data['Wifi-Devices'].x;
-          console.log(dates);
+          
           for (i = 1; i < dates.length; i++) {
               dates[i] = new Date(dates[i]);
           }
@@ -78,6 +82,7 @@ app.directive('ngLinechart', ['$compile', function($compile) {
           $scope.counts = data['Wifi-Devices'].counts;
           $scope.dataLoading = false;
           updateFormatter(true);
+          $scope.dataLoading = false;
 
         });
       }
@@ -120,9 +125,11 @@ app.directive('ngLinechart', ['$compile', function($compile) {
 /**
 * Creating C3 Line Chart
 */
-
 var formatter;
 
+/**
+* Formatter has to be changed in detail view to show hours instead of dates
+*/
 function updateFormatter(days) {
   formatter = d3.time.format(days ? '%H' : '%d.%m.%Y');
 }

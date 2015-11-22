@@ -59,13 +59,13 @@ module.exports = {
    */
   getWifiDevicesCountForDay: function(req, res) {
     var day = req.query.day;
-    console.log(day);
+
     if (typeof day !== 'undefined') {
       var start = day + ' 00:01:00';
       var end = day + ' 23:00:00';
 
       WifiDevice.queryDeivcesInPeriod(start, end, function(queryResult) {
-        console.log(queryResult);
+
         var result = getDevicesCountForHours(day, queryResult, 'first_time_seen');
 
         MyUtils.returnResult(res, result);
@@ -115,7 +115,7 @@ var getDevicesCountForHours = function(day, devicesArray, datePropertyName) {
   for (var i = 0; i < 24; i++) {
     hours.push(i);
   }
-  console.log(hours);
+
   for (var hour in hours) {
     var counter = 0;
 
@@ -126,7 +126,7 @@ var getDevicesCountForHours = function(day, devicesArray, datePropertyName) {
         counter++;
       }
     }
-    console.log(day);
+
     hoursResult.push(day + ' ' + hour + ':00:00');
     counts.push(counter);
   }
