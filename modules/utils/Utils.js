@@ -14,7 +14,7 @@ module.exports = {
         data[wifiDevices] = rows;
         res.json(data);
     }else{
-        data["Devices"] = 'No devices Found..';
+        data[wifiDevices] = 'No devices Found..';
         res.json(data);
     }
   },

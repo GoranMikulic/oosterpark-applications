@@ -1,8 +1,10 @@
 var app = angular.module('chartsApp', []);
 
 app.directive('ngLinechart', ['$compile', function($compile) {
-  var url = "/wifidevicescount?";
+  //var url = "/wifidevicescount?";
   var uniqueId = 1;
+  var wifiFieldName = "Wifi-Devices";
+  var btFieldName = "Bluetooth-Devices";
 
 
   return {
@@ -12,7 +14,7 @@ app.directive('ngLinechart', ['$compile', function($compile) {
       uniqueId: '='
     },
     controller: ['$scope', '$http', '$element', function($scope, $http, $element){
-      $scope.getChartData = function(startdate, enddate) {
+      $scope.getChartData = function(startdate, enddate, url) {
         $scope.dataLoading = true;
 
         $http({
@@ -73,7 +75,7 @@ app.directive('ngLinechart', ['$compile', function($compile) {
           //Workaround for date parsing issue
           //c3 can't parse date format YYYY-MM-DDThh:mm:ss.sTZD
           var dates = data['Wifi-Devices'].x;
-          
+
           for (i = 1; i < dates.length; i++) {
               dates[i] = new Date(dates[i]);
           }
@@ -89,7 +91,9 @@ app.directive('ngLinechart', ['$compile', function($compile) {
     }],
     link: function(scope, iElement, iAttrs, ctrl) {
       scope.uniqueId = uniqueId++;
-      scope.getChartData(scope.startdate, scope.enddate);
+      var url = "/wifidevicescount?";
+      console.log(scope.dataset);
+      scope.getChartData(scope.startdate, scope.enddate, url);
 
       //listen if chart data changes
       scope.$watch('dates', function(newVal) {
