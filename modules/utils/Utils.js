@@ -38,5 +38,81 @@ module.exports = {
       currentDate = currentDate.addDays(1);
     }
     return dateArray;
+  },
+
+  /**
+   * Returns the amounts of devices for a period of days
+   */
+  getDevicesCountsForTimeRange: function(timeRange, devicesArray, datePropertyName, comparator, dataLabel) {
+    //array for date values
+    var dates = new Array();
+    dates.push('x');
+    //array for amount of devices
+    var counts = new Array();
+    counts.push(dataLabel);
+
+    for (var time in timeRange) {
+      var counter = getDevicesCount(timeRange[time], devicesArray, datePropertyName, comparator);
+      dates.push(timeRange[time]);
+      counts.push(counter);
+    }
+
+    return {
+      x: dates,
+      counts: counts
+    };
+  },
+  /**
+   * Returns true if the hour matches
+   */
+  isHourEqual: function(deviceCaptureTime, timeToCompare) {
+    if (deviceCaptureTime.getHours() == timeToCompare.getHours()) {
+      return true;
+    }
+    return false;
+  },
+  /**
+   * Compares true if the day matches
+   */
+  isDayEqual: function(deviceCaptureTime, timeToCompare) {
+    //Set time to 00:00:00 to compare days only
+    deviceCaptureTime.setHours(0, 0, 0, 0);
+    timeToCompare.setHours(0, 0, 0, 0);
+
+    if (deviceCaptureTime.getTime() == timeToCompare.getTime()) {
+      return true;
+    }
+
+    return false;
+  },
+  /**
+   * Returns an array of date objects of
+   * the given day with hours set from 0 to 23
+   */
+  getClockHours: function(day) {
+    var hours = new Array();
+    for (var i = 0; i < 24; i++) {
+      var date = new Date(day);
+      date.setHours(i);
+      date.setMinutes(0, 0, 0);
+      hours.push(date);
+    }
+    return hours;
   }
+}
+
+/**
+ * Returns amount of devices for a particular date,
+ * values are compared with the comparator function
+ */
+var getDevicesCount = function(time, devicesArray, datePropertyName, comparator) {
+  var counter = 0;
+
+  for (var device in devicesArray) {
+    var compareResult = comparator(devicesArray[device][datePropertyName], time);
+    if (compareResult) {
+      counter++;
+    }
+  }
+  return counter;
 }
