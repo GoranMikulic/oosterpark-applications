@@ -7,5 +7,14 @@ module.exports = {
     connection.query("SELECT * from beacon_sense",function(err, rows, fields){
       fn(rows);
     });
-  }
+  },
+  queryDeivcesInPeriod: function(startDate, endDate, fn) {
+      var query = "SELECT * FROM beacon_sense WHERE Time > ? && Time < ? GROUP BY Bluetooth_Id";
+      var params = [startDate, endDate];
+      
+      query = mysql.format(query,params);
+      connection.query(query,function(err, rows, fields){
+        fn(rows);
+      });
+  },
 }
