@@ -1,4 +1,4 @@
-var wifiDevices = "Wifi-Devices";
+var devices = "Devices";
 
 module.exports = {
   /*
@@ -7,14 +7,14 @@ module.exports = {
   returnResult: function(res, rows) {
     var data = {};
     data["error"] = 1;
-    data[wifiDevices] = "";
+    data[devices] = "";
 
     if(rows.length != 0){
         data["error"] = 0;
-        data[wifiDevices] = rows;
+        data[devices] = rows;
         res.json(data);
     }else{
-        data[wifiDevices] = 'No devices Found..';
+        data[devices] = 'No devices Found..';
         res.json(data);
     }
   },
