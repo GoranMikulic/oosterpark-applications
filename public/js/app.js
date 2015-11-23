@@ -1,5 +1,8 @@
 var app = angular.module('chartsApp', []);
 
+/**
+ * Custom directive for linecharts
+ */
 app.directive('ngLinechart', ['$compile', function($compile) {
   //var url = "/wifidevicescount?";
   var uniqueId = 1;
@@ -33,14 +36,6 @@ app.directive('ngLinechart', ['$compile', function($compile) {
 
           });
         },
-        $scope.addChart = function() {
-          var el = $compile("<div ng-linechart ></div>")($scope);
-          $element.parent().append(el);
-          el.hide().fadeIn(1000);
-          $("body").animate({
-            scrollTop: el.offset().top
-          }, "slow");
-        },
         $scope.getDefaultEndDate = function() {
           var curdate = new Date();
           var day = curdate.getDate();
@@ -56,11 +51,10 @@ app.directive('ngLinechart', ['$compile', function($compile) {
           var year = curdate.getFullYear();
           return year + '-' + month + '-' + day;
         },
-        $scope.deleteChart = function() {
-          $element.remove();
-        },
-        $scope.showDayDetails = function(daySelected) {
+        $scope.showDayDetails = function(daySelected, chartId) {
           $scope.dataLoading = true;
+
+          var url = chartId == wifiDataId ? wifiDetaillUrl : btDetaillUrl;
 
           var date = daySelected.getDate();
           var month = daySelected.getMonth() + 1;
@@ -69,7 +63,7 @@ app.directive('ngLinechart', ['$compile', function($compile) {
           var dateString = year + '-' + month + '-' + date;
           $http({
             method: 'GET',
-            url: '/wifidevicescountdetail?' + 'day=' + dateString
+            url: url + 'day=' + dateString
           }).success(function(data) {
 
             //Workaround for date parsing issue
@@ -82,18 +76,18 @@ app.directive('ngLinechart', ['$compile', function($compile) {
 
             $scope.dates = dates;
             $scope.counts = data[resultFieldName].counts;
-            $scope.dataLoading = false;
             updateFormatter(true);
             $scope.dataLoading = false;
-
+            
           });
         }
     }],
-    link: function(scope, iElement, iAttrs, ctrl) {
+    link: function(scope, element, iAttrs, ctrl) {
       scope.uniqueId = uniqueId++;
 
-      scope.getChartData(scope.startdate, scope.enddate, wifiUrl);
-      scope.getChartData(scope.startdate, scope.enddate, btUrl);
+      angular.forEach(datasetUrls, function(value, key) {
+        scope.getChartData(scope.startdate, scope.enddate, value);
+      });
 
       //listen if chart data changes
       scope.$watch('dates', function(newVal) {
@@ -111,15 +105,26 @@ app.directive('ngLinechart', ['$compile', function($compile) {
             });
           } else {
             scope.lineChart = timeSeriesGraph(scope.dates, scope.counts, scope.uniqueId, scope.showDayDetails);
-
           }
 
         }
       });
       scope.refresh = function() {
-        scope.getChartData(scope.startdate, scope.enddate, wifiUrl);
-        scope.getChartData(scope.startdate, scope.enddate, btUrl);
+        angular.forEach(datasetUrls, function(value, key) {
+          scope.getChartData(scope.startdate, scope.enddate, value);
+        });
         updateFormatter();
+      },
+      scope.deleteChart = function() {
+        element.remove();
+      },
+      scope.addChart = function() {
+        var el = $compile("<div ng-linechart ></div>")(scope);
+        element.parent().append(el);
+        el.hide().fadeIn(1000);
+        $("body").animate({
+          scrollTop: el.offset().top
+        }, "slow");
       }
     }
   }
@@ -127,16 +132,14 @@ app.directive('ngLinechart', ['$compile', function($compile) {
 
 var wifiUrl = "/wifidevicescount?";
 var btUrl = "/btdevicescount?";
+var datasetUrls = [wifiUrl, btUrl];
 
-var wifiFieldName = "Wifi-Devices";
-var btFieldName = "Bluetooth-Devices";
-var getChartDataUrl = function(fieldName) {
-  if (fieldName == wifiFieldName) {
-    return wifiUrl
-  } else {
-    return btUrl
-  }
-}
+var wifiDetaillUrl = "/wifidevicescountdetail?";
+var btDetaillUrl = "/btdevicescountdetail?";
+
+var wifiDataId = "Amount of Wifi-Devices";
+var btDataId = "Amount of Bluetooth-Devices";
+
 
 /**
  * Creating C3 Line Chart
@@ -158,8 +161,7 @@ var timeSeriesGraph = function(dates, counts, uniqueId, callback) {
     data: {
       x: 'x',
       onclick: function(e) {
-        console.log(e);
-        callback(e.x);
+        callback(e.x, e.id);
       },
       columns: [
         dates,
