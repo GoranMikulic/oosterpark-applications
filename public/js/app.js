@@ -19,10 +19,9 @@ app.directive('ngLinechart', ['$compile', function($compile) {
           $scope.dataLoading = true;
 
           $http({
-            method: 'GET',
+              method: 'GET',
             url: url + 'startdate=' + startdate + '&enddate=' + enddate
           }).success(function(data) {
-
             //Workaround for date parsing issue
             //c3 can't parse date format YYYY-MM-DDThh:mm:ss.sTZD
             var dates = data[resultFieldName].x;
@@ -51,7 +50,7 @@ app.directive('ngLinechart', ['$compile', function($compile) {
           var year = curdate.getFullYear();
           return year + '-' + month + '-' + day;
         },
-        $scope.showDayDetails = function(daySelected, chartId) {
+        $scope.getDayDetailsData = function(daySelected, chartId) {
           $scope.dataLoading = true;
 
           var url = chartId == wifiDataId ? wifiDetaillUrl : btDetaillUrl;
@@ -78,7 +77,6 @@ app.directive('ngLinechart', ['$compile', function($compile) {
             $scope.counts = data[resultFieldName].counts;
             updateFormatter(true);
             $scope.dataLoading = false;
-            
           });
         }
     }],
@@ -104,7 +102,7 @@ app.directive('ngLinechart', ['$compile', function($compile) {
               ]
             });
           } else {
-            scope.lineChart = timeSeriesGraph(scope.dates, scope.counts, scope.uniqueId, scope.showDayDetails);
+            scope.lineChart = timeSeriesGraph(scope.dates, scope.counts, scope.uniqueId, scope.getDayDetailsData);
           }
 
         }
