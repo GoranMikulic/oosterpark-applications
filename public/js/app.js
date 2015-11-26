@@ -31,13 +31,14 @@ app.directive('ngLinechart', ['$compile', function($compile) {
             for (i = 1; i < dates.length; i++) {
               dates[i] = new Date(dates[i]);
             }
-            
-            $scope.dates = dates;
-            $scope.counts = data[resultFieldName].counts;
+
+            $scope.chartdata = new ChartResult(dates, data[resultFieldName].counts);
+            //$scope.dates = dates;
+            //$scope.counts = data[resultFieldName].counts;
             $scope.dataLoading = false;
             console.log("overview ");
-            console.log($scope.dates);
-            console.log($scope.counts);
+            console.log($scope.chartdata.dates);
+            console.log($scope.chartdata.counts);
           });
         },
         $scope.getDefaultEndDate = function() {
@@ -78,11 +79,12 @@ app.directive('ngLinechart', ['$compile', function($compile) {
               dates[i] = new Date(dates[i]);
             }
 
-            $scope.dates = dates;
+            //$scope.dates = dates;
             console.log("details: ");
-            console.log($scope.dates);
-            $scope.counts = data[resultFieldName].counts;
-            console.log($scope.counts);
+            console.log(dates);
+            //$scope.counts = data[resultFieldName].counts;
+            $scope.chartdata = new ChartResult(dates, data[resultFieldName].counts);
+            console.log(data[resultFieldName].counts);
             updateFormatter(true);
             $scope.dataLoading = false;
           });
@@ -96,7 +98,7 @@ app.directive('ngLinechart', ['$compile', function($compile) {
       });
 
       //listen if chart data changes
-      scope.$watch('dates', function(newVal) {
+      scope.$watch('chartdata', function(newVal) {
         // the `$watch` function will fire even if the
         // dates property is undefined, so we'll
         // check for it
@@ -118,27 +120,27 @@ app.directive('ngLinechart', ['$compile', function($compile) {
               console.log("unloadDataSets " + unloadDataSets);
               scope.lineChart.load({
                 columns: [
-                  scope.dates,
-                  scope.counts
+                  scope.chartdata.dates,
+                  scope.chartdata.counts
                 ],
-                unload: unloadDataSets,
+                unload: unloadDataSets
               });
             } else {
               scope.lineChart.load({
                 columns: [
-                  scope.dates,
-                  scope.counts
+                  scope.chartdata.dates,
+                  scope.chartdata.counts
                 ]
               });
             }
 
           } else {
-            scope.lineChart = timeSeriesGraph(scope.dates, scope.counts, scope.uniqueId, scope.getDayDetailsData);
+            scope.lineChart = timeSeriesGraph(scope.chartdata.dates, scope.chartdata.counts, scope.uniqueId, scope.getDayDetailsData);
           }
 
         }
 
-      });
+      }, false);
 
       scope.refresh = function() {
 
@@ -176,6 +178,11 @@ function DataSource(url, detailUrl, dataId) {
   this.url = url;
   this.detailUrl = detailUrl;
   this.dataId = dataId;
+}
+
+function ChartResult(dates, counts) {
+  this.dates = dates;
+  this.counts = counts;
 }
 
 var wifiData = new DataSource(wifiUrl, wifiDetaillUrl, wifiDataId);
