@@ -16,10 +16,13 @@ app.directive('ngLinechart', ['$compile', function($compile) {
     },
     controller: ['$scope', '$http', '$element', function($scope, $http, $element) {
       $scope.getChartData = function(startdate, enddate, url) {
+          console.log("s " + startdate);
+          console.log("e " + enddate);
+          console.log("u " + url);
           $scope.dataLoading = true;
-
+          $scope.detailUrl = 'empty';
           $http({
-              method: 'GET',
+            method: 'GET',
             url: url + 'startdate=' + startdate + '&enddate=' + enddate
           }).success(function(data) {
             //Workaround for date parsing issue
@@ -28,11 +31,13 @@ app.directive('ngLinechart', ['$compile', function($compile) {
             for (i = 1; i < dates.length; i++) {
               dates[i] = new Date(dates[i]);
             }
-
+            
             $scope.dates = dates;
             $scope.counts = data[resultFieldName].counts;
             $scope.dataLoading = false;
-
+            console.log("overview ");
+            console.log($scope.dates);
+            console.log($scope.counts);
           });
         },
         $scope.getDefaultEndDate = function() {
@@ -52,8 +57,8 @@ app.directive('ngLinechart', ['$compile', function($compile) {
         },
         $scope.getDayDetailsData = function(daySelected, chartId) {
           $scope.dataLoading = true;
-
-          var url = chartId == wifiDataId ? wifiDetaillUrl : btDetaillUrl;
+          $scope.detailUrl = chartId == wifiDataId ? wifiDetaillUrl : btDetaillUrl;
+          console.log("detailUrl changed: " + $scope.detailUrl);
 
           var date = daySelected.getDate();
           var month = daySelected.getMonth() + 1;
@@ -62,7 +67,7 @@ app.directive('ngLinechart', ['$compile', function($compile) {
           var dateString = year + '-' + month + '-' + date;
           $http({
             method: 'GET',
-            url: url + 'day=' + dateString
+            url: $scope.detailUrl + 'day=' + dateString
           }).success(function(data) {
 
             //Workaround for date parsing issue
@@ -74,7 +79,10 @@ app.directive('ngLinechart', ['$compile', function($compile) {
             }
 
             $scope.dates = dates;
+            console.log("details: ");
+            console.log($scope.dates);
             $scope.counts = data[resultFieldName].counts;
+            console.log($scope.counts);
             updateFormatter(true);
             $scope.dataLoading = false;
           });
@@ -83,8 +91,8 @@ app.directive('ngLinechart', ['$compile', function($compile) {
     link: function(scope, element, iAttrs, ctrl) {
       scope.uniqueId = uniqueId++;
 
-      angular.forEach(datasetUrls, function(value, key) {
-        scope.getChartData(scope.startdate, scope.enddate, value);
+      angular.forEach(datasets, function(value, key) {
+        scope.getChartData(scope.startdate, scope.enddate, value.url);
       });
 
       //listen if chart data changes
@@ -95,48 +103,84 @@ app.directive('ngLinechart', ['$compile', function($compile) {
 
         if (newVal) {
           if (scope.lineChart) {
-            scope.lineChart.load({
-              columns: [
-                scope.dates,
-                scope.counts
-              ]
-            });
+            if(scope.detailUrl != 'empty'){
+              console.log("dt "+scope.detailUrl);
+              var unloadDataSets = new Array();
+
+              angular.forEach(datasets, function(value, key) {
+                console.log("value.detailUrl " + value.detailUrl);
+                console.log("scope.detailUrl " + scope.detailUrl);
+                if (value.detailUrl != scope.detailUrl) {
+                  console.log("pushed " + value.dataId);
+                  unloadDataSets.push(value.dataId);
+                }
+              });
+              console.log("unloadDataSets " + unloadDataSets);
+              scope.lineChart.load({
+                columns: [
+                  scope.dates,
+                  scope.counts
+                ],
+                unload: unloadDataSets,
+              });
+            } else {
+              scope.lineChart.load({
+                columns: [
+                  scope.dates,
+                  scope.counts
+                ]
+              });
+            }
+
           } else {
             scope.lineChart = timeSeriesGraph(scope.dates, scope.counts, scope.uniqueId, scope.getDayDetailsData);
           }
 
         }
+
       });
+
       scope.refresh = function() {
-        angular.forEach(datasetUrls, function(value, key) {
-          scope.getChartData(scope.startdate, scope.enddate, value);
-        });
-        updateFormatter();
-      },
-      scope.deleteChart = function() {
-        element.remove();
-      },
-      scope.addChart = function() {
-        var el = $compile("<div ng-linechart ></div>")(scope);
-        element.parent().append(el);
-        el.hide().fadeIn(1000);
-        $("body").animate({
-          scrollTop: el.offset().top
-        }, "slow");
-      }
+
+          angular.forEach(datasets, function(value, key) {
+            scope.getChartData(scope.startdate, scope.enddate, value.url);
+          });
+          updateFormatter();
+        },
+        scope.deleteChart = function() {
+          element.remove();
+        },
+        scope.addChart = function() {
+          var el = $compile("<div ng-linechart ></div>")(scope);
+          element.parent().append(el);
+          el.hide().fadeIn(1000);
+          $("body").animate({
+            scrollTop: el.offset().top
+          }, "slow");
+        }
     }
   }
 }]);
 
 var wifiUrl = "/wifidevicescount?";
 var btUrl = "/btdevicescount?";
-var datasetUrls = [wifiUrl, btUrl];
+//var datasetUrls = [wifiUrl, btUrl];
 
 var wifiDetaillUrl = "/wifidevicescountdetail?";
 var btDetaillUrl = "/btdevicescountdetail?";
 
 var wifiDataId = "Amount of Wifi-Devices";
 var btDataId = "Amount of Bluetooth-Devices";
+
+function DataSource(url, detailUrl, dataId) {
+  this.url = url;
+  this.detailUrl = detailUrl;
+  this.dataId = dataId;
+}
+
+var wifiData = new DataSource(wifiUrl, wifiDetaillUrl, wifiDataId);
+var btData = new DataSource(btUrl, btDetaillUrl, btDataId);
+var datasets = [wifiData, btData];
 
 
 /**
