@@ -4,7 +4,7 @@
    */
   angular.module('chartsApp').directive('ngLinechart', ['$compile', 'dataSetFactory', 'updateFormatter', 'timeSeriesGraph', function($compile, dataSetFactory, updateFormatter, timeSeriesGraph) {
     var uniqueId = 1;
-    console.log(dataSetFactory.datasets);
+
     return {
       restrict: 'A',
       templateUrl: 'templates/ng-timeseries-chart.html',
@@ -63,11 +63,11 @@
         }, false);
 
         scope.refresh = function() {
-
-            angular.forEach(dataSetFactory.datasets, function(value, key) {
-              scope.getChartData(scope.startdate, scope.enddate, value.url);
-            });
             updateFormatter();
+            for(var i = 0; i < dataSetFactory.datasets.length; i++) {
+              var value = dataSetFactory.datasets[i];
+               scope.getChartData(scope.startdate, scope.enddate, value.url);
+            }
           },
           scope.deleteChart = function() {
             element.remove();

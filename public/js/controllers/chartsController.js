@@ -18,7 +18,9 @@
             //c3 can't parse date format YYYY-MM-DDThh:mm:ss.sTZD
             var dates = data[resultFieldName].x;
             for (var i = 1; i < dates.length; i++) {
+              console.log('old: ' + dates[i]);
               dates[i] = new Date(dates[i]);
+              console.log('new: ' + dates[i]);
             }
 
             $scope.chartdata = new ChartResult(dates, data[resultFieldName].counts);
