@@ -64,9 +64,9 @@
 
         scope.refresh = function() {
             updateFormatter();
-            for(var i = 0; i < dataSetFactory.datasets.length; i++) {
+            for (var i = 0; i < dataSetFactory.datasets.length; i++) {
               var value = dataSetFactory.datasets[i];
-               scope.getChartData(scope.startdate, scope.enddate, value.url);
+              scope.getChartData(scope.startdate, scope.enddate, value.url);
             }
           },
           scope.deleteChart = function() {
