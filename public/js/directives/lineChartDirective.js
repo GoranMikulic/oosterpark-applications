@@ -12,7 +12,7 @@
         uniqueId: '=',
         chartdata: '='
       },
-      controller: 'myctrl',
+      controller: 'lineChartController',
       link: function(scope, element, iAttrs, ctrl) {
         scope.uniqueId = uniqueId++;
 

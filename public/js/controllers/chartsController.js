@@ -4,9 +4,9 @@
   // accessing the module in another.
   // this can be done by calling angular.module without the []-brackets
   angular.module('chartsApp')
-    .controller('myctrl', ['$scope', '$http', '$element', 'getDetailUrl', 'updateFormatter', function($scope, $http, $element, getDetailUrl, updateFormatter) {
+    .controller('lineChartController', ['$scope', '$http', '$element', 'getDetailUrl', 'updateFormatter', function($scope, $http, $element, getDetailUrl, updateFormatter) {
       var resultFieldName = "Devices";
-      
+
       $scope.getChartData = function(startdate, enddate, url) {
           $scope.dataLoading = true;
           $scope.detailUrl = 'empty';
