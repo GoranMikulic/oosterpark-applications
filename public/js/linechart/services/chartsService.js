@@ -33,7 +33,7 @@
       for (var i = 0; i < dataSetFactory.datasets.length; i++) {
         var value = dataSetFactory.datasets[i];
         if (chartId == value.dataId) {
-          console.log('result ' + chartId + ' ' + value.dataId);
+          //console.log('result ' + chartId + ' ' + value.dataId);
           return value.detailUrl;
         }
       }
@@ -66,6 +66,7 @@
         data: {
           x: 'x',
           onclick: function(e) {
+            //console.log('fired with: ' + e.x + e.id);
             callback(e.x, e.id);
           },
           columns: [

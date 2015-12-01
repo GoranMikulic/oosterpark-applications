@@ -18,9 +18,9 @@
             //c3 can't parse date format YYYY-MM-DDThh:mm:ss.sTZD
             var dates = data[resultFieldName].x;
             for (var i = 1; i < dates.length; i++) {
-              console.log('old: ' + dates[i]);
+              //console.log('old: ' + dates[i]);
               dates[i] = new Date(dates[i]);
-              console.log('new: ' + dates[i]);
+              //console.log('new: ' + dates[i]);
             }
 
             $scope.chartdata = new ChartResult(dates, data[resultFieldName].counts);
@@ -44,9 +44,6 @@
         },
         $scope.getDayDetailsData = function(daySelected, chartId) {
           $scope.dataLoading = true;
-          console.log('chartidd: ' + chartId);
-          console.log('dturl : ' + getDetailUrl(chartId));
-          //$scope.detailUrl = chartId == wifiDataId ? wifiDetaillUrl : btDetaillUrl;
           $scope.detailUrl = getDetailUrl(chartId);
 
           var date = daySelected.getDate();

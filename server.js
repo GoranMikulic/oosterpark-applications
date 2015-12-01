@@ -134,9 +134,16 @@ connect();
 
 
 var kismetMessages = {
+  /*BSSID: [
+    'bssid', 'type',
+    'llcpackets', 'datapackets', 'cryptpackets',
+    'manuf', 'channel', 'firsttime', 'lasttime',
+    'atype', 'rangeip', 'netmaskip',
+    'gatewayip'
+
+  ],*/
   CLIENT: [
-    'bssid', 'mac', 'type', 'firsttime', 'lasttime',
-    'manuf'
+    'bssid', 'mac', 'type', 'firsttime', 'lasttime'
   ]
 };
 
@@ -190,15 +197,16 @@ function onData(data) {
         messageType = matches[1];
         if (kismetMessages.hasOwnProperty(messageType)) {
           messageValues = matches[2].trim().split(' ');
-          //console.log(messageValues);
-          app.io.sockets.emit('kismessage', messageValues);
+
+          //app.io.sockets.emit('kismessage', messageValues);
           message = {};
           var index = 0;
           kismetMessages[messageType].forEach(function(fieldName) {
             message[fieldName] = messageValues[index];
             index++;
           });
-          app.io.sockets.emit(messageType, message);
+
+          app.io.sockets.emit('kismessage', message);
         }
       } catch (err) {
         console.log(err);

@@ -45,6 +45,19 @@
 
         <div ng-linechart ></div>
       </section>
+      <!-- About Section -->
+      <section id="correlations" class="container col-md-10 col-md-offset-1">
+        <div class="section-headline">
+          <h2 class="section-headline-text">Wifi-live-data</h2>
+        </div>
+
+        <div ng-controller="wifiSocketController" >
+          {{counter}}
+          <ul>
+              <li ng-repeat="device in devices">{{device}}</li>
+          </ul>
+        </div>
+      </section>
 
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -67,9 +80,14 @@
 
     <!-- node.js module file -->
     <script src="js/app.js" charset="utf-8"></script>
+
+    <!-- angular linechart -->
     <script src="js/linechart/directives/lineChartDirective.js" charset="utf-8"></script>
     <script src="js/linechart/controllers/chartsController.js" charset="utf-8"></script>
     <script src="js/linechart/services/chartsService.js" charset="utf-8"></script>
 
+    <!-- angular live wifi data -->
+    <script src="js/wifitracker/controllers/wifiSocketController.js" charset="utf-8"></script>
+    <script src="js/wifitracker/services/wifiSocketService.js" charset="utf-8"></script>
   </body>
 </html>
