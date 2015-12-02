@@ -5,7 +5,8 @@
   // this can be done by calling angular.module without the []-brackets
 
   angular.module('chartsApp').factory('socketConnection', function($rootScope) {
-    var socket = io.connect('http://localhost:8080/');
+
+    var socket = io.connect('http://192.168.0.103:8080/');
     return {
       on: function(eventName, callback) {
         socket.on(eventName, function() {

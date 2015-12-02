@@ -5,7 +5,7 @@ var fs = require('fs');
 var mysql = require('mysql');
 var routes = require('./modules/routes.js');
 var http = require('http');
-var kismet = require('./modules/kismet/kismet.js');
+var kismet = require('./modules/kismetsocket/kismet.js');
 
 /**
  *  Define the sample application.

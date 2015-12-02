@@ -1,13 +1,15 @@
 var net = require('net');
 var config = require('./config.js');
 
-//var devices = new Array();
+var devices = new Array();
 
 module.exports = {
   connect: function(io) {
     connect();
 
-    //setInterval(function(){console.log(devices.length);}, 5000);
+    setInterval(function() {
+      console.log(devices.length);
+    }, 60000);
 
     io.on('connection', function(socket) {
       console.log("Web client connected");
@@ -28,7 +30,7 @@ module.exports = {
 
       ],*/
       CLIENT: [
-        'bssid', 'mac', 'type', 'firsttime', 'lasttime','signal_dbm'
+        'bssid', 'mac', 'type', 'firsttime', 'lasttime', 'signal_dbm'
       ]
     };
 
@@ -93,11 +95,8 @@ module.exports = {
                 index++;
               });
 
-              //devices.push(message);
-              //devices.pushIfNotExist(message, function(e) {
-              //    return e.bssid === message.bssid && e.bssid === message.bssid;
-              //});
               io.sockets.emit('kismessage', message);
+              checkAndAdd(message);
             }
           } catch (err) {
             console.log(err);
@@ -135,22 +134,14 @@ module.exports = {
       }, 5000);
     }
 
-    // check if an element exists in array using a comparer function
-    // comparer : function(currentElement)
-    Array.prototype.inArray = function(comparer) {
-      for (var i = 0; i < this.length; i++) {
-        if (comparer(this[i])) return true;
+    function checkAndAdd(device) {
+      var found = devices.some(function(el) {
+        return el.device.bssid === device.bssid;
+      });
+      if (!found) {
+        devices.push({device});
       }
-      return false;
-    };
-
-    // adds an element to the array if it does not already exist using a comparer
-    // function
-    Array.prototype.pushIfNotExist = function(element, comparer) {
-      if (!this.inArray(comparer)) {
-        this.push(element);
-      }
-    };
+    }
 
   }
 }
