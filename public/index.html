@@ -50,12 +50,20 @@
         <div class="section-headline">
           <h2 class="section-headline-text">Wifi-live-data</h2>
         </div>
-
-        <div ng-controller="wifiSocketController" >
-          {{counter}}
-          <ul>
-              <li ng-repeat="device in devices">{{device}}</li>
-          </ul>
+        <div ng-controller="wifiSocketController">
+          Total amount: {{counter}}
+          <table class="table table-condensed" >
+            <tr>
+                <th>mac Address</th>
+                <th>first time seen</th>
+                <th>last time seen</th>
+            <tr>
+            <tr ng-repeat="device in devices">
+              <td>{{device.mac}}</td>
+              <td>{{device.firsttime}}</td>
+              <td>{{device.lasttime}}</td>
+            </tr>
+          </table>
         </div>
       </section>
 
