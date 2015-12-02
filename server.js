@@ -114,11 +114,8 @@ var App = function() {
     self.httpServer.listen(self.port, function() {
       console.log("server listening on port", self.port);
     });
+    //Setup listener for socket on port
     self.io = require('socket.io').listen(app.httpServer);
-
-    //self.io.use(sharedsession(session));
-
-
   };
 
 };

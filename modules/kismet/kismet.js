@@ -1,9 +1,13 @@
 var net = require('net');
 var config = require('./config.js');
 
+//var devices = new Array();
+
 module.exports = {
   connect: function(io) {
     connect();
+
+    //setInterval(function(){console.log(devices.length);}, 5000);
 
     io.on('connection', function(socket) {
       console.log("Web client connected");
@@ -20,12 +24,11 @@ module.exports = {
         'bssid', 'type',
         'llcpackets', 'datapackets', 'cryptpackets',
         'manuf', 'channel', 'firsttime', 'lasttime',
-        'atype', 'rangeip', 'netmaskip',
-        'gatewayip'
+        'atype'
 
       ],*/
       CLIENT: [
-        'bssid', 'mac', 'type', 'firsttime', 'lasttime'
+        'bssid', 'mac', 'type', 'firsttime', 'lasttime','signal_dbm'
       ]
     };
 
@@ -45,6 +48,7 @@ module.exports = {
       for (var messageType in kismetMessages) {
         if (kismetMessages.hasOwnProperty(messageType)) {
           configString += '!' + index + ' ENABLE ' + messageType + ' ' + kismetMessages[messageType].join() + '\r\n';
+          console.log(configString);
           index++;
         }
       }
@@ -82,7 +86,6 @@ module.exports = {
             if (kismetMessages.hasOwnProperty(messageType)) {
               messageValues = matches[2].trim().split(' ');
 
-              //app.io.sockets.emit('kismessage', messageValues);
               message = {};
               var index = 0;
               kismetMessages[messageType].forEach(function(fieldName) {
@@ -90,6 +93,10 @@ module.exports = {
                 index++;
               });
 
+              //devices.push(message);
+              //devices.pushIfNotExist(message, function(e) {
+              //    return e.bssid === message.bssid && e.bssid === message.bssid;
+              //});
               io.sockets.emit('kismessage', message);
             }
           } catch (err) {
@@ -127,6 +134,23 @@ module.exports = {
         connect();
       }, 5000);
     }
+
+    // check if an element exists in array using a comparer function
+    // comparer : function(currentElement)
+    Array.prototype.inArray = function(comparer) {
+      for (var i = 0; i < this.length; i++) {
+        if (comparer(this[i])) return true;
+      }
+      return false;
+    };
+
+    // adds an element to the array if it does not already exist using a comparer
+    // function
+    Array.prototype.pushIfNotExist = function(element, comparer) {
+      if (!this.inArray(comparer)) {
+        this.push(element);
+      }
+    };
 
   }
 }

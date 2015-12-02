@@ -14,8 +14,12 @@
         $scope.recievedTroughSocket = data.msg;
       });
       socketConnection.on("kismessage", function(data) {
-        //console.log("data: " + JSON.stringify(data));
+        console.log("data: " + JSON.stringify(data));
         $scope.recievedTroughSocket = data.msg;
+
+        data.firsttime = new Date(data.firsttime * 1000);
+        
+        data.lasttime = new Date(data.lasttime * 1000);
 
         $scope.devices.pushIfNotExist(data, function(e) {
             return e.bssid === data.bssid && e.bssid === data.bssid;

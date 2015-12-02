@@ -28,8 +28,8 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse navbar-right">
           <ul class="nav navbar-nav">
-            <!--<li><a href="#correlations">Patterns</a></li>
-            <li><a href="#crowdedness">Crowdedness</a></li>-->
+            <li><a href="#correlations">Compare data</a></li>
+            <li><a href="#livedata">Live Wifi-Data</a></li>
           </ul>
         </div>
       </div>
@@ -46,7 +46,7 @@
         <div ng-linechart ></div>
       </section>
       <!-- About Section -->
-      <section id="correlations" class="container col-md-10 col-md-offset-1">
+      <section id="livedata" class="container col-md-10 col-md-offset-1">
         <div class="section-headline">
           <h2 class="section-headline-text">Wifi-live-data</h2>
         </div>
@@ -57,11 +57,13 @@
                 <th>mac Address</th>
                 <th>first time seen</th>
                 <th>last time seen</th>
+                <th>signal strength</th>
             <tr>
             <tr ng-repeat="device in devices">
               <td>{{device.mac}}</td>
               <td>{{device.firsttime}}</td>
               <td>{{device.lasttime}}</td>
+              <td>{{device.signal_dbm}}</td>
             </tr>
           </table>
         </div>

@@ -75,6 +75,7 @@ module.exports = {
    * Compares true if the day matches
    */
   isDayEqual: function(deviceCaptureTime, timeToCompare) {
+
     //Set time to 00:00:00 to compare days only
     deviceCaptureTime.setHours(0, 0, 0, 0);
     timeToCompare.setHours(0, 0, 0, 0);
@@ -107,7 +108,6 @@ module.exports = {
  */
 var getDevicesCount = function(time, devicesArray, datePropertyName, comparator) {
   var counter = 0;
-
   for (var device in devicesArray) {
     var compareResult = comparator(devicesArray[device][datePropertyName], time);
     if (compareResult) {
