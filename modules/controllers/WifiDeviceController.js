@@ -73,5 +73,15 @@ module.exports = {
     } else {
       Utils.returnResult(res, {});
     }
+  },
+  saveWifiDevices: function(devices) {
+
+    devices.forEach(function(device){
+      WifiDevice.insertDevice(device.mac, device.firsttime, device.lasttime, device.signal_dbm);
+    });
+      //console.log(Object.getOwnPropertyNames(device));
+      //WifiDevice.insertDevice(device.mac, device.firsttime, device.lasttime, device.signal_dbm);
+
   }
+
 }

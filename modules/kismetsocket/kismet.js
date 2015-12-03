@@ -1,15 +1,25 @@
 var net = require('net');
 var config = require('./config.js');
-
-var devices = new Array();
+var WifiDeviceController = require('../controllers/WifiDeviceController');
 
 module.exports = {
   connect: function(io) {
     connect();
 
+    var devices = new Array();
+
+    setInterval(function() {
+      WifiDeviceController.saveWifiDevices(devices);
+      devices = new Array();
+    }, 600000);
+
     setInterval(function() {
       console.log(devices.length);
-    }, 60000);
+    }, 1000);
+
+    setTimeout(function() {
+      devices = new Array();
+    }, 600);
 
     io.on('connection', function(socket) {
       console.log("Web client connected");
@@ -134,14 +144,25 @@ module.exports = {
       }, 5000);
     }
 
-    function checkAndAdd(device) {
+    function checkAndAdd(message) {
+      var fd = new Date(message['firsttime'] * 1000);
+      var ld = new Date(message['lasttime'] * 1000);
+
+      var device = new WifiDevice(message['bssid'], message['mac'], fd, ld, message['signal_dbm']);
       var found = devices.some(function(el) {
-        return el.device.bssid === device.bssid;
+        return el.mac === device.mac;
       });
       if (!found) {
-        devices.push({device});
+        devices.push(device);
       }
     }
 
+    function WifiDevice(bssid, mac, firsttime, lasttime, signal_dbm) {
+      this.bssid = bssid;
+      this.mac = mac;
+      this.firsttime = firsttime;
+      this.lasttime = lasttime;
+      this.signal_dbm = signal_dbm;
+    }
   }
 }
