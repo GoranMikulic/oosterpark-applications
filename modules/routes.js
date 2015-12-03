@@ -1,6 +1,6 @@
 var express = require('express');
+var serverconfig = require('./utils/serverconfig');
 var router = express.Router();
-
 
 var WifiDeviceService = require('./controllers/WifiDeviceController');
 var BluetoothDeviceController = require('./controllers/BluetoothDeviceController');
@@ -28,5 +28,7 @@ router.route('/btdevicescount').get(BluetoothDeviceController.getDevicesCountInP
 //Route to return count of a particular day
 router.route('/btdevicescountdetail').get(BluetoothDeviceController.getDevicesCountForDay);
 
+//Returns server data, needed to establish socket connection
+router.route('/serverconnection').get(serverconfig.getConfigJsonResponse);
 
 module.exports = router;
