@@ -14,11 +14,10 @@
         $scope.recievedTroughSocket = data.msg;
       });
       socketConnection.on("kismessage", function(data) {
-        console.log("data: " + JSON.stringify(data));
+        //console.log("data: " + JSON.stringify(data));
         $scope.recievedTroughSocket = data.msg;
 
         data.firsttime = new Date(data.firsttime * 1000);
-
         data.lasttime = new Date(data.lasttime * 1000);
 
         // $scope.devices.pushIfNotExist(data, function(e) {
@@ -36,6 +35,19 @@
       socketConnection.on("kismetServerConnectionStatus", function(data) {
         console.log(data);
       });
+
+      setInterval(function() {
+
+        for (var i = $scope.devices.length - 1; i >= 0; i--) {
+            var dif = (new Date() - $scope.devices[i].lasttime) / 1000;
+
+            console.log(dif);
+            if (dif > 10) {
+              $scope.devices.splice(i, 1);
+            }
+        }
+
+      }, 2000);
 
       function checkAndAdd(device) {
         var found = $scope.devices.some(function(el) {
