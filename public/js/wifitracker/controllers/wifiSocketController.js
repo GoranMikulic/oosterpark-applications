@@ -41,7 +41,6 @@
         for (var i = $scope.devices.length - 1; i >= 0; i--) {
             var dif = (new Date() - $scope.devices[i].lasttime) / 1000;
 
-            console.log(dif);
             if (dif > 10) {
               $scope.devices.splice(i, 1);
             }

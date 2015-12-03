@@ -61,3 +61,12 @@
 {"level":"info","message":"34","timestamp":"2015-12-03T13:44:49.053Z"}
 {"level":"info","message":"34","timestamp":"2015-12-03T13:44:50.060Z"}
 {"level":"info","message":"Thu Dec 03 2015 14:44:50 GMT+0100 (CET): Received SIGINT - terminating sample app ...","timestamp":"2015-12-03T13:44:50.706Z"}
+{"level":"info","message":"server listening on port 8080","timestamp":"2015-12-03T14:18:26.689Z"}
+{"level":"info","message":"Kismet Server socket connected","timestamp":"2015-12-03T14:18:26.697Z"}
+{"level":"info","message":"!0 ENABLE CLIENT bssid,mac,type,firsttime,lasttime,signal_dbm\r\n","timestamp":"2015-12-03T14:18:26.700Z"}
+{"level":"info","message":"Web client connected","timestamp":"2015-12-03T14:18:28.130Z"}
+{"level":"info","message":"Web client connected","timestamp":"2015-12-03T14:18:28.225Z"}
+{"level":"info","message":"Web client connected","timestamp":"2015-12-03T14:18:30.393Z"}
+{"level":"info","message":"Web client connected","timestamp":"2015-12-03T14:18:31.351Z"}
+{"level":"info","message":"Web client disconnected","timestamp":"2015-12-03T14:19:03.576Z"}
+{"level":"info","message":"Web client connected","timestamp":"2015-12-03T14:19:04.213Z"}
