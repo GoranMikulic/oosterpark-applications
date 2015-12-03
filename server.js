@@ -6,6 +6,7 @@ var mysql = require('mysql');
 var routes = require('./modules/routes.js');
 var http = require('http');
 var kismet = require('./modules/kismetsocket/kismet.js');
+var serverconfig = require('./modules/utils/serverconfig.js');
 
 /**
  *  Define the sample application.
@@ -34,6 +35,8 @@ var App = function() {
       console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
       self.ipaddress = "127.0.0.1";
     };
+
+    serverconfig.setServerData(self.ipaddress, self.port);
   };
 
 
