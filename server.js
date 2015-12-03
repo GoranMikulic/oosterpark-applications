@@ -112,7 +112,7 @@ var App = function() {
     //});
 
     self.httpServer = http.Server(self.app);
-    self.httpServer.listen(self.port, function() {
+    self.httpServer.listen(self.port, self.ipaddress, function() {
       logger.info("server listening on port", self.port);
     });
     //Setup listener for socket on port
