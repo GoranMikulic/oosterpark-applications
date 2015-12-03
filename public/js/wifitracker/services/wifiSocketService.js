@@ -13,7 +13,8 @@
     }).success(function(data) {
       var ip = data.connection.ipaddress;
       var port = data.connection.port;
-
+      socket.disconnect();
+      socket = undefined;
       socket = io.connect('http://' + ip + ':' + port + '/', {'force new connection': true});
       console.log('port refreshed ' + ip + ':' + port);
     }).error(function(data, status) {
