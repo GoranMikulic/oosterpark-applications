@@ -1,7 +1,6 @@
 var net = require('net');
 var config = require('./config.js');
 var WifiDeviceController = require('../controllers/WifiDeviceController');
-var logger = require("../utils/logger");
 
 module.exports = {
   connect: function(io) {
@@ -19,12 +18,12 @@ module.exports = {
     }, 600);
 
     io.on('connection', function(socket) {
-      logger.info("Web client connected");
+      console.log("Web client connected");
       socket.emit('kismetServerConnectionStatus', {
         isConnected: isConnected
       });
       socket.on('disconnect', function() {
-        logger.info('Web client disconnected');
+        console.log('Web client disconnected');
       });
     });
 
@@ -47,7 +46,7 @@ module.exports = {
       kismetServerSocket;
 
     function onConnect() {
-      logger.info('Kismet Server socket connected');
+      console.log('Kismet Server socket connected');
 
       var index = 0,
         configString = '';
@@ -57,7 +56,7 @@ module.exports = {
       for (var messageType in kismetMessages) {
         if (kismetMessages.hasOwnProperty(messageType)) {
           configString += '!' + index + ' ENABLE ' + messageType + ' ' + kismetMessages[messageType].join() + '\r\n';
-          logger.info(configString);
+          console.log(configString);
           index++;
         }
       }
@@ -66,13 +65,13 @@ module.exports = {
 
 
     function onClose() {
-      logger.info('Kismet Server socket closed');
+      console.log('Kismet Server socket closed');
       setIsConnected(false);
       reconnect();
     }
 
     function onError(error) {
-      logger.info('Kismet Server socket error: ' + error.toString());
+      console.log('Kismet Server socket error: ' + error.toString());
     }
 
     function onData(data) {
@@ -86,7 +85,7 @@ module.exports = {
 
       leftOver = lines.pop();
       lines.forEach(function(line) {
-        //logger.info(line);
+        //console.log(line);
         matches = line.match(/\*([A-Z]+):(.*)/);
 
         if (matches !== null) {
@@ -106,7 +105,7 @@ module.exports = {
               checkAndAdd(message);
             }
           } catch (err) {
-            logger.info(err);
+            console.log(err);
           }
         } else {
           //io.sockets.emit('log', line);
@@ -134,9 +133,9 @@ module.exports = {
 
     function reconnect() {
       kismetServerSocket.destroy();
-      logger.info('Kismet Server socket: reconnecting in 5 seconds');
+      console.log('Kismet Server socket: reconnecting in 5 seconds');
       setTimeout(function() {
-        logger.info('Kismet Server socket: reconnecting');
+        console.log('Kismet Server socket: reconnecting');
         connect();
       }, 5000);
     }

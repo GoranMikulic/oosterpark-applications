@@ -61,8 +61,8 @@
             <tr>
             <tr ng-repeat="device in devices">
               <td>{{device.mac}}</td>
-              <td>{{device.firsttime.getHours()}}:{{device.firsttime.getMinutes()}} - {{device.firsttime.getDay()}}.{{device.firsttime.getMonth()+1}}.{{device.firsttime.getFullYear()}}</td>
-              <td>{{device.lasttime.getHours()}}:{{device.lasttime.getMinutes()}} - {{device.lasttime.getDay()}}.{{device.lasttime.getMonth()+1}}.{{device.lasttime.getFullYear()}}</td>
+              <td>{{device.firsttime.getHours()}}:{{device.firsttime.getMinutes()}}:{{device.firsttime.getSeconds()}} - {{device.firsttime.getDay()}}.{{device.firsttime.getMonth()+1}}.{{device.firsttime.getFullYear()}}</td>
+              <td>{{device.lasttime.getHours()}}:{{device.lasttime.getMinutes()}}:{{device.lasttime.getSeconds()}} - {{device.lasttime.getDay()}}.{{device.lasttime.getMonth()+1}}.{{device.lasttime.getFullYear()}}</td>
               <td>{{device.signal_dbm}}</td>
             </tr>
           </table>
