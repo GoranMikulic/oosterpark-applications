@@ -14,11 +14,6 @@ module.exports = {
       devices = new Array();
     }, 600000);
 
-    setInterval(function() {
-      logger.info(devices.length);
-
-    }, 1000);
-
     setTimeout(function() {
       devices = new Array();
     }, 600);
