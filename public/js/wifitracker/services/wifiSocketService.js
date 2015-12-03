@@ -14,7 +14,7 @@
       var ip = data.connection.ipaddress;
       var port = data.connection.port;
 
-      socket = io.connect('http://' + ip + ':' + port + '/', {'forceNew': true});
+      socket = io.connect('http://' + ip + ':' + port + '/', {'force new connection': true});
       console.log('port refreshed ' + ip + ':' + port);
     }).error(function(data, status) {
       console.log("DATA" + data + " " + status);
