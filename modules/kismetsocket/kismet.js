@@ -1,6 +1,7 @@
 var net = require('net');
 var config = require('./config.js');
 var WifiDeviceController = require('../controllers/WifiDeviceController');
+var logger = require("../utils/logger");
 
 module.exports = {
   connect: function(io) {
@@ -14,7 +15,8 @@ module.exports = {
     }, 600000);
 
     setInterval(function() {
-      console.log(devices.length);
+      logger.info(devices.length);
+
     }, 1000);
 
     setTimeout(function() {
@@ -22,12 +24,12 @@ module.exports = {
     }, 600);
 
     io.on('connection', function(socket) {
-      console.log("Web client connected");
+      logger.info("Web client connected");
       socket.emit('kismetServerConnectionStatus', {
         isConnected: isConnected
       });
       socket.on('disconnect', function() {
-        console.log('Web client disconnected');
+        logger.info('Web client disconnected');
       });
     });
 
@@ -50,7 +52,7 @@ module.exports = {
       kismetServerSocket;
 
     function onConnect() {
-      console.log('Kismet Server socket connected');
+      logger.info('Kismet Server socket connected');
 
       var index = 0,
         configString = '';
@@ -60,7 +62,7 @@ module.exports = {
       for (var messageType in kismetMessages) {
         if (kismetMessages.hasOwnProperty(messageType)) {
           configString += '!' + index + ' ENABLE ' + messageType + ' ' + kismetMessages[messageType].join() + '\r\n';
-          console.log(configString);
+          logger.info(configString);
           index++;
         }
       }
@@ -69,13 +71,13 @@ module.exports = {
 
 
     function onClose() {
-      console.log('Kismet Server socket closed');
+      logger.info('Kismet Server socket closed');
       setIsConnected(false);
       reconnect();
     }
 
     function onError(error) {
-      console.log('Kismet Server socket error: ' + error.toString());
+      logger.info('Kismet Server socket error: ' + error.toString());
     }
 
     function onData(data) {
@@ -89,7 +91,7 @@ module.exports = {
 
       leftOver = lines.pop();
       lines.forEach(function(line) {
-        //console.log(line);
+        //logger.info(line);
         matches = line.match(/\*([A-Z]+):(.*)/);
 
         if (matches !== null) {
@@ -109,7 +111,7 @@ module.exports = {
               checkAndAdd(message);
             }
           } catch (err) {
-            console.log(err);
+            logger.info(err);
           }
         } else {
           //io.sockets.emit('log', line);
@@ -137,9 +139,9 @@ module.exports = {
 
     function reconnect() {
       kismetServerSocket.destroy();
-      console.log('Kismet Server socket: reconnecting in 5 seconds');
+      logger.info('Kismet Server socket: reconnecting in 5 seconds');
       setTimeout(function() {
-        console.log('Kismet Server socket: reconnecting');
+        logger.info('Kismet Server socket: reconnecting');
         connect();
       }, 5000);
     }

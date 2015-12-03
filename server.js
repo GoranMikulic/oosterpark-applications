@@ -6,6 +6,7 @@ var mysql = require('mysql');
 var routes = require('./modules/routes.js');
 var http = require('http');
 var kismet = require('./modules/kismetsocket/kismet.js');
+var logger = require("./modules/utils/logger");
 
 /**
  *  Define the sample application.
@@ -45,11 +46,11 @@ var App = function() {
    */
   self.terminator = function(sig) {
     if (typeof sig === "string") {
-      console.log('%s: Received %s - terminating sample app ...',
+      logger.info('%s: Received %s - terminating sample app ...',
         Date(Date.now()), sig);
       process.exit(1);
     }
-    console.log('%s: Node server stopped.', Date(Date.now()));
+    logger.info('%s: Node server stopped.', Date(Date.now()));
   };
 
 
@@ -106,13 +107,13 @@ var App = function() {
 
     //  Start the app on the specific interface (and port).
     //self.app.listen(self.port, self.ipaddress, function() {
-    //    console.log('%s: Node server started on %s:%d ...',
+    //    logger.info('%s: Node server started on %s:%d ...',
     //                Date(Date.now() ), self.ipaddress, self.port);
     //});
 
     self.httpServer = http.Server(self.app);
     self.httpServer.listen(self.port, function() {
-      console.log("server listening on port", self.port);
+      logger.info("server listening on port", self.port);
     });
     //Setup listener for socket on port
     self.io = require('socket.io').listen(app.httpServer);
