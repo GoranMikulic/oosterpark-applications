@@ -1,10 +1,11 @@
 (function() {
-  // using the function form of use-strict...
   "use strict";
-  // accessing the module in another.
-  // this can be done by calling angular.module without the []-brackets
-
+  /**
+  * Handling socket connection, providing methods for listening and emitting data
+  */
   angular.module('chartsApp').factory('socketConnection', function($rootScope, $http) {
+
+    //socket conncetion - TODO: make easier it configurable
     var socket = io.connect('http://127.0.0.1:8080/');
 
     return {

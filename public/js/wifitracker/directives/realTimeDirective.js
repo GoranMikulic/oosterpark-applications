@@ -2,7 +2,7 @@
     /**
      * Custom directive for linecharts
      */
-    angular.module('chartsApp').directive('ngRealtime', function($compile) {
+    angular.module('chartsApp').directive('ngRealtime', function($compile, ChartResult) {
 
         return {
           restrict: 'A',
@@ -12,28 +12,21 @@
           },
           controller: 'wifiSocketController',
           link: function(scope, element, iAttrs, ctrl) {
-            var date = new Date();
 
-            date ; //# => Fri Apr 01 2011 11:14:50 GMT+0200 (CEST)
-            date.setDate(date.getDate() - 1);
-            date ; //# => Thu Mar 31 2011 11:14:50 GMT+0200 (CEST)
-
-
+            //init chart data, TODO: Should this be in the controller?
             var dates = ['x'];
             var counts = ['count of devices'];
+            scope.chartdata = ChartResult.createNew(dates, counts);
 
-            scope.chartdata = new ChartResult(dates, counts);
-            console.log("linked");
-
+            //creating line chart
             scope.lineChart = getLineChart(scope.chartdata);
 
+            //Listening for changes in chartdate to update linechart
             scope.$watch('chartdata', function(newVal) {
-              // the `$watch` function will fire even if the
-              // dates property is undefined, so we'll
-              // check for it
               console.log('chartdata changed' + Object.getOwnPropertyNames(newVal));
               if (newVal) {
                 if (scope.lineChart) {
+                  //load new chartdata into chart
                   scope.lineChart.load({
                     columns: [
                       scope.chartdata.dates,
@@ -43,9 +36,7 @@
                 } else {
                   scope.lineChart = getLineChart(chartdata);
                 }
-
               }
-
             }, true);
 
         }
@@ -55,6 +46,10 @@
 
     });
 
+    /**
+    * Creates line chart for live devices
+    * TODO: Create common service
+    */
     function getLineChart(chartdata) {
       return c3.generate({
         bindto: '#rtchart',
@@ -91,8 +86,5 @@
 
 
     }
-    function ChartResult(dates, counts) {
-      this.dates = dates;
-      this.counts = counts;
-    }
+
 })();

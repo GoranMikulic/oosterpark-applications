@@ -4,7 +4,7 @@
   // accessing the module in another.
   // this can be done by calling angular.module without the []-brackets
   angular.module('chartsApp')
-    .controller('lineChartController', ['$scope', '$http', '$element', 'getDetailUrl', 'updateFormatter', function($scope, $http, $element, getDetailUrl, updateFormatter) {
+    .controller('lineChartController', function($scope, $http, $element, getDetailUrl, updateFormatter, ChartResult) {
       var resultFieldName = "Devices";
 
       $scope.getChartData = function(startdate, enddate, url) {
@@ -23,7 +23,7 @@
               //console.log('new: ' + dates[i]);
             }
 
-            $scope.chartdata = new ChartResult(dates, data[resultFieldName].counts);
+            $scope.chartdata = ChartResult.createNew(dates, data[resultFieldName].counts);
             $scope.dataLoading = false;
           });
         },
@@ -63,17 +63,10 @@
             for (var i = 1; i < dates.length; i++) {
               dates[i] = new Date(dates[i]);
             }
-            $scope.chartdata = new ChartResult(dates, data[resultFieldName].counts);
+            $scope.chartdata = ChartResult.createNew(dates, data[resultFieldName].counts);
             updateFormatter(true);
             $scope.dataLoading = false;
           });
         }
-    }]);
-
-  function ChartResult(dates, counts) {
-    this.dates = dates;
-    this.counts = counts;
-  }
-
-
+    });
 })();
