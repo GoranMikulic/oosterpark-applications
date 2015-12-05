@@ -11,7 +11,7 @@ module.exports = {
     setInterval(function() {
       WifiDeviceController.saveWifiDevices(devices);
       devices = new Array();
-    }, 600000);
+    }, 120000);
 
     setTimeout(function() {
       devices = new Array();

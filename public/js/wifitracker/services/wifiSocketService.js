@@ -7,20 +7,6 @@
   angular.module('chartsApp').factory('socketConnection', function($rootScope, $http) {
     var socket = io.connect('http://127.0.0.1:8080/');
 
-    $http({
-      method: 'GET',
-      url: '/serverconnection'
-    }).success(function(data) {
-      var ip = data.connection.ipaddress;
-      var port = data.connection.port;
-      socket.disconnect();
-      socket = undefined;
-      socket = io.connect('http://' + ip + ':' + port + '/', {'force new connection': true});
-      console.log('port refreshed ' + ip + ':' + port);
-    }).error(function(data, status) {
-      console.log("DATA" + data + " " + status);
-    });
-
     return {
       on: function(eventName, callback) {
         socket.on(eventName, function() {
