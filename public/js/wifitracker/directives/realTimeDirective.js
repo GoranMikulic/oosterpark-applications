@@ -19,8 +19,8 @@
             date ; //# => Thu Mar 31 2011 11:14:50 GMT+0200 (CEST)
 
 
-            var dates = ['x', new Date()];
-            var counts = ['count of devices', 0];
+            var dates = ['x'];
+            var counts = ['count of devices'];
 
             scope.chartdata = new ChartResult(dates, counts);
             console.log("linked");
