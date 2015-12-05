@@ -50,23 +50,7 @@
         <div class="section-headline">
           <h2 class="section-headline-text">Wifi-live-data</h2>
         </div>
-        <div ng-controller="wifiSocketController">
-          Total amount: {{counter}}
-          <table class="table table-condensed" >
-            <tr>
-                <th>Mac Address</th>
-                <th>First Time Seen</th>
-                <th>Last Time Seen</th>
-                <th>Signal Strength</th>
-            <tr>
-            <tr ng-repeat="device in devices">
-              <td>{{device.mac}}</td>
-              <td>{{device.firsttime.getHours()}}:{{device.firsttime.getMinutes()}}:{{device.firsttime.getSeconds()}} - {{device.firsttime.getDay()}}.{{device.firsttime.getMonth()+1}}.{{device.firsttime.getFullYear()}}</td>
-              <td>{{device.lasttime.getHours()}}:{{device.lasttime.getMinutes()}}:{{device.lasttime.getSeconds()}} - {{device.lasttime.getDay()}}.{{device.lasttime.getMonth()+1}}.{{device.lasttime.getFullYear()}}</td>
-              <td>{{device.signal_dbm}}</td>
-            </tr>
-          </table>
-        </div>
+        <div ng-realtime></div>
       </section>
 
     </div>
@@ -97,6 +81,7 @@
     <script src="js/linechart/services/chartsService.js" charset="utf-8"></script>
 
     <!-- angular live wifi data -->
+    <script src="js/wifitracker/directives/realTimeDirective.js" charset="utf-8"></script>
     <script src="js/wifitracker/controllers/wifiSocketController.js" charset="utf-8"></script>
     <script src="js/wifitracker/services/wifiSocketService.js" charset="utf-8"></script>
   </body>

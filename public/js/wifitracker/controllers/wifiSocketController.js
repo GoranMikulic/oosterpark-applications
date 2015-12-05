@@ -3,29 +3,22 @@
   "use strict";
   // accessing the module in another.
   // this can be done by calling angular.module without the []-brackets
+
+  var tempCounter = 0;
   angular.module('chartsApp')
     .controller('wifiSocketController', ['$scope', 'socketConnection', function($scope, socketConnection) {
 
       $scope.devices = new Array();
-      $scope.counter = 0;
 
       socketConnection.on("kismetServerConnectionStatus", function(data) {
         console.log("connection: " + JSON.stringify(data));
         $scope.recievedTroughSocket = data.msg;
       });
       socketConnection.on("kismessage", function(data) {
-        //console.log("data: " + JSON.stringify(data));
         $scope.recievedTroughSocket = data.msg;
-
         data.firsttime = new Date(data.firsttime * 1000);
         data.lasttime = new Date(data.lasttime * 1000);
-
-        // $scope.devices.pushIfNotExist(data, function(e) {
-        //     return e.bssid === data.bssid && e.bssid === data.bssid;
-        // });
         checkAndAdd(data);
-
-        //$scope.devices.push(JSON.stringify(data));
       });
 
       $scope.sendWithSocket = function(msg) {
@@ -37,7 +30,16 @@
       });
 
       setInterval(function() {
+        removeLostDevices();
+        addToChart($scope.devices);
+      }, 2000);
 
+      function addToChart(devices){
+        $scope.chartdata.dates.push(new Date());
+        $scope.chartdata.counts.push(devices.length);
+      }
+
+      function removeLostDevices() {
         for (var i = $scope.devices.length - 1; i >= 0; i--) {
             var dif = (new Date() - $scope.devices[i].lasttime) / 1000;
 
@@ -45,8 +47,7 @@
               $scope.devices.splice(i, 1);
             }
         }
-
-      }, 2000);
+      }
 
       function checkAndAdd(device) {
         var found = $scope.devices.some(function(el) {
@@ -59,5 +60,9 @@
       }
 
     }]);
+    function ChartResult(dates, counts) {
+      this.dates = dates;
+      this.counts = counts;
+    }
 
 })();
