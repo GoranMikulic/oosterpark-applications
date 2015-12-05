@@ -1,8 +1,6 @@
 (function() {
-  // using the function form of use-strict...
   "use strict";
-  // accessing the module in another.
-  // this can be done by calling angular.module without the []-brackets
+
 
   angular.module('chartsApp').factory('dataSetFactory', function() {
     function DataSource(url, detailUrl, dataId) {
@@ -57,7 +55,7 @@
   /**
   * Returns a time series chart
   */
-  angular.module('chartsApp').factory('timeSeriesGraph', function(updateFormatter) {
+  angular.module('chartsApp').factory('timeSeriesGraph', function(^) {
     return function(dates, counts, uniqueId, callback) {
       updateFormatter();
 

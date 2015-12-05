@@ -1,6 +1,8 @@
 (function() {
   "use strict";
-
+  /**
+  * Provides model for a time-series-chart
+  */
   angular.module('chartsApp').factory('ChartResult', function() {
     function ChartResult(dates, counts) {
       this.dates = dates;

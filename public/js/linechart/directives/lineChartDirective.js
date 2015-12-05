@@ -2,7 +2,7 @@
   /**
    * Custom directive for linecharts
    */
-  angular.module('chartsApp').directive('ngLinechart', ['$compile', 'dataSetFactory', 'updateFormatter', 'timeSeriesGraph', function($compile, dataSetFactory, updateFormatter, timeSeriesGraph) {
+  angular.module('chartsApp').directive('ngLinechart', function($compile, dataSetFactory, updateFormatter, timeSeriesGraph) {
     var uniqueId = 1;
 
     return {
@@ -82,6 +82,6 @@
           }
       }
     }
-  }]);
+  });
 
 })();
