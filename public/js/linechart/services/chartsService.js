@@ -55,7 +55,7 @@
   /**
   * Returns a time series chart
   */
-  angular.module('chartsApp').factory('timeSeriesGraph', function(^) {
+  angular.module('chartsApp').factory('timeSeriesGraph', function(updateFormatter) {
     return function(dates, counts, uniqueId, callback) {
       updateFormatter();
 
