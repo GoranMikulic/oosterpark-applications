@@ -1,7 +1,7 @@
 (function() {
   "use strict";
 
-  angular.module('chartsApp')
+  angular.module('dataAnalizingApp')
     .controller('lineChartController', function($scope, $http, $element, getDetailUrl, updateFormatter, ChartResult) {
       var resultFieldName = "Devices";
 

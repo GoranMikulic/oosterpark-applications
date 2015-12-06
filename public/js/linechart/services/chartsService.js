@@ -2,7 +2,7 @@
   "use strict";
 
 
-  angular.module('chartsApp').factory('dataSetFactory', function() {
+  angular.module('dataAnalizingApp').factory('dataSetFactory', function() {
     function DataSource(url, detailUrl, dataId) {
       this.url = url;
       this.detailUrl = detailUrl;
@@ -25,7 +25,7 @@
     }
   });
 
-  angular.module('chartsApp').factory('getDetailUrl', function(dataSetFactory) {
+  angular.module('dataAnalizingApp').factory('getDetailUrl', function(dataSetFactory) {
     return function(chartId) {
 
       for (var i = 0; i < dataSetFactory.datasets.length; i++) {
@@ -46,7 +46,7 @@
   /**
    * Formatter has to be changed in detail view to show hours instead of dates
    */
-  angular.module('chartsApp').factory('updateFormatter', function() {
+  angular.module('dataAnalizingApp').factory('updateFormatter', function() {
     return function(days) {
       formatter = d3.time.format(days ? '%H' : '%d.%m.%Y');
     }
@@ -55,7 +55,7 @@
   /**
   * Returns a time series chart
   */
-  angular.module('chartsApp').factory('timeSeriesGraph', function(updateFormatter) {
+  angular.module('dataAnalizingApp').factory('timeSeriesGraph', function(updateFormatter) {
     return function(dates, counts, uniqueId, callback) {
       updateFormatter();
 

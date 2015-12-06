@@ -2,7 +2,7 @@
     /**
      * Custom directive for linecharts
      */
-    angular.module('chartsApp').directive('ngRealtime', function($compile, ChartResult) {
+    angular.module('dataAnalizingApp').directive('ngRealtime', function($compile, ChartResult, LiveChart) {
 
         return {
           restrict: 'A',
@@ -12,14 +12,12 @@
           },
           controller: 'wifiSocketController',
           link: function(scope, element, iAttrs, ctrl) {
-
             //init chart data, TODO: Should this be in the controller?
             var dates = ['x'];
             var counts = ['count of devices'];
             scope.chartdata = ChartResult.createNew(dates, counts);
-
             //creating line chart
-            scope.lineChart = getLineChart(scope.chartdata);
+            scope.lineChart = LiveChart.createNew(scope.chartdata);
 
             //Listening for changes in chartdate to update linechart
             scope.$watch('chartdata', function(newVal) {
@@ -34,7 +32,7 @@
                     ]
                   });
                 } else {
-                  scope.lineChart = getLineChart(chartdata);
+                  scope.lineChart = LiveChart.createNew(chartdata);
                 }
               }
             }, true);
@@ -46,45 +44,6 @@
 
     });
 
-    /**
-    * Creates line chart for live devices
-    * TODO: Create common service
-    */
-    function getLineChart(chartdata) {
-      return c3.generate({
-        bindto: '#rtchart',
-        data: {
-          x: 'x',
-          onclick: function(e) {
-            //console.log('fired with: ' + e.x + e.id);
-            callback(e.x, e.id);
-          },
-          columns: [
-            chartdata.dates,
-            chartdata.counts
-          ]
-        },
-        axis: {
-          x: {
-            type: 'timeseries',
-            tick: {
-              format: d3.time.format('%H:%M:%S')
-            }
-          },
 
-        },
-        legend: {
-          position: 'inset',
-          inset: {
-            anchor: 'top-right'
-          }
-        },
-        zoom: {
-          enabled: true
-        }
-      });
-
-
-    }
 
 })();

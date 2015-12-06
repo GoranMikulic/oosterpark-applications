@@ -6,7 +6,7 @@
    * Controller for realtime wifi devices tracking
    * Listens to scockets, handles devices list and updates chart data
    */
-  angular.module('chartsApp')
+  angular.module('dataAnalizingApp')
     .controller('wifiSocketController', function($scope, socketConnection) {
 
       $scope.devices = new Array();
@@ -33,7 +33,18 @@
       setInterval(function() {
         addToChart($scope.devices);
         removeLostDevices();
+        preventOverload();
       }, 2000);
+
+      /**
+      * Removes first data points in chart to prevent overload in browser
+      */
+      function preventOverload() {
+        if($scope.chartdata.dates.length > 50) {
+          $scope.chartdata.dates.splice(1, 1);
+          $scope.chartdata.counts.splice(1, 1);
+        }
+      }
 
       /**
        * Pushes current array of devices to the chart data

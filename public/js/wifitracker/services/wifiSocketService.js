@@ -3,7 +3,7 @@
   /**
   * Handling socket connection, providing methods for listening and emitting data
   */
-  angular.module('chartsApp').factory('socketConnection', function($rootScope, $http) {
+  angular.module('dataAnalizingApp').factory('socketConnection', function($rootScope, $http) {
 
     //socket conncetion - TODO: make easier it configurable
     var socket = io.connect('http://127.0.0.1:8080/');

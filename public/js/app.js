@@ -1,5 +1,5 @@
 (function() {
 
-  angular.module('chartsApp', ['btford.socket-io']);
-  
+  angular.module('dataAnalizingApp', ['btford.socket-io']);
+
 })();
