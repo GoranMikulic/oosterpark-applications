@@ -37,7 +37,7 @@
         */
         $scope.getDefaultEndDate = function() {
           var curdate = new Date();
-          var day = curdate.getDate();
+          var day = curdate.getDate()+10;
           var month = curdate.getMonth() + 1;
           var year = curdate.getFullYear();
           return year + '-' + month + '-' + day;
