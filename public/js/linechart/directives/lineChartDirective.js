@@ -32,11 +32,11 @@
 
                 var unloadDataSets = new Array();
 
-                angular.forEach(dataSetFactory.datasets, function(value, key) {
-                  if (value.detailUrl != scope.detailUrl) {
-                    unloadDataSets.push(value.dataId);
-                  }
-                });
+                // angular.forEach(dataSetFactory.datasets, function(value, key) {
+                //   if (value.detailUrl != scope.detailUrl) {
+                //     unloadDataSets.push(value.dataId);
+                //   }
+                // });
                 scope.lineChart.load({
                   columns: [
                     scope.chartdata.dates,
@@ -55,7 +55,7 @@
               }
 
             } else {
-              scope.lineChart = timeSeriesGraph(scope.chartdata.dates, scope.chartdata.counts, scope.uniqueId, scope.getDayDetailsData);
+              scope.lineChart = timeSeriesGraph(scope.chartdata.dates, scope.chartdata.counts, scope.uniqueId, scope.getDayDetails);
             }
 
           }

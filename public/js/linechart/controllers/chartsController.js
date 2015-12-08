@@ -2,7 +2,7 @@
   "use strict";
 
   angular.module('dataAnalizingApp')
-    .controller('lineChartController', function($scope, $http, $element, getDetailUrl, updateFormatter, ChartResult) {
+    .controller('lineChartController', function($scope, $http, $element, getDetailUrl, updateFormatter, ChartResult, dataSetFactory) {
       var resultFieldName = "Devices";
 
       /**
@@ -63,7 +63,7 @@
         * @param {Date} daySelected - The selected Day for the detail view
         * @param {string|number} chartId - unique id of the chart
         */
-        $scope.getDayDetailsData = function(daySelected, chartId) {
+        $scope.getDayDetailsData = function(daySelected, chartId, detailUrl) {
           $scope.dataLoading = true;
           $scope.detailUrl = getDetailUrl(chartId);
 
@@ -87,6 +87,12 @@
             $scope.chartdata = ChartResult.createNew(dates, data[resultFieldName].counts);
             updateFormatter(true);
             $scope.dataLoading = false;
+          });
+        },
+
+        $scope.getDayDetails = function(daySelected, chartId) {
+          angular.forEach(dataSetFactory.datasets, function(value, key) {
+            $scope.getDayDetailsData(daySelected, value.dataId, value.detailUrl);
           });
         }
     });
