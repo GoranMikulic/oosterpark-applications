@@ -3,10 +3,11 @@
 
 
   angular.module('dataAnalizingApp').factory('dataSetFactory', function() {
-    function DataSource(url, detailUrl, dataId) {
+    function DataSource(url, detailUrl, dataId, resultFieldName) {
       this.url = url;
       this.detailUrl = detailUrl;
       this.dataId = dataId;
+      this.resultFieldName = resultFieldName;
     }
 
     var wifiUrl = '/wifidevicescount?';
@@ -15,9 +16,10 @@
     var btDetaillUrl = "/btdevicescountdetail?";
     var wifiDataId = "Amount of Wifi-Devices";
     var btDataId = "Amount of Bluetooth-Devices";
+    var resultFieldName = "Devices";
 
-    var wifiData = new DataSource(wifiUrl, wifiDetaillUrl, wifiDataId);
-    var btData = new DataSource(btUrl, btDetaillUrl, btDataId);
+    var wifiData = new DataSource(wifiUrl, wifiDetaillUrl, wifiDataId, resultFieldName);
+    var btData = new DataSource(btUrl, btDetaillUrl, btDataId, resultFieldName);
     var datasets = [wifiData, btData];
 
     return {
@@ -51,8 +53,7 @@
         data: {
           x: 'x',
           onclick: function(e) {
-            //console.log('fired with: ' + e.x + e.id);
-            callback(e.x, e.id);
+            callback(e.x);
           },
           columns: [
             dates,

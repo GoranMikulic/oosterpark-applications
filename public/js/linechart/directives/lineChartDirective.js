@@ -16,16 +16,12 @@
       link: function(scope, element, iAttrs, ctrl) {
         scope.uniqueId = uniqueId++;
 
-        angular.forEach(dataSetFactory.datasets, function(value, key) {
-          scope.getChartData(scope.startdate, scope.enddate, value.url);
+        angular.forEach(dataSetFactory.datasets, function(dataset) {
+          scope.getChartData(scope.startdate, scope.enddate, dataset.url, dataset.resultFieldName);
         });
 
         //listen for chart data changes
         scope.$watch('chartdata', function(newVal) {
-          // the `$watch` function will fire even if the
-          // dates property is undefined, so we'll
-          // check for it
-
           if (newVal) {
             if (scope.lineChart) {
 
@@ -47,10 +43,9 @@
 
         scope.refresh = function() {
             updateFormatter();
-            for (var i = 0; i < dataSetFactory.datasets.length; i++) {
-              var value = dataSetFactory.datasets[i];
-              scope.getChartData(scope.startdate, scope.enddate, value.url);
-            }
+            angular.forEach(dataSetFactory.datasets, function(dataset) {
+              scope.getChartData(scope.startdate, scope.enddate, dataset.url, dataset.resultFieldName);
+            });
           },
           scope.deleteChart = function() {
             element.remove();
