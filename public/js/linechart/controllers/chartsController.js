@@ -16,17 +16,20 @@
             method: 'GET',
             url: url + 'startdate=' + startdate + '&enddate=' + enddate
           }).success(function(data) {
-
-            //Workaround for date parsing issue
-            //c3 can't parse date format YYYY-MM-DDThh:mm:ss.sTZD
-            //TODO: check out better solutions/should this be done in the backend?
-            var dates = data[resultFieldName].x;
-            for (var i = 1; i < dates.length; i++) {
-              dates[i] = new Date(dates[i]);
-            }
-
+            
+            var dates = getConvertedDates(data[resultFieldName].x);
             $scope.chartdata = ChartResult.createNew(dates, data[resultFieldName].counts);
             $scope.dataLoading = false;
+          });
+        },
+
+        /**
+         * Loads all detail data for each defined dataset for the selected date
+         * @param {Date} - The selected day
+         */
+        $scope.getDayDetails = function(daySelected) {
+          angular.forEach(dataSetFactory.datasets, function(dataset, key) {
+            getDayDetailsData(daySelected, dataset.dataId, dataset.detailUrl, dataset.resultFieldName);
           });
         },
 
@@ -54,48 +57,48 @@
           var month = curdate.getMonth() + 1;
           var year = curdate.getFullYear();
           return year + '-' + month + '-' + day;
-        },
+        }
 
         /**
-         * Loads all detail data for each defined dataset for the selected date
-         * @param {Date} - The selected day
+         * Requesting and fetching data for a particular day
+         * TODO: rename! returns nothing - therefore no get... name
+         * @param {Date} daySelected - The selected Day for the detail view
+         * @param {string|number} chartId - unique id of the chart
          */
-        $scope.getDayDetails = function(daySelected) {
-          angular.forEach(dataSetFactory.datasets, function(dataset, key) {
-            getDayDetailsData(daySelected, dataset.dataId, dataset.detailUrl, dataset.resultFieldName);
+        function getDayDetailsData(daySelected, chartId, detailUrl, resultFieldName) {
+          $scope.dataLoading = true;
+
+          var date = daySelected.getDate();
+          var month = daySelected.getMonth() + 1;
+          var year = daySelected.getFullYear();
+
+          var dateString = year + '-' + month + '-' + date;
+          $http({
+            method: 'GET',
+            url: detailUrl + 'day=' + dateString
+          }).success(function(data) {
+
+            //Workaround for date parsing issue
+            //c3 can't parse date format YYYY-MM-DDThh:mm:ss.sTZD
+            var dates = getConvertedDates(data[resultFieldName].x);
+
+            $scope.chartdata = ChartResult.createNew(dates, data[resultFieldName].counts);
+            updateFormatter(true);
+            $scope.dataLoading = false;
           });
         }
 
-      /**
-       * Requesting and fetching data for a particular day
-       * TODO: rename! returns nothing - therefore no get... name
-       * @param {Date} daySelected - The selected Day for the detail view
-       * @param {string|number} chartId - unique id of the chart
+      /* Workaround for date parsing issue
+       * c3 can't parse date format YYYY-MM-DDThh:mm:ss.sTZD
+       * TODO: check out better solutions/should this be done in the backend?
+       * @param {Dates[]}
        */
-      function getDayDetailsData(daySelected, chartId, detailUrl, resultFieldName) {
-        $scope.dataLoading = true;
-
-        var date = daySelected.getDate();
-        var month = daySelected.getMonth() + 1;
-        var year = daySelected.getFullYear();
-
-        var dateString = year + '-' + month + '-' + date;
-        $http({
-          method: 'GET',
-          url: detailUrl + 'day=' + dateString
-        }).success(function(data) {
-
-          //Workaround for date parsing issue
-          //c3 can't parse date format YYYY-MM-DDThh:mm:ss.sTZD
-          var dates = data[resultFieldName].x;
-
-          for (var i = 1; i < dates.length; i++) {
-            dates[i] = new Date(dates[i]);
-          }
-          $scope.chartdata = ChartResult.createNew(dates, data[resultFieldName].counts);
-          updateFormatter(true);
-          $scope.dataLoading = false;
-        });
+      function getConvertedDates(dates) {
+        for (var i = 1; i < dates.length; i++) {
+          dates[i] = new Date(dates[i]);
+        }
+        return dates;
       }
+
     });
 })();
