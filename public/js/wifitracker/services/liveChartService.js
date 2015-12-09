@@ -15,7 +15,6 @@
         data: {
           x: 'x',
           onclick: function(e) {
-            //console.log('fired with: ' + e.x + e.id);
             callback(e.x, e.id);
           },
           columns: [

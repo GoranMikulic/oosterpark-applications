@@ -16,7 +16,7 @@
             method: 'GET',
             url: url + 'startdate=' + startdate + '&enddate=' + enddate
           }).success(function(data) {
-            
+
             var dates = getConvertedDates(data[resultFieldName].x);
             $scope.chartdata = ChartResult.createNew(dates, data[resultFieldName].counts);
             $scope.dataLoading = false;

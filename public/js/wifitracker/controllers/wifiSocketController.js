@@ -7,9 +7,35 @@
    * Listens to scockets, handles devices list and updates chart data
    */
   angular.module('dataAnalizingApp')
-    .controller('wifiSocketController', function($scope, socketConnection) {
+    .controller('wifiSocketController', function($scope, socketConnection, ChartResult, LiveChart) {
 
-      $scope.devices = new Array();
+      /**
+       * Interval for data handling
+       */
+      $scope.initLiveChart = function() {
+        //init chart data
+        $scope.chartdata = ChartResult.createNew(['x'], ['count of devices']);
+        //creating line chart
+        $scope.lineChart = LiveChart.createNew($scope.chartdata);
+
+        $scope.devices = new Array();
+        $scope.chartInterval;
+        $scope.startChartUpdateInterval();
+      }
+
+      /**
+       * Interval for data handling
+       */
+      $scope.startChartUpdateInterval = function() {
+        $scope.chartInterval = setInterval(function() {
+
+          removeLostDevicesFromBuffer();
+          removeFirstDeviceInChart();
+          addToChart($scope.devices);
+        }, 2000);
+      }
+
+
 
       /**
        * Fired on established socket connection
@@ -22,25 +48,19 @@
        * Listens to kismet server messages, receiving captured device data
        */
       socketConnection.on("kismessage", function(data) {
-        data.firsttime = new Date(data.firsttime * 1000);
-        data.lasttime = new Date(data.lasttime * 1000);
-        checkAndAdd(data);
+        if($scope.chartInterval) {
+          data.firsttime = new Date(data.firsttime * 1000);
+          data.lasttime = new Date(data.lasttime * 1000);
+          checkAndAdd(data);
+
+        }
       });
 
       /**
-       * Interval for data handling
+       * Removes first data points in chart to prevent overload in browser
        */
-      setInterval(function() {
-        addToChart($scope.devices);
-        removeLostDevices();
-        preventOverload();
-      }, 2000);
-
-      /**
-      * Removes first data points in chart to prevent overload in browser
-      */
-      function preventOverload() {
-        if($scope.chartdata.dates.length > 50) {
+      function removeFirstDeviceInChart() {
+        if ($scope.chartdata.dates.length > 50) {
           $scope.chartdata.dates.splice(1, 1);
           $scope.chartdata.counts.splice(1, 1);
         }
@@ -58,7 +78,7 @@
       /**
        * Removes devices which are not tracked since x seconds
        */
-      function removeLostDevices() {
+      function removeLostDevicesFromBuffer() {
         for (var i = $scope.devices.length - 1; i >= 0; i--) {
           var dif = (new Date() - $scope.devices[i].lasttime) / 1000;
 
@@ -81,6 +101,7 @@
           $scope.devices.push(device);
         }
       }
+
 
     });
 
