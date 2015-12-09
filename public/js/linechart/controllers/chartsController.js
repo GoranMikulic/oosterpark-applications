@@ -2,7 +2,7 @@
   "use strict";
 
   angular.module('dataAnalizingApp')
-    .controller('lineChartController', function($scope, $http, $element, getDetailUrl, updateFormatter, ChartResult, dataSetFactory) {
+    .controller('lineChartController', function($scope, $http, $element, updateFormatter, ChartResult, dataSetFactory) {
       var resultFieldName = "Devices";
 
       /**
@@ -12,7 +12,7 @@
       */
       $scope.getChartData = function(startdate, enddate, url) {
           $scope.dataLoading = true;
-          $scope.detailUrl = 'empty';
+
           $http({
             method: 'GET',
             url: url + 'startdate=' + startdate + '&enddate=' + enddate
@@ -65,7 +65,6 @@
         */
         $scope.getDayDetailsData = function(daySelected, chartId, detailUrl) {
           $scope.dataLoading = true;
-          $scope.detailUrl = getDetailUrl(chartId);
 
           var date = daySelected.getDate();
           var month = daySelected.getMonth() + 1;
@@ -74,7 +73,7 @@
           var dateString = year + '-' + month + '-' + date;
           $http({
             method: 'GET',
-            url: $scope.detailUrl + 'day=' + dateString
+            url: detailUrl + 'day=' + dateString
           }).success(function(data) {
 
             //Workaround for date parsing issue

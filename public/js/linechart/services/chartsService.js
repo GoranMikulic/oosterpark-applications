@@ -25,19 +25,6 @@
     }
   });
 
-  angular.module('dataAnalizingApp').factory('getDetailUrl', function(dataSetFactory) {
-    return function(chartId) {
-
-      for (var i = 0; i < dataSetFactory.datasets.length; i++) {
-        var value = dataSetFactory.datasets[i];
-        if (chartId == value.dataId) {
-          //console.log('result ' + chartId + ' ' + value.dataId);
-          return value.detailUrl;
-        }
-      }
-    }
-  });
-
   /**
    * Creating C3 Line Chart
    */

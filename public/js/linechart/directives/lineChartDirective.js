@@ -28,33 +28,16 @@
 
           if (newVal) {
             if (scope.lineChart) {
-              if (scope.detailUrl != 'empty') {
 
-                var unloadDataSets = new Array();
-
-                // angular.forEach(dataSetFactory.datasets, function(value, key) {
-                //   if (value.detailUrl != scope.detailUrl) {
-                //     unloadDataSets.push(value.dataId);
-                //   }
-                // });
-                scope.lineChart.load({
-                  columns: [
-                    scope.chartdata.dates,
-                    scope.chartdata.counts
-                  ],
-                  unload: unloadDataSets
-                });
-                scope.lineChart.flush();
-              } else {
                 scope.lineChart.load({
                   columns: [
                     scope.chartdata.dates,
                     scope.chartdata.counts
                   ]
                 });
-              }
 
             } else {
+              console.log('new chart created');
               scope.lineChart = timeSeriesGraph(scope.chartdata.dates, scope.chartdata.counts, scope.uniqueId, scope.getDayDetails);
             }
 
