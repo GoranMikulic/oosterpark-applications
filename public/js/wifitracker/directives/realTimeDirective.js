@@ -40,6 +40,7 @@
           scope.startChartUpdateInterval();
         }
         scope.clear = function() {
+          clearInterval(scope.chartInterval);
           scope.initLiveChart();
         }
       }

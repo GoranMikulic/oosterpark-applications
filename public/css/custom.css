@@ -80,8 +80,8 @@ section {
 }
 
 /**
-**  Chart Section
-**/
+*  Comparison Chart Section
+*/
 .date-form {
   margin-bottom: 2em;
 }
@@ -96,7 +96,6 @@ h4 {
 }
 
 /* spinning icon */
-
 .glyphicon-spin {
     -webkit-animation: spin 1000ms infinite linear;
     animation: spin 1000ms infinite linear;
@@ -121,4 +120,16 @@ h4 {
         -webkit-transform: rotate(359deg);
         transform: rotate(359deg);
     }
+}
+
+/**
+*  Live Chart Section
+*/
+#rtchart {
+    margin-top: 1em;
+}
+
+input.interval-time {
+  max-width: 50px;
+  text-align: center;
 }

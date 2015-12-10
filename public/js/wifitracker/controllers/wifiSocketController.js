@@ -32,10 +32,14 @@
           removeLostDevicesFromBuffer();
           removeFirstDeviceInChart();
           addToChart($scope.devices);
-        }, 2000);
+        }, $scope.intervaltime*1000);
+      },
+      /**
+      * Returns default update interval time for the chart
+      */
+      $scope.getDefaultInterval = function() {
+        return 2;
       }
-
-
 
       /**
        * Fired on established socket connection
