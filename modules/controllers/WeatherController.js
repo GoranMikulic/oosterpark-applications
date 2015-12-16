@@ -27,32 +27,35 @@ var callback = function(response) {
 function parseWeatherInfo(weatherArray) {
   for(var i = 0; i < weatherArray.length; i++) {
     var wInfo = weatherArray[i];
-    var date = new Date(wInfo.dt*1000);
-    var temp = wInfo.main.temp;
-    var windspeed = wInfo.wind.speed;
-    //var rain = wInfo.rain.3h;
-    var rain = wInfo.rain["3h"];
-
-    var weatherInfo = {
-      id: 0,
-      date: date,
-      temp: temp,
-      windspeed: windspeed,
-      rain: rain
-    }
+    var weatherElementInfo = parseWeatherElement(wInfo);
 
     var tomorrow = new Date().getDate()+1;
-    if(date.getDate() == tomorrow) {
-        Weather.saveWeatherInfo(weatherInfo);
+    if(weatherElementInfo.date.getDate() == tomorrow) {
+        Weather.saveWeatherInfo(weatherElementInfo);
     }
   }
 
 }
 
+function parseWeatherElement(weatherElement) {
+
+  var date = new Date(weatherElement.dt*1000);
+  var temp = weatherElement.main.temp;
+  var windspeed = weatherElement.wind.speed;
+  var rain = weatherElement.rain["3h"];
+
+  var weatherInfo = {
+    id: 0,
+    date: date,
+    temp: temp,
+    windspeed: windspeed,
+    rain: rain
+  }
+
+  return weatherInfo;
+}
+
 module.exports = {
-  /**
-   * Returns a wifi device by id
-   */
   fetchWeatherData: function() {
     http.request(options, callback).end();
   },
