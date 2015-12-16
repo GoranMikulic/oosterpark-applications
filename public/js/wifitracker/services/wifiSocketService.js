@@ -5,7 +5,7 @@
   */
   angular.module('dataAnalizingApp').factory('socketConnection', function($rootScope, $http) {
 
-    //socket conncetion - TODO: make easier it configurable
+    //socket conncetion (ip of backend server)- TODO: make easier it configurable
     var socket = io.connect('http://127.0.0.1:8080/');
 
     return {

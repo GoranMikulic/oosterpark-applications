@@ -53,10 +53,10 @@
        */
       socketConnection.on("kismessage", function(data) {
         if($scope.chartInterval) {
+          //converting the timestamp
           data.firsttime = new Date(data.firsttime * 1000);
           data.lasttime = new Date(data.lasttime * 1000);
           checkAndAdd(data);
-
         }
       });
 
