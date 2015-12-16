@@ -1,6 +1,6 @@
 var Utils = require('../utils/Utils');
 var mysql = require('mysql');
-var connection = require('../utils/MySql').connection()
+var connection = require('../utils/MySql').connection();
 
 module.exports = {
   queryAllDevices: function(fn) {
@@ -11,7 +11,7 @@ module.exports = {
   queryDeivcesInPeriod: function(startDate, endDate, fn) {
       var query = "SELECT * FROM beacon_sense WHERE Time > ? && Time < ? GROUP BY Bluetooth_Id";
       var params = [startDate, endDate];
-      
+
       query = mysql.format(query,params);
       connection.query(query,function(err, rows, fields){
         fn(rows);

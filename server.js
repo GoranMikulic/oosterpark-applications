@@ -7,6 +7,9 @@ var routes = require('./modules/routes.js');
 var http = require('http');
 var kismet = require('./modules/kismetsocket/kismet.js');
 var serverconfig = require('./modules/utils/serverconfig.js');
+var weather = require('./modules/controllers/WeatherController.js');
+var CronJob = require('cron').CronJob;
+
 
 /**
  *  Define the sample application.
@@ -130,3 +133,9 @@ var app = new App();
 app.initialize();
 app.start();
 kismet.connect(app.io);
+
+weather.fetchWeatherData();
+
+var job = new CronJob('* * * * * *', function() {
+  console.log('You will see this message every second');
+}, null, true, 'America/Los_Angeles');
