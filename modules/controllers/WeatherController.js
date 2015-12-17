@@ -29,13 +29,22 @@ module.exports = {
         var weatherInfo = new Array();
         weatherInfo.push(weatherAttribute);
 
-        for(element in queryResult) {
-          var winfo = queryResult[element];
+        var datesBetween = Utils.getDatesBetween(new Date(startDate), new Date(endDate));
 
-          if(winfo.date.getHours() == 13) {
-            dates.push(winfo.date);
-            weatherInfo.push(winfo[weatherAttribute]);
+        for(date in datesBetween) {
+          dates.push(datesBetween[date]);
+
+          var dateToCompare = new Date(datesBetween[date].setHours(13,0,0,0));
+          var weatherAttributeToPush = 0;
+
+          for(element in queryResult) {
+            var winfo = queryResult[element];
+
+            if((winfo.date.getHours() == 13) && dateToCompare.getTime() === winfo.date.getTime()) {
+              weatherAttributeToPush = winfo[weatherAttribute];
+            }
           }
+          weatherInfo.push(weatherAttributeToPush);
         }
 
         var result =  {
