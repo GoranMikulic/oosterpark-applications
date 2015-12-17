@@ -1,4 +1,4 @@
-var devices = "Devices";
+var devices = "Result";
 
 module.exports = {
   /*

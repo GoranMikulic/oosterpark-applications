@@ -1,11 +1,55 @@
 var http = require('http');
 var Weather = require('../models/Weather.js');
+var Utils = require('../utils/Utils');
 
 var apiKey = "5dab73ac8dee23d02aed003ea8b37bf3";
 
 var options = {
   host: "api.openweathermap.org",
   path: "/data/2.5/forecast?q=Amsterdam,nll&units=metric&APPID=" + apiKey
+}
+
+module.exports = {
+  fetchWeatherData: function() {
+    http.request(options, callback).end();
+  },
+  getWeatherStatsForPeriod: function(req, res) {
+    var startDate = req.query.startdate;
+    var endDate = req.query.enddate;
+    var weatherAttribute = req.query.attr;
+
+    var isValidPeriodQuery = Utils.checkPeriodQuery(startDate, endDate);
+    if (isValidPeriodQuery) {
+
+      Weather.getWeatherForPeriod(startDate, endDate, function(queryResult) {
+
+        var dates = new Array();
+        dates.push('x');
+
+        var weatherInfo = new Array();
+        weatherInfo.push(weatherAttribute);
+
+        for(element in queryResult) {
+          var winfo = queryResult[element];
+
+          if(winfo.date.getHours() == 13) {
+            dates.push(winfo.date);
+            weatherInfo.push(winfo[weatherAttribute]);
+          }
+        }
+
+        var result =  {
+          dates: dates,
+          weather: weatherInfo
+        }
+
+        Utils.returnResult(res, result);
+      });
+    } else {
+      Utils.returnResult(res, {});
+    }
+  }
+
 }
 
 var callback = function(response) {
@@ -53,11 +97,4 @@ function parseWeatherElement(weatherElement) {
   }
 
   return weatherInfo;
-}
-
-module.exports = {
-  fetchWeatherData: function() {
-    http.request(options, callback).end();
-  },
-
 }

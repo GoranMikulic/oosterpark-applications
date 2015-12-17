@@ -134,8 +134,8 @@ app.initialize();
 app.start();
 kismet.connect(app.io);
 
-weather.fetchWeatherData();
+//weather.fetchWeatherData();
 
-var job = new CronJob('* * * * * *', function() {
-  console.log('You will see this message every second');
-}, null, true, 'America/Los_Angeles');
+new CronJob('* * * * * *', function() {
+  //console.log('You will see this message every second');
+}, null, true, 'Europe/Amsterdam');

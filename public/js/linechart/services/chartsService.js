@@ -16,7 +16,7 @@
     var btDetaillUrl = "/btdevicescountdetail?";
     var wifiDataId = "Amount of Wifi-Devices";
     var btDataId = "Amount of Bluetooth-Devices";
-    var resultFieldName = "Devices";
+    var resultFieldName = "Result";
 
     var wifiData = new DataSource(wifiUrl, wifiDetaillUrl, wifiDataId, resultFieldName);
     var btData = new DataSource(btUrl, btDetaillUrl, btDataId, resultFieldName);

@@ -4,6 +4,7 @@ var router = express.Router();
 
 var WifiDeviceService = require('./controllers/WifiDeviceController');
 var BluetoothDeviceController = require('./controllers/BluetoothDeviceController');
+var WeatherController = require('./controllers/WeatherController');
 
 //Route to return all wifi devices
 router.route('/wifidevices')
@@ -27,6 +28,9 @@ router.route('/btdevicescount').get(BluetoothDeviceController.getDevicesCountInP
 
 //Route to return count of a particular day
 router.route('/btdevicescountdetail').get(BluetoothDeviceController.getDevicesCountForDay);
+
+//Route to return weather for a period of time
+router.route('/weatherperiod').get(WeatherController.getWeatherStatsForPeriod);
 
 //Returns server data, needed to establish socket connection
 router.route('/serverconnection').get(serverconfig.getConfigJsonResponse);
