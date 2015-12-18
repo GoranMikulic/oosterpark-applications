@@ -58,6 +58,13 @@
           angular.forEach(dataSetFactory.datasets, function(dataset) {
             scope.getChartData(scope.startdate, scope.enddate, dataset.url, dataset.resultFieldName);
           });
+
+          if (scope.weatherdata.length > 0) {
+            var weatherAttributes = ["temp", "windspeed", "rain"];
+            for (attr in weatherAttributes) {
+              scope.getWeatherData(scope.startdate, scope.enddate, weatherAttributes[attr]);
+            }
+          }
         }
         scope.deleteChart = function() {
           element.remove();
@@ -72,8 +79,12 @@
         }
         scope.showTemparature = function() {
           var weatherAttributes = ["temp", "windspeed", "rain"];
-          for(attr in weatherAttributes) {
+          for (attr in weatherAttributes) {
+            if (scope.chartmode == "Period-View") {
               scope.getWeatherData(scope.startdate, scope.enddate, weatherAttributes[attr]);
+            } else {
+              scope.getWeatherDayData(scope.selectedDetailDate, weatherAttributes[attr]);
+            }
           }
         }
       }

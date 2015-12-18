@@ -58,8 +58,6 @@
             method: 'GET',
             url: weatherUrl + 'day=' + dateString + '&attr=' + attr
           }).success(function(data) {
-            console.log("URL " + weatherUrl + 'day=' + date + '&attr=' + attr);
-            console.log("RESULT " + data["Result"].weather);
             $scope.weatherdata.push(data["Result"].weather);
             $scope.loadedData.push(data["Result"].weather);
             $scope.dataLoading = false;
@@ -78,11 +76,12 @@
             getDayDetailsData(daySelected, dataset.dataId, dataset.detailUrl, dataset.resultFieldName);
           });
 
-          var weatherAttributes = ["temp", "windspeed", "rain"];
-          var attr;
-          for (attr in weatherAttributes) {
-            console.log("getting " + attr);
-            $scope.getWeatherDayData(daySelected, weatherAttributes[attr]);
+          if($scope.weatherdata.length > 0) {
+            var weatherAttributes = ["temp", "windspeed", "rain"];
+            var attr;
+            for (attr in weatherAttributes) {
+              $scope.getWeatherDayData(daySelected, weatherAttributes[attr]);
+            }
           }
 
         },
@@ -121,6 +120,7 @@
        */
       function getDayDetailsData(daySelected, chartId, detailUrl, resultFieldName) {
         $scope.dataLoading = true;
+        $scope.selectedDetailDate = daySelected;
 
         var date = daySelected.getDate();
         var month = daySelected.getMonth() + 1;
@@ -136,7 +136,7 @@
           //c3 can't parse date format YYYY-MM-DDThh:mm:ss.sTZD
           var dates = getConvertedDates(data[resultFieldName].x);
 
-          //$scope.chartdata = ChartResult.createNew(dates, data[resultFieldName].counts);
+          $scope.chartdata = ChartResult.createNew(dates, data[resultFieldName].counts);
           $scope.loadedData.push(dates);
           $scope.loadedData.push(data[resultFieldName].counts);
           updateFormatter(true);
