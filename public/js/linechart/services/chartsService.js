@@ -49,6 +49,9 @@
       updateFormatter();
 
       var chart = c3.generate({
+        size: {
+          height: 400
+        },
         bindto: '#chart' + uniqueId,
         data: {
           x: 'x',
@@ -89,6 +92,9 @@
     return function(loadedData, uniqueId, callback) {
 
       var chart = c3.generate({
+        size: {
+          height: 400
+        },
         bindto: '#chart' + uniqueId,
         data: {
           x: 'x',
