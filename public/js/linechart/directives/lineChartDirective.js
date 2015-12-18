@@ -46,7 +46,6 @@
           if (newVal) {
             //if chart already exists just reload data
             if (scope.lineChart) {
-              console.log("weatherdata " + scope.loadedData);
               scope.lineChart = multiaxesChart(scope.loadedData, scope.uniqueId, scope.getDayDetails);
             }
           }
