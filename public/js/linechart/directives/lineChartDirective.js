@@ -47,7 +47,9 @@
             //if chart already exists just reload data
 
             if (scope.lineChart) {
-              scope.loadedData.push(scope.weatherdata[0]);
+              for(weatherSeries in scope.weatherdata) {
+                  scope.loadedData.push(scope.weatherdata[weatherSeries]);
+              }
               scope.lineChart = multiaxesChart(scope.loadedData, scope.uniqueId, scope.getDayDetails);
             }
           }
@@ -72,8 +74,10 @@
           }, "slow");
         }
         scope.showTemparature = function() {
-          var attr = "temp";
-          scope.getWeatherData(scope.startdate, scope.enddate, attr);
+          var weatherAttributes = ["temp", "windspeed", "rain"];
+          for(attr in weatherAttributes) {
+              scope.getWeatherData(scope.startdate, scope.enddate, weatherAttributes[attr]);
+          }
         }
       }
     }
