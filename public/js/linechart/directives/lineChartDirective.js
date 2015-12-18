@@ -15,6 +15,7 @@
       controller: 'lineChartController',
       link: function(scope, element, iAttrs, ctrl) {
         scope.uniqueId = uniqueId++;
+        scope.weatherAttributes = ["temp", "windspeed", "rain"];
         scope.weatherdata = new Array();
         scope.loadedData = new Array();
         //Loading data for every defined dataset
@@ -59,9 +60,8 @@
           });
 
           if (scope.weatherdata.length > 0) {
-            var weatherAttributes = ["temp", "windspeed", "rain"];
-            for (attr in weatherAttributes) {
-              scope.getWeatherData(scope.startdate, scope.enddate, weatherAttributes[attr]);
+            for (attr in scope.weatherAttributes) {
+              scope.getWeatherData(scope.startdate, scope.enddate, scope.weatherAttributes[attr]);
             }
           }
         }
@@ -77,12 +77,12 @@
           }, "slow");
         }
         scope.showTemparature = function() {
-          var weatherAttributes = ["temp", "windspeed", "rain"];
-          for (attr in weatherAttributes) {
+
+          for (attr in scope.weatherAttributes) {
             if (scope.chartmode == "Period-View") {
-              scope.getWeatherData(scope.startdate, scope.enddate, weatherAttributes[attr]);
+              scope.getWeatherData(scope.startdate, scope.enddate, scope.weatherAttributes[attr]);
             } else {
-              scope.getWeatherDayData(scope.selectedDetailDate, weatherAttributes[attr]);
+              scope.getWeatherDayData(scope.selectedDetailDate, scope.weatherAttributes[attr]);
             }
           }
         }

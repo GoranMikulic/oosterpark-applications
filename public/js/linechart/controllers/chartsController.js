@@ -48,15 +48,9 @@
           $scope.dataLoading = true;
           var weatherUrl = "/weatherdetail?";
 
-          var day = date.getDate();
-          var month = date.getMonth() + 1;
-          var year = date.getFullYear();
-
-          var dateString = year + '-' + month + '-' + day;
-
           $http({
             method: 'GET',
-            url: weatherUrl + 'day=' + dateString + '&attr=' + attr
+            url: weatherUrl + 'day=' + getDateStringForReq(date) + '&attr=' + attr
           }).success(function(data) {
             $scope.weatherdata.push(data["Result"].weather);
             $scope.loadedData.push(data["Result"].weather);
@@ -77,10 +71,9 @@
           });
 
           if($scope.weatherdata.length > 0) {
-            var weatherAttributes = ["temp", "windspeed", "rain"];
             var attr;
-            for (attr in weatherAttributes) {
-              $scope.getWeatherDayData(daySelected, weatherAttributes[attr]);
+            for (attr in $scope.weatherAttributes) {
+              $scope.getWeatherDayData(daySelected, $scope.weatherAttributes[attr]);
             }
           }
 
@@ -122,14 +115,9 @@
         $scope.dataLoading = true;
         $scope.selectedDetailDate = daySelected;
 
-        var date = daySelected.getDate();
-        var month = daySelected.getMonth() + 1;
-        var year = daySelected.getFullYear();
-
-        var dateString = year + '-' + month + '-' + date;
         $http({
           method: 'GET',
-          url: detailUrl + 'day=' + dateString
+          url: detailUrl + 'day=' + getDateStringForReq(daySelected)
         }).success(function(data) {
 
           //Workaround for date parsing issue
@@ -155,6 +143,14 @@
           dates[i] = new Date(dates[i]);
         }
         return dates;
+      }
+
+      function getDateStringForReq(date) {
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+
+        return year + '-' + month + '-' + day;
       }
 
     });
