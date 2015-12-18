@@ -87,7 +87,6 @@
 
   angular.module('dataAnalizingApp').factory('multiaxesChart', function(updateFormatter) {
     return function(loadedData, uniqueId, callback) {
-      updateFormatter();
 
       var chart = c3.generate({
         bindto: '#chart' + uniqueId,
@@ -97,6 +96,11 @@
             callback(e.x);
           },
           columns: loadedData,
+          names: {
+            temp: 'Temparature in °C',
+            windspeed: 'Windspeed',
+            rain: 'Rain'
+          },
           axes: {
             x: 'y',
             temp: 'y2',
@@ -106,11 +110,17 @@
         },
         axis: {
           y: {
-            label: "Amount of Devices"
+            label: {
+              text: "Amount of Devices",
+              position: 'outer-middle'
+            }
           },
           y2: {
             show: true,
-            label: "Weather"
+            label: {
+              text: "Weather",
+              position: 'outer-middle'
+            }
           },
           x: {
             type: 'timeseries',
