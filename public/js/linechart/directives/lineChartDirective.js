@@ -2,7 +2,7 @@
   /**
    * Custom directive for linecharts
    */
-  angular.module('dataAnalizingApp').directive('ngLinechart', function($compile, dataSetFactory, updateFormatter, timeSeriesGraph) {
+  angular.module('dataAnalizingApp').directive('ngLinechart', function($compile, dataSetFactory, updateFormatter, timeSeriesGraph, multiaxesChart) {
     var uniqueId = 1;
 
     return {
@@ -15,7 +15,8 @@
       controller: 'lineChartController',
       link: function(scope, element, iAttrs, ctrl) {
         scope.uniqueId = uniqueId++;
-
+        scope.weatherdata = new Array();
+        scope.loadedData = new Array();
         //Loading data for every defined dataset
         angular.forEach(dataSetFactory.datasets, function(dataset) {
           scope.getChartData(scope.startdate, scope.enddate, dataset.url, dataset.resultFieldName);
@@ -26,13 +27,13 @@
           if (newVal) {
             //if chart already exists just reload data
             if (scope.lineChart) {
+
               scope.lineChart.load({
                 columns: [
                   scope.chartdata.dates,
                   scope.chartdata.counts
                 ]
               });
-
             } else {
               scope.lineChart = timeSeriesGraph(scope.chartdata.dates, scope.chartdata.counts, scope.uniqueId, scope.getDayDetails);
             }
@@ -40,6 +41,18 @@
           }
 
         }, false);
+
+        scope.$watch('weatherdata', function(newVal) {
+          if (newVal) {
+            //if chart already exists just reload data
+
+            if (scope.lineChart) {
+              scope.loadedData.push(scope.weatherdata[0]);
+              scope.lineChart = multiaxesChart(scope.loadedData, scope.uniqueId, scope.getDayDetails);
+            }
+          }
+
+        }, true);
 
         scope.refresh = function() {
           updateFormatter();
@@ -57,6 +70,10 @@
           $("body").animate({
             scrollTop: el.offset().top
           }, "slow");
+        }
+        scope.showTemparature = function() {
+          var attr = "temp";
+          scope.getWeatherData(scope.startdate, scope.enddate, attr);
         }
       }
     }
