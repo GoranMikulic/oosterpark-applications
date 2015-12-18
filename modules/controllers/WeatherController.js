@@ -31,28 +31,78 @@ module.exports = {
 
         var datesBetween = Utils.getDatesBetween(new Date(startDate), new Date(endDate));
 
-        for(date in datesBetween) {
+        for (date in datesBetween) {
           dates.push(datesBetween[date]);
 
-          var dateToCompare = new Date(datesBetween[date].setHours(13,0,0,0));
+          var dateToCompare = new Date(datesBetween[date].setHours(13, 0, 0, 0));
           var weatherAttributeToPush = 0;
 
-          for(element in queryResult) {
+          for (element in queryResult) {
             var winfo = queryResult[element];
 
-            if((winfo.date.getHours() == 13) && dateToCompare.getTime() === winfo.date.getTime()) {
+            if ((winfo.date.getHours() == 13) && dateToCompare.getTime() === winfo.date.getTime()) {
               weatherAttributeToPush = winfo[weatherAttribute];
             }
           }
           weatherInfo.push(weatherAttributeToPush);
         }
 
-        var result =  {
+        var result = {
           dates: dates,
           weather: weatherInfo
         }
 
         Utils.returnResult(res, result);
+      });
+    } else {
+      Utils.returnResult(res, {});
+    }
+  },
+  getWeatherForDay: function(req, res) {
+    var day = req.query.day;
+    var weatherAttribute = req.query.attr;
+
+
+    var startDate = day + ' 00:01:00';
+    var endDate = day + ' 23:59:00';
+    var isValidPeriodQuery = Utils.checkPeriodQuery(startDate, endDate);
+
+    if (isValidPeriodQuery) {
+
+      Weather.getWeatherForPeriod(startDate, endDate, function(queryResult) {
+
+        var dates = new Array();
+        dates.push('x');
+
+        var weatherInfo = new Array();
+        weatherInfo.push(weatherAttribute);
+
+        var hours = Utils.getClockHours(day);
+
+        for (hour in hours) {
+          dates.push(hours[hour]);
+
+          var weatherValueToPush = 0;
+
+          for(element in queryResult) {
+            var winfo = queryResult[element];
+
+            if(winfo.date.getHours() == hours[hour].getHours()) {
+              weatherValueToPush = winfo[weatherAttribute];
+            }
+          }
+
+          weatherInfo.push(weatherValueToPush);
+
+        }
+
+        var result = {
+          dates: dates,
+          weather: weatherInfo
+        }
+
+        Utils.returnResult(res, result);
+
       });
     } else {
       Utils.returnResult(res, {});
@@ -65,12 +115,12 @@ var callback = function(response) {
   var str = '';
 
   //another chunk of data has been recieved, so append it to `str`
-  response.on('data', function (chunk) {
+  response.on('data', function(chunk) {
     str += chunk;
   });
 
   //the whole response has been recieved, so we just print it out here
-  response.on('end', function () {
+  response.on('end', function() {
 
     var weather = JSON.parse(str);
     parseWeatherInfo(weather.list);
@@ -78,13 +128,13 @@ var callback = function(response) {
 }
 
 function parseWeatherInfo(weatherArray) {
-  for(var i = 0; i < weatherArray.length; i++) {
+  for (var i = 0; i < weatherArray.length; i++) {
     var wInfo = weatherArray[i];
     var weatherElementInfo = parseWeatherElement(wInfo);
 
-    var tomorrow = new Date().getDate()+1;
-    if(weatherElementInfo.date.getDate() == tomorrow) {
-        Weather.saveWeatherInfo(weatherElementInfo);
+    var tomorrow = new Date().getDate() + 1;
+    if (weatherElementInfo.date.getDate() == tomorrow) {
+      Weather.saveWeatherInfo(weatherElementInfo);
     }
   }
 
@@ -92,7 +142,7 @@ function parseWeatherInfo(weatherArray) {
 
 function parseWeatherElement(weatherElement) {
 
-  var date = new Date(weatherElement.dt*1000);
+  var date = new Date(weatherElement.dt * 1000);
   var temp = weatherElement.main.temp;
   var windspeed = weatherElement.wind.speed;
   var rain = weatherElement.rain["3h"];

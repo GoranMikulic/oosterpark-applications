@@ -8,6 +8,7 @@
        * @param {Date} - startdate
        * @param {Date} - enddate
        * @param {String} - url
+       * @param {String} - resultFieldName - Name of JSON result field
        */
       $scope.getChartData = function(startdate, enddate, url, resultFieldName) {
           $scope.dataLoading = true;
@@ -25,18 +26,43 @@
           });
         },
 
+        /**
+         * Loads weather data for the given period of time
+         * @param {Date} - startdate
+         * @param {Date} - enddate
+         * @param {String} - Name of weather attribute
+         */
         $scope.getWeatherData = function(startdate, enddate, attr) {
           $scope.dataLoading = true;
-
           var weatherUrl = "/weatherperiod?";
-
           $http({
             method: 'GET',
             url: weatherUrl + 'startdate=' + startdate + '&enddate=' + enddate + '&attr=' + attr
           }).success(function(data) {
+            $scope.weatherdata.push(data["Result"].weather);
+            $scope.loadedData.push(data["Result"].weather);
+            $scope.dataLoading = false;
+          });
+        },
+        $scope.getWeatherDayData = function(date, attr) {
+          $scope.dataLoading = true;
+          var weatherUrl = "/weatherdetail?";
 
-              $scope.weatherdata.push(data["Result"].weather);
-              $scope.dataLoading = false;
+          var day = date.getDate();
+          var month = date.getMonth() + 1;
+          var year = date.getFullYear();
+
+          var dateString = year + '-' + month + '-' + day;
+
+          $http({
+            method: 'GET',
+            url: weatherUrl + 'day=' + dateString + '&attr=' + attr
+          }).success(function(data) {
+            console.log("URL " + weatherUrl + 'day=' + date + '&attr=' + attr);
+            console.log("RESULT " + data["Result"].weather);
+            $scope.weatherdata.push(data["Result"].weather);
+            $scope.loadedData.push(data["Result"].weather);
+            $scope.dataLoading = false;
           });
         },
 
@@ -46,9 +72,19 @@
          */
         $scope.getDayDetails = function(daySelected) {
           $scope.chartmode = "Day-View";
+          $scope.loadedData = new Array();
+
           angular.forEach(dataSetFactory.datasets, function(dataset, key) {
             getDayDetailsData(daySelected, dataset.dataId, dataset.detailUrl, dataset.resultFieldName);
           });
+
+          var weatherAttributes = ["temp", "windspeed", "rain"];
+          var attr;
+          for (attr in weatherAttributes) {
+            console.log("getting " + attr);
+            $scope.getWeatherDayData(daySelected, weatherAttributes[attr]);
+          }
+
         },
 
         /**
@@ -100,9 +136,12 @@
           //c3 can't parse date format YYYY-MM-DDThh:mm:ss.sTZD
           var dates = getConvertedDates(data[resultFieldName].x);
 
-          $scope.chartdata = ChartResult.createNew(dates, data[resultFieldName].counts);
+          //$scope.chartdata = ChartResult.createNew(dates, data[resultFieldName].counts);
+          $scope.loadedData.push(dates);
+          $scope.loadedData.push(data[resultFieldName].counts);
           updateFormatter(true);
           $scope.dataLoading = false;
+
         });
       }
 

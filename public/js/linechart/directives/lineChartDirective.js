@@ -45,11 +45,8 @@
         scope.$watch('weatherdata', function(newVal) {
           if (newVal) {
             //if chart already exists just reload data
-
             if (scope.lineChart) {
-              for(weatherSeries in scope.weatherdata) {
-                  scope.loadedData.push(scope.weatherdata[weatherSeries]);
-              }
+              console.log("weatherdata " + scope.loadedData);
               scope.lineChart = multiaxesChart(scope.loadedData, scope.uniqueId, scope.getDayDetails);
             }
           }

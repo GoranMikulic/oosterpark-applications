@@ -42,8 +42,8 @@
   });
 
   /**
-  * Returns a time series chart
-  */
+   * Returns a time series chart
+   */
   angular.module('dataAnalizingApp').factory('timeSeriesGraph', function(updateFormatter) {
     return function(dates, counts, uniqueId, callback) {
       updateFormatter();
@@ -129,6 +129,9 @@
         },
         zoom: {
           enabled: true
+        },
+        line: {
+          connectNull: true
         }
       });
 

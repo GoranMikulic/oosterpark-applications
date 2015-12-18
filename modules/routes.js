@@ -32,6 +32,9 @@ router.route('/btdevicescountdetail').get(BluetoothDeviceController.getDevicesCo
 //Route to return weather for a period of time
 router.route('/weatherperiod').get(WeatherController.getWeatherStatsForPeriod);
 
+//Route to return weather for a day
+router.route('/weatherdetail').get(WeatherController.getWeatherForDay);
+
 //Returns server data, needed to establish socket connection
 router.route('/serverconnection').get(serverconfig.getConfigJsonResponse);
 
