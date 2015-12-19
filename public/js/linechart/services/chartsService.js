@@ -104,15 +104,16 @@
           columns: loadedData,
           names: {
             temp: 'Temparature in °C',
-            windspeed: 'Windspeed',
-            rain: 'Rain'
+            windspeed: 'Windspeed in m/s',
+            rain: 'Rain in mm'
           },
           axes: {
             x: 'y',
             temp: 'y2',
             windspeed: 'y2',
             rain: 'y2'
-          }
+          },
+          hide: ['temp','windspeed', 'rain']
         },
         axis: {
           y: {

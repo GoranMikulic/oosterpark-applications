@@ -134,8 +134,6 @@ app.initialize();
 app.start();
 kismet.connect(app.io);
 
-//weather.fetchWeatherData();
-
 new CronJob('* * * * * *', function() {
-  //console.log('You will see this message every second');
+  //weather.fetchWeatherData();
 }, null, true, 'Europe/Amsterdam');

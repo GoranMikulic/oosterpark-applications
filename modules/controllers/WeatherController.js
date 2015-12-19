@@ -35,7 +35,7 @@ module.exports = {
           dates.push(datesBetween[date]);
 
           var dateToCompare = new Date(datesBetween[date].setHours(13, 0, 0, 0));
-          var weatherAttributeToPush = 0;
+          var weatherAttributeToPush = undefined;
 
           for (element in queryResult) {
             var winfo = queryResult[element];
@@ -82,7 +82,7 @@ module.exports = {
         for (hour in hours) {
           dates.push(hours[hour]);
 
-          var weatherValueToPush = 0;
+          var weatherValueToPush = undefined;
 
           for(element in queryResult) {
             var winfo = queryResult[element];
