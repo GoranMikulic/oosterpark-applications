@@ -85,24 +85,22 @@
          */
         $scope.getDefaultEndDate = function() {
           var curdate = new Date();
-          var day = curdate.getDate() + 10;
+          curdate.setDate(curdate.getDate() + 10);
           var month = curdate.getMonth() + 1;
-          var year = curdate.getFullYear();
-          return year + '-' + month + '-' + day;
+          return curdate.getFullYear() + '-' + month + '-' + curdate.getDate();
         },
 
         /**
          * Returns default start-date
          * TODO: Refactoring! Copy-paste code! see getDefaultEndDate()
+         * Should be more generic
          * @return {String} returns default start date
          */
         $scope.getDefaultStartDate = function() {
           var curdate = new Date();
           curdate.setDate(curdate.getDate() - 30);
-          var day = curdate.getDate();
           var month = curdate.getMonth() + 1;
-          var year = curdate.getFullYear();
-          return year + '-' + month + '-' + day;
+          return curdate.getFullYear() + '-' + month + '-' + curdate.getDate();
         }
 
       /**
