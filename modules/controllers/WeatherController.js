@@ -146,13 +146,17 @@ function parseWeatherElement(weatherElement) {
   var temp = weatherElement.main.temp;
   var windspeed = weatherElement.wind.speed;
   var rain = weatherElement.rain["3h"];
+  var humidity = weatherElement.main.humidity;
+  var clouds = weatherElement.clouds.all;
 
   var weatherInfo = {
     id: 0,
     date: date,
     temp: temp,
     windspeed: windspeed,
-    rain: rain
+    rain: rain,
+    humidity: humidity,
+    clouds: clouds
   }
 
   return weatherInfo;

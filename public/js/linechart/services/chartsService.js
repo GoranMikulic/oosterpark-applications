@@ -105,15 +105,19 @@
           names: {
             temp: 'Temparature in °C',
             windspeed: 'Windspeed in m/s',
-            rain: 'Rain in mm'
+            rain: 'Rain in mm',
+            humidity: 'Humidity (%)',
+            clouds: 'Cloudiness (%)'
           },
           axes: {
             x: 'y',
             temp: 'y2',
             windspeed: 'y2',
-            rain: 'y2'
+            rain: 'y2',
+            humidity: 'y2',
+            clouds: 'y2'
           },
-          hide: ['temp','windspeed', 'rain']
+          hide: ['temp','windspeed', 'rain', 'humidity', 'clouds']
         },
         axis: {
           y: {

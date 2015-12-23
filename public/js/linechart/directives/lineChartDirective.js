@@ -15,7 +15,7 @@
       controller: 'lineChartController',
       link: function(scope, element, iAttrs, ctrl) {
         scope.uniqueId = uniqueId++;
-        scope.weatherAttributes = ["temp", "windspeed", "rain"];
+        scope.weatherAttributes = ["temp", "windspeed", "rain", "humidity", "clouds"];
         scope.weatherdata = new Array();
         scope.loadedData = new Array();
         //Loading data for every defined dataset
