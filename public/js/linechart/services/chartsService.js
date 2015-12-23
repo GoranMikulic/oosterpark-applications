@@ -128,6 +128,7 @@
           },
           y2: {
             show: true,
+            min: 0,
             label: {
               text: "Weather",
               position: 'outer-middle'

@@ -27,19 +27,19 @@
        * Interval for data handling
        */
       $scope.startChartUpdateInterval = function() {
-        $scope.chartInterval = setInterval(function() {
+          $scope.chartInterval = setInterval(function() {
 
-          removeLostDevicesFromBuffer();
-          removeFirstDeviceInChart();
-          addToChart($scope.devices);
-        }, $scope.intervaltime*1000);
-      },
-      /**
-      * Returns default update interval time for the chart
-      */
-      $scope.getDefaultInterval = function() {
-        return 2;
-      }
+            removeLostDevicesFromBuffer(10);
+            removeFirstDeviceInChart();
+            addToChart($scope.devices);
+          }, $scope.intervaltime * 1000);
+        },
+        /**
+         * Returns default update interval time for the chart
+         */
+        $scope.getDefaultInterval = function() {
+          return 2;
+        }
 
       /**
        * Fired on established socket connection
@@ -52,7 +52,7 @@
        * Listens to kismet server messages, receiving captured device data
        */
       socketConnection.on("kismessage", function(data) {
-        if($scope.chartInterval) {
+        if ($scope.chartInterval) {
           //converting the timestamp
           data.firsttime = new Date(data.firsttime * 1000);
           data.lasttime = new Date(data.lasttime * 1000);
@@ -81,12 +81,13 @@
 
       /**
        * Removes devices which are not tracked since x seconds
+       * @param {int} secondslastseen - seconds to hold device
        */
-      function removeLostDevicesFromBuffer() {
+      function removeLostDevicesFromBuffer(secondslastseen) {
         for (var i = $scope.devices.length - 1; i >= 0; i--) {
           var dif = (new Date() - $scope.devices[i].lasttime) / 1000;
 
-          if (dif > 10) {
+          if (dif > secondslastseen) {
             $scope.devices.splice(i, 1);
           }
         }

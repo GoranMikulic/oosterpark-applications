@@ -28,8 +28,7 @@
             tick: {
               format: d3.time.format('%H:%M:%S')
             }
-          },
-
+          }
         },
         legend: {
           position: 'inset',

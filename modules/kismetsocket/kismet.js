@@ -1,6 +1,7 @@
 var net = require('net');
 var config = require('./config.js');
 var WifiDeviceController = require('../controllers/WifiDeviceController');
+var CronJob = require('cron').CronJob;
 
 module.exports = {
   connect: function(io) {
@@ -8,14 +9,11 @@ module.exports = {
 
     var devices = new Array();
 
-    setInterval(function() {
-      WifiDeviceController.saveWifiDevices(devices);
-      devices = new Array();
-    }, 120000);
-
-    setTimeout(function() {
-      devices = new Array();
-    }, 600);
+    //Run every hour
+    new CronJob('00 00 * * * *', function() {
+        WifiDeviceController.saveWifiDevices(devices);
+        devices = new Array();
+    }, null, true, 'Europe/Amsterdam');
 
     io.on('connection', function(socket) {
       console.log("Web client connected");
