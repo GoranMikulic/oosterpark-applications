@@ -14,7 +14,7 @@
     <!-- Custom styles -->
     <link href="css/custom.css" rel="stylesheet">
   </head>
-  <body id="page-top">
+  <body id="page-top" ng-app="dataAnalizingApp">
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -28,31 +28,15 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse navbar-right">
           <ul class="nav navbar-nav">
-            <li><a href="#correlations">Compare data</a></li>
+            <li><a href="#compare">Compare data</a></li>
             <li><a href="#livedata">Live Wifi-Data</a></li>
           </ul>
         </div>
       </div>
     </nav>
 
-    <div class="container sections-container col-md-12" ng-app="dataAnalizingApp">
-
-      <!-- About Section -->
-      <section id="correlations" class="container col-md-10 col-md-offset-1">
-        <div class="section-headline">
-          <h2 class="section-headline-text">How many people are in the park?</h2>
-        </div>
-
-        <div ng-linechart ></div>
-      </section>
-      <!-- About Section -->
-      <section id="livedata" class="container col-md-10 col-md-offset-1">
-        <div class="section-headline">
-          <h2 class="section-headline-text">Wifi-live-data</h2>
-        </div>
-        <div ng-realtime></div>
-      </section>
-
+    <div class="container sections-container col-md-12">
+      <div ng-view></div>
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -60,6 +44,7 @@
     <script src="third-party/bootstrap/js/bootstrap.min.js"></script>
     <!-- Angular -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-route.min.js">
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular-mocks.js"></script>
     <!-- D3 chart library required for c3  -->
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
