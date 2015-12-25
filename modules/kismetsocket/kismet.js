@@ -9,10 +9,13 @@ module.exports = {
 
     var devices = new Array();
 
-    //Run every hour
+    /**
+     * Setup cronjob to run every hour
+     * Saving devices and resetting buffer array
+     */
     new CronJob('00 00 * * * *', function() {
-        WifiDeviceController.saveWifiDevices(devices);
-        devices = new Array();
+      WifiDeviceController.saveWifiDevices(devices);
+      devices = new Array();
     }, null, true, 'Europe/Amsterdam');
 
     io.on('connection', function(socket) {
@@ -25,19 +28,12 @@ module.exports = {
       });
     });
 
+    // Configuration for Wi-Fi device attribtues
     var kismetMessages = {
-      /*BSSID: [
-        'bssid', 'type',
-        'llcpackets', 'datapackets', 'cryptpackets',
-        'manuf', 'channel', 'firsttime', 'lasttime',
-        'atype'
-
-      ],*/
       CLIENT: [
         'bssid', 'mac', 'type', 'firsttime', 'lasttime', 'signal_dbm'
       ]
     };
-
 
     var isConnected = false,
       leftOver = '',

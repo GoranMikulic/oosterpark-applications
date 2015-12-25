@@ -5,12 +5,42 @@
     .controller('lineChartController', function($scope, $http, $element, updateFormatter, ChartResult, dataSetFactory) {
 
       /**
-       * @param {Date} - startdate
-       * @param {Date} - enddate
-       * @param {String} - url
-       * @param {String} - resultFieldName - Name of JSON result field
+       * Loads weather data for all defined weather attributes
        */
-      $scope.getChartData = function(startdate, enddate, url, resultFieldName) {
+      $scope.loadWeatherData = function() {
+        for (var attr in $scope.weatherAttributes) {
+          if ($scope.chartmode == "Period-View") {
+            $scope.loadWeatherAttribute($scope.startdate, $scope.enddate, $scope.weatherAttributes[attr]);
+          } else {
+            $scope.loadWeatherAttrForDay($scope.selectedDetailDate, $scope.weatherAttributes[attr]);
+          }
+        }
+      }
+
+      /**
+       * Reloads all datasets which are defined in the dataset configuration
+       * If the weather data is already loaded it also reloads weather data
+       */
+      $scope.reloadAllDatasets = function() {
+          angular.forEach(dataSetFactory.datasets, function(dataset) {
+            $scope.getChartData($scope.startdate, $scope.enddate, dataset.url, dataset.resultFieldName);
+          });
+
+          if ($scope.weatherdata.length > 0) {
+            for (var attr in $scope.weatherAttributes) {
+              $scope.loadWeatherAttribute($scope.startdate, $scope.enddate, $scope.weatherAttributes[attr]);
+            }
+          }
+        },
+
+        /**
+         * Requests dataset with a GET request at the given url, for the given time period
+         * @param {Date} startdate
+         * @param {Date} enddate
+         * @param {String} url - REST API Url
+         * @param {String} resultFieldName - Name of JSON result field
+         */
+        $scope.getChartData = function(startdate, enddate, url, resultFieldName) {
           $scope.dataLoading = true;
           $scope.chartmode = "Period-View";
           $http({
@@ -28,11 +58,11 @@
 
         /**
          * Loads weather data for the given period of time
-         * @param {Date} - startdate
-         * @param {Date} - enddate
-         * @param {String} - Name of weather attribute
+         * @param {Date} startdate
+         * @param {Date} enddate
+         * @param {String} Name of weather attribute
          */
-        $scope.getWeatherData = function(startdate, enddate, attr) {
+        $scope.loadWeatherAttribute = function(startdate, enddate, attr) {
           $scope.dataLoading = true;
           var weatherUrl = "/weatherperiod?";
           $http({
@@ -44,7 +74,14 @@
             $scope.dataLoading = false;
           });
         },
-        $scope.getWeatherDayData = function(date, attr) {
+
+        /**
+         * Loads time value series for the given date and the given weather attribute
+         * adds the dataset to the chart data
+         * @param {Date} date - date to load the data for
+         * @param {String} attr - Name of weather attribute
+         */
+        $scope.loadWeatherAttrForDay = function(date, attr) {
           $scope.dataLoading = true;
           var weatherUrl = "/weatherdetail?";
 
@@ -60,7 +97,7 @@
 
         /**
          * Loads all detail data for each defined dataset for the selected date
-         * @param {Date} - The selected day
+         * @param {Date} daySelected - The selected day
          */
         $scope.getDayDetails = function(daySelected) {
           $scope.chartmode = "Day-View";
@@ -70,15 +107,14 @@
             getDayDetailsData(daySelected, dataset.dataId, dataset.detailUrl, dataset.resultFieldName);
           });
 
-          if($scope.weatherdata.length > 0) {
+          if ($scope.weatherdata.length > 0) {
             var attr;
             for (attr in $scope.weatherAttributes) {
-              $scope.getWeatherDayData(daySelected, $scope.weatherAttributes[attr]);
+              $scope.loadWeatherAttrForDay(daySelected, $scope.weatherAttributes[attr]);
             }
           }
 
         },
-
         /**
          * Returns default end-date
          * @return {String} returns default start date
@@ -143,6 +179,10 @@
         return dates;
       }
 
+      /**
+       * Converts {Date} to date string format for request (yyyy-mm-dd)
+       * @param {Date} date
+       */
       function getDateStringForReq(date) {
         var day = date.getDate();
         var month = date.getMonth() + 1;

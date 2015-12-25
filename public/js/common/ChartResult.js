@@ -4,6 +4,7 @@
   * Provides model for a time-series-chart
   */
   angular.module('dataAnalizingApp').factory('ChartResult', function() {
+    
     function ChartResult(dates, counts) {
       this.dates = dates;
       this.counts = counts;

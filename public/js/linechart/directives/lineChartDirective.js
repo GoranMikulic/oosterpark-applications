@@ -2,7 +2,7 @@
   /**
    * Custom directive for linecharts
    */
-  angular.module('dataAnalizingApp').directive('ngLinechart', function($compile, dataSetFactory, updateFormatter, timeSeriesGraph, multiaxesChart) {
+  angular.module('dataAnalizingApp').directive('ngLinechart', function($compile, dataSetFactory, updateFormatter, timeSeriesChart, multiaxesChart) {
     var uniqueId = 1;
 
     return {
@@ -19,9 +19,7 @@
         scope.weatherdata = new Array();
         scope.loadedData = new Array();
         //Loading data for every defined dataset
-        angular.forEach(dataSetFactory.datasets, function(dataset) {
-          scope.getChartData(scope.startdate, scope.enddate, dataset.url, dataset.resultFieldName);
-        });
+        scope.reloadAllDatasets();
 
         //listen for chart data changes and update chart
         scope.$watch('chartdata', function(newVal) {
@@ -36,7 +34,7 @@
                 ]
               });
             } else {
-              scope.lineChart = timeSeriesGraph(scope.chartdata.dates, scope.chartdata.counts, scope.uniqueId, scope.getDayDetails);
+              scope.lineChart = timeSeriesChart(scope.chartdata.dates, scope.chartdata.counts, scope.uniqueId, scope.getDayDetails);
             }
 
           }
@@ -45,8 +43,8 @@
 
         scope.$watch('weatherdata', function(newVal) {
           if (newVal) {
-            //if chart already exists just reload data
             if (scope.lineChart) {
+              //creates chart with second axis for weather data
               scope.lineChart = multiaxesChart(scope.loadedData, scope.uniqueId, scope.getDayDetails);
             }
           }
@@ -55,15 +53,7 @@
 
         scope.refresh = function() {
           updateFormatter();
-          angular.forEach(dataSetFactory.datasets, function(dataset) {
-            scope.getChartData(scope.startdate, scope.enddate, dataset.url, dataset.resultFieldName);
-          });
-
-          if (scope.weatherdata.length > 0) {
-            for (attr in scope.weatherAttributes) {
-              scope.getWeatherData(scope.startdate, scope.enddate, scope.weatherAttributes[attr]);
-            }
-          }
+          scope.reloadAllDatasets();
         }
         scope.deleteChart = function() {
           element.remove();
@@ -76,15 +66,8 @@
             scrollTop: el.offset().top
           }, "slow");
         }
-        scope.showTemparature = function() {
-
-          for (attr in scope.weatherAttributes) {
-            if (scope.chartmode == "Period-View") {
-              scope.getWeatherData(scope.startdate, scope.enddate, scope.weatherAttributes[attr]);
-            } else {
-              scope.getWeatherDayData(scope.selectedDetailDate, scope.weatherAttributes[attr]);
-            }
-          }
+        scope.loadWeather = function() {
+          scope.loadWeatherData();
         }
       }
     }
