@@ -74,6 +74,10 @@ module.exports = {
       Utils.returnResult(res, {});
     }
   },
+  /**
+  * Saves an array of wifi devices
+  * @param {device} devices
+  */
   saveWifiDevices: function(devices) {
     devices.forEach(function(device){
       WifiDevice.insertDevice(device.mac, device.firsttime, device.lasttime, device.signal_dbm);

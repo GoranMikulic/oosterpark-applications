@@ -10,9 +10,21 @@ var options = {
 }
 
 module.exports = {
+  /**
+   * Requests weather data
+   * @param {String - host, String - path} options - API options
+   * @param {function} callback - Callback function
+   */
   fetchWeatherData: function() {
-    http.request(options, callback).end();
+    http.request(options, weatherApiCallback).end();
   },
+  /**
+   * Returns time-value-series for the given time-period and weather attribute
+   * @param {String} startdate - Start date for period in format yyyy-mm-dd (provided through requst)
+   * @param {String} enddate - End date for period in format yyyy-mm-dd (provided through requst)
+   * @param {String} attr - Weather attribtue to load (provided through requst)
+   * @returns Time-value-series for the given time-period and weather attribute
+   */
   getWeatherStatsForPeriod: function(req, res) {
     var startDate = req.query.startdate;
     var endDate = req.query.enddate;
@@ -58,6 +70,12 @@ module.exports = {
       Utils.returnResult(res, {});
     }
   },
+  /**
+   * Returns time-value-series for the given day and weather attribute
+   * @param {String} day - Selected day in format yyyy-mm-dd (provided through requst)
+   * @param {String} attr - Weather attribtue to load (provided through requst)
+   * @returns Time-value-series for the given day and weather attribute
+   */
   getWeatherForDay: function(req, res) {
     var day = req.query.day;
     var weatherAttribute = req.query.attr;
@@ -84,10 +102,10 @@ module.exports = {
 
           var weatherValueToPush = undefined;
 
-          for(element in queryResult) {
+          for (element in queryResult) {
             var winfo = queryResult[element];
 
-            if(winfo.date.getHours() == hours[hour].getHours()) {
+            if (winfo.date.getHours() == hours[hour].getHours()) {
               weatherValueToPush = winfo[weatherAttribute];
             }
           }
@@ -110,8 +128,10 @@ module.exports = {
   }
 
 }
-
-var callback = function(response) {
+/**
+* Callback function for weather response, parses JSON object
+*/
+var weatherApiCallback = function(response) {
   var str = '';
 
   //another chunk of data has been recieved, so append it to `str`
@@ -127,6 +147,10 @@ var callback = function(response) {
   });
 }
 
+/**
+* Parses weather result object array from request
+* @param {Object[]} object array
+*/
 function parseWeatherInfo(weatherArray) {
   for (var i = 0; i < weatherArray.length; i++) {
     var wInfo = weatherArray[i];
@@ -140,6 +164,11 @@ function parseWeatherInfo(weatherArray) {
 
 }
 
+/**
+* Parses one particular weather element
+* @param {Object} weather result object
+* @returns {weatherInfo} weather info object
+*/
 function parseWeatherElement(weatherElement) {
 
   var date = new Date(weatherElement.dt * 1000);
