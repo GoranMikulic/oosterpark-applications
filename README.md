@@ -1,6 +1,7 @@
-OOSTERPARK ANALYSIS
+# OOSTERPARK ANALYSIS
 
-Project structure
+## Project structure
+```
 |-- _modules ---------- Backend code
 |   |--_controllers --- Controller modules implementing application logic & handling data between db and requests
 |   |--_db ------------ DB modules for data access
@@ -16,3 +17,5 @@ Project structure
 |
 |-- _package.json ----- Defines third-party dependencies for node.js
 |-- _server.js -------- Server configuration and startup script
+
+```
