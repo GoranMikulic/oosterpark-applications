@@ -110,12 +110,6 @@ var App = function() {
     //set public html directory
     self.app.use('/', express.static(__dirname + '/public'));
 
-    //  Start the app on the specific interface (and port).
-    //self.app.listen(self.port, self.ipaddress, function() {
-    //    console.log('%s: Node server started on %s:%d ...',
-    //                Date(Date.now() ), self.ipaddress, self.port);
-    //});
-
     self.httpServer = http.Server(self.app);
     self.httpServer.listen(self.port, self.ipaddress, function() {
       console.log("server listening on port", self.port);

@@ -1,4 +1,4 @@
-var WifiDevice = require('../models/WifiDevice');
+var WifiDevice = require('../db/WifiDevice');
 var Utils = require('../utils/Utils');
 
 module.exports = {

@@ -1,4 +1,4 @@
-var BluetoothDevice = require('../models/BluetoothDevice');
+var BluetoothDevice = require('../db/BluetoothDevice');
 var Utils = require('../utils/Utils');
 
 module.exports = {
@@ -38,7 +38,7 @@ module.exports = {
     if (typeof day !== 'undefined') {
       var start = day + ' 00:01:00';
       var end = day + ' 23:59:00';
-      
+
       BluetoothDevice.queryDeivcesInPeriod(start, end, function(queryResult) {
         var hours = Utils.getClockHours(day);
         var result = Utils.getDevicesCountsForTimeRange(hours, queryResult, 'Time', Utils.isHourEqual, 'Amount of Bluetooth-Devices');

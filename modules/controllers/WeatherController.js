@@ -1,5 +1,5 @@
 var http = require('http');
-var Weather = require('../models/Weather.js');
+var Weather = require('../db/Weather.js');
 var Utils = require('../utils/Utils');
 
 var apiKey = "5dab73ac8dee23d02aed003ea8b37bf3";

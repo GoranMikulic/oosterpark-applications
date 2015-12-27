@@ -2,7 +2,18 @@
   "use strict";
 
 
+  /**
+   * Returns datasources for the linechart
+   * @returns Datasources for the linechart 
+   */
   angular.module('dataAnalizingApp').factory('dataSetFactory', function() {
+
+    /**
+     * Defines the model for a data source
+     * @param {String} url - Url for period query
+     * @param {String} detailUrl - Url to query data of a day
+     * @param {String} resultFieldName - JSON field name for the result list of the requests
+     */
     function DataSource(url, detailUrl, dataId, resultFieldName) {
       this.url = url;
       this.detailUrl = detailUrl;
@@ -10,16 +21,9 @@
       this.resultFieldName = resultFieldName;
     }
 
-    var wifiUrl = '/wifidevicescount?';
-    var btUrl = "/btdevicescount?";
-    var wifiDetaillUrl = "/wifidevicescountdetail?";
-    var btDetaillUrl = "/btdevicescountdetail?";
-    var wifiDataId = "Amount of Wifi-Devices";
-    var btDataId = "Amount of Bluetooth-Devices";
-    var resultFieldName = "Result";
+    var wifiData = new DataSource('/wifidevicescount?', '/wifidevicescountdetail?', 'Amount of Wifi-Devices', 'Result');
+    var btData = new DataSource('/btdevicescount?', '/btdevicescountdetail?', 'Amount of Bluetooth-Devices', 'Result');
 
-    var wifiData = new DataSource(wifiUrl, wifiDetaillUrl, wifiDataId, resultFieldName);
-    var btData = new DataSource(btUrl, btDetaillUrl, btDataId, resultFieldName);
     var datasets = [wifiData, btData];
 
     return {
@@ -27,9 +31,7 @@
     }
   });
 
-  /**
-   * Creating C3 Line Chart
-   */
+  //Formatter for linechart
   var formatter;
 
   /**
@@ -88,6 +90,13 @@
     }
   });
 
+  /**
+   * Returns chart with second Y-Axis for weather data
+   * @param {Array} loadedData - Datasets to load
+   * @param {int} uniqueId - Unique Id of the chart directive
+   * @param {function} callback - callback function for onClick event for a datapoint
+   * @returns chart with second Y-Axis for weather data
+   */
   angular.module('dataAnalizingApp').factory('multiaxesChart', function(updateFormatter) {
     return function(loadedData, uniqueId, callback) {
 
@@ -117,7 +126,7 @@
             humidity: 'y2',
             clouds: 'y2'
           },
-          hide: ['temp','windspeed', 'rain', 'humidity', 'clouds']
+          hide: ['temp', 'windspeed', 'rain', 'humidity', 'clouds']
         },
         axis: {
           y: {
