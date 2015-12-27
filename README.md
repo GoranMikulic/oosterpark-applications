@@ -3,7 +3,6 @@
 ## Project structure
 ```
 |-- _modules ---------- Backend code
-|
 |   |--_controllers --- Controller modules implementing application logic & handling data between db and requests
 |   |--_db ------------ DB modules for data access
 |   |--_kismetsocket -- Handling socket connection to kismet
