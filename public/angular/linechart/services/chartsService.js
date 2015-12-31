@@ -2,45 +2,9 @@
   "use strict";
 
 
-  /**
-   * Returns datasources for the linechart
-   * @returns Datasources for the linechart 
-   */
-  angular.module('dataAnalizingApp').factory('dataSetFactory', function() {
-
-    /**
-     * Defines the model for a data source
-     * @param {String} url - Url for period query
-     * @param {String} detailUrl - Url to query data of a day
-     * @param {String} resultFieldName - JSON field name for the result list of the requests
-     */
-    function DataSource(url, detailUrl, dataId, resultFieldName) {
-      this.url = url;
-      this.detailUrl = detailUrl;
-      this.dataId = dataId;
-      this.resultFieldName = resultFieldName;
-    }
-
-    var wifiData = new DataSource('/wifidevicescount?', '/wifidevicescountdetail?', 'Amount of Wifi-Devices', 'Result');
-    var btData = new DataSource('/btdevicescount?', '/btdevicescountdetail?', 'Amount of Bluetooth-Devices', 'Result');
-
-    var datasets = [wifiData, btData];
-
-    return {
-      datasets: datasets
-    }
-  });
-
-  //Formatter for linechart
-  var formatter;
-
-  /**
-   * Formatter has to be changed in detail view to show hours instead of dates
-   */
-  angular.module('dataAnalizingApp').factory('updateFormatter', function() {
-    return function(days) {
-      formatter = d3.time.format(days ? '%H' : '%d.%m.%Y');
-    }
+  angular.module('dataAnalizingApp').constant('CHART_MODE', {
+    period: "Period-View",
+    day: "Day-View"
   });
 
   /**
@@ -97,7 +61,7 @@
    * @param {function} callback - callback function for onClick event for a datapoint
    * @returns chart with second Y-Axis for weather data
    */
-  angular.module('dataAnalizingApp').factory('multiaxesChart', function(updateFormatter) {
+  angular.module('dataAnalizingApp').factory('multiaxesChart', function(updateFormatter, weatherAttributes) {
     return function(loadedData, uniqueId, callback) {
 
       var chart = c3.generate({
@@ -111,13 +75,7 @@
             callback(e.x);
           },
           columns: loadedData,
-          names: {
-            temp: 'Temparature in °C',
-            windspeed: 'Windspeed in m/s',
-            rain: 'Rain in mm',
-            humidity: 'Humidity (%)',
-            clouds: 'Cloudiness (%)'
-          },
+          names: weatherAttributes.labels,
           axes: {
             x: 'y',
             temp: 'y2',
@@ -126,7 +84,7 @@
             humidity: 'y2',
             clouds: 'y2'
           },
-          hide: ['temp', 'windspeed', 'rain', 'humidity', 'clouds']
+          hide: weatherAttributes.attributes
         },
         axis: {
           y: {
@@ -167,6 +125,18 @@
       });
 
       return chart;
+    }
+  });
+
+  //Formatter for linechart
+  var formatter;
+
+  /**
+   * Formatter has to be changed in detail view to show hours instead of dates
+   */
+  angular.module('dataAnalizingApp').factory('updateFormatter', function() {
+    return function(days) {
+      formatter = d3.time.format(days ? '%H' : '%d.%m.%Y');
     }
   });
 

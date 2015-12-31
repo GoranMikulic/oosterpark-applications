@@ -2,7 +2,7 @@
   /**
    * Custom directive for linecharts
    */
-  angular.module('dataAnalizingApp').directive('ngLinechart', function($compile, dataSetFactory, updateFormatter, timeSeriesChart, multiaxesChart) {
+  angular.module('dataAnalizingApp').directive('ngLinechart', function($compile, dataSetFactory, updateFormatter, timeSeriesChart, multiaxesChart, weatherAttributes) {
     var uniqueId = 1;
 
     return {
@@ -15,7 +15,6 @@
       controller: 'lineChartController',
       link: function(scope, element, iAttrs, ctrl) {
         scope.uniqueId = uniqueId++;
-        scope.weatherAttributes = ["temp", "windspeed", "rain", "humidity", "clouds"];
         scope.weatherdata = new Array();
         scope.loadedData = new Array();
         //Loading data for every defined dataset
