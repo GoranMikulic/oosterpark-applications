@@ -6,7 +6,7 @@
 
     return {
       restrict: 'A',
-      templateUrl: 'js/wifitracker/templates/ng-realtime.html',
+      templateUrl: 'angular/wifitracker/templates/ng-realtime.html',
       scope: {
         chartdata: '='
       },

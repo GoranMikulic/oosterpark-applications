@@ -7,7 +7,7 @@
 
     return {
       restrict: 'A',
-      templateUrl: 'js/linechart/templates/ng-timeseries-chart.html',
+      templateUrl: 'angular/linechart/templates/ng-timeseries-chart.html',
       scope: {
         uniqueId: '=',
         chartdata: '='

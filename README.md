@@ -10,8 +10,8 @@
 |   |--_routes.js ----- Defining routes for handling API requests
 |
 |-- _public ----------- Fronted code
+|   |--_angular ------- angular.js code and modules
 |   |--_css ----------- Style definitions
-|   |--_js ------------ AngularJs code
 |   |--_third-party --- Third-party frontend modules
 |
 |-- _node_modules ----- Third-party node.js (backend) modules, defined in package.json
