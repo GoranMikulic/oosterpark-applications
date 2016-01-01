@@ -60,8 +60,8 @@ module.exports = {
         }
 
         var result = {
-          dates: dates,
-          weather: weatherInfo
+          x: dates,
+          counts: weatherInfo
         }
 
         Utils.returnResult(res, result);
@@ -115,8 +115,8 @@ module.exports = {
         }
 
         var result = {
-          dates: dates,
-          weather: weatherInfo
+          x: dates,
+          counts: weatherInfo
         }
 
         Utils.returnResult(res, result);

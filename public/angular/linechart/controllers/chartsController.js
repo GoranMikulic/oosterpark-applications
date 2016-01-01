@@ -2,35 +2,15 @@
   "use strict";
 
   angular.module('dataAnalizingApp')
-    .controller('lineChartController', function($scope, $http, $element, updateFormatter, ChartResult, dataSetFactory, weatherAttributes, CHART_MODE) {
-
-      /**
-       * Loads weather data for all defined weather attributes
-       */
-      $scope.loadWeatherData = function() {
-        for (var attr in weatherAttributes.attributes) {
-          if ($scope.chartmode == CHART_MODE.period) {
-            $scope.loadWeatherAttribute($scope.startdate, $scope.enddate, weatherAttributes.attributes[attr]);
-          } else {
-            $scope.loadWeatherAttrForDay($scope.selectedDetailDate, weatherAttributes.attributes[attr]);
-          }
-        }
-      }
+    .controller('lineChartController', function($scope, $http, $element, updateFormatter, ChartResult, dataSetFactory, CHART_MODE) {
 
       /**
        * Reloads all datasets which are defined in the dataset configuration
-       * If the weather data is already loaded it also reloads weather data
        */
       $scope.reloadAllDatasets = function() {
         angular.forEach(dataSetFactory.datasets, function(dataset) {
-          $scope.getChartData($scope.startdate, $scope.enddate, dataset.url, dataset.resultFieldName);
+          $scope.getChartData($scope.startdate, $scope.enddate, dataset);
         });
-
-        if ($scope.weatherdata.length > 0) {
-          for (var attr in weatherAttributes.attributes) {
-            $scope.loadWeatherAttribute($scope.startdate, $scope.enddate, weatherAttributes.attributes[attr]);
-          }
-        }
       }
 
       /**
@@ -40,57 +20,18 @@
        * @param {String} url - REST API Url
        * @param {String} resultFieldName - Name of JSON result field
        */
-      $scope.getChartData = function(startdate, enddate, url, resultFieldName) {
+      $scope.getChartData = function(startdate, enddate, dataset) {
         $scope.dataLoading = true;
         $scope.chartmode = CHART_MODE.period;
         $http({
           method: 'GET',
-          url: url + 'startdate=' + startdate + '&enddate=' + enddate
+          url: dataset.getPeriodUrl(startdate, enddate)
         }).success(function(data) {
-
-          var dates = getConvertedDates(data[resultFieldName].x);
-          $scope.chartdata = ChartResult.createNew(dates, data[resultFieldName].counts);
+          
+          var dates = getConvertedDates(data[dataset.resultFieldName].x);
+          $scope.chartdata = ChartResult.createNew(dates, data[dataset.resultFieldName].counts);
           $scope.loadedData.push(dates);
-          $scope.loadedData.push(data[resultFieldName].counts);
-          $scope.dataLoading = false;
-        });
-      }
-
-      /**
-       * Loads weather data for the given period of time
-       * @param {Date} startdate
-       * @param {Date} enddate
-       * @param {String} Name of weather attribute
-       */
-      $scope.loadWeatherAttribute = function(startdate, enddate, attr) {
-        $scope.dataLoading = true;
-        var weatherUrl = "/weatherperiod?";
-        $http({
-          method: 'GET',
-          url: weatherUrl + 'startdate=' + startdate + '&enddate=' + enddate + '&attr=' + attr
-        }).success(function(data) {
-          $scope.weatherdata.push(data["Result"].weather);
-          $scope.loadedData.push(data["Result"].weather);
-          $scope.dataLoading = false;
-        });
-      }
-
-      /**
-       * Loads time value series for the given date and the given weather attribute
-       * adds the dataset to the chart data
-       * @param {Date} date - date to load the data for
-       * @param {String} attr - Name of weather attribute
-       */
-      $scope.loadWeatherAttrForDay = function(date, attr) {
-        $scope.dataLoading = true;
-        var weatherUrl = "/weatherdetail?";
-
-        $http({
-          method: 'GET',
-          url: weatherUrl + 'day=' + getDateStringForReq(date) + '&attr=' + attr
-        }).success(function(data) {
-          $scope.weatherdata.push(data["Result"].weather);
-          $scope.loadedData.push(data["Result"].weather);
+          $scope.loadedData.push(data[dataset.resultFieldName].counts);
           $scope.dataLoading = false;
         });
       }
@@ -104,15 +45,8 @@
         $scope.loadedData = new Array();
 
         angular.forEach(dataSetFactory.datasets, function(dataset, key) {
-          getDayDetailsData(daySelected, dataset.dataId, dataset.detailUrl, dataset.resultFieldName);
+          getDayDetailsData(dataset, daySelected);
         });
-
-        if ($scope.weatherdata.length > 0) {
-          for (var attr in weatherAttributes.attributes) {
-            $scope.loadWeatherAttrForDay(daySelected, weatherAttributes.attributes[attr]);
-          }
-        }
-
       }
 
       /**
@@ -145,22 +79,22 @@
        * @param {Date} daySelected - The selected Day for the detail view
        * @param {string|number} chartId - unique id of the chart
        */
-      function getDayDetailsData(daySelected, chartId, detailUrl, resultFieldName) {
+      function getDayDetailsData(dataset, daySelected) {
         $scope.dataLoading = true;
         $scope.selectedDetailDate = daySelected;
 
         $http({
           method: 'GET',
-          url: detailUrl + 'day=' + getDateStringForReq(daySelected)
+          url: dataset.getDayDetailUrl(getDateStringForReq(daySelected))
         }).success(function(data) {
 
           //Workaround for date parsing issue
           //c3 can't parse date format YYYY-MM-DDThh:mm:ss.sTZD
-          var dates = getConvertedDates(data[resultFieldName].x);
+          var dates = getConvertedDates(data[dataset.resultFieldName].x);
 
-          $scope.chartdata = ChartResult.createNew(dates, data[resultFieldName].counts);
+          $scope.chartdata = ChartResult.createNew(dates, data[dataset.resultFieldName].counts);
           $scope.loadedData.push(dates);
-          $scope.loadedData.push(data[resultFieldName].counts);
+          $scope.loadedData.push(data[dataset.resultFieldName].counts);
           updateFormatter(true);
           $scope.dataLoading = false;
 

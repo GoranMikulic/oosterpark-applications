@@ -2,7 +2,7 @@
   /**
    * Custom directive for linecharts
    */
-  angular.module('dataAnalizingApp').directive('ngLinechart', function($compile, dataSetFactory, updateFormatter, timeSeriesChart, multiaxesChart, weatherAttributes) {
+  angular.module('dataAnalizingApp').directive('ngLinechart', function($compile, dataSetFactory, updateFormatter, multiaxesChart) {
     var uniqueId = 1;
 
     return {
@@ -15,7 +15,6 @@
       controller: 'lineChartController',
       link: function(scope, element, iAttrs, ctrl) {
         scope.uniqueId = uniqueId++;
-        scope.weatherdata = new Array();
         scope.loadedData = new Array();
         //Loading data for every defined dataset
         scope.reloadAllDatasets();
@@ -33,22 +32,12 @@
                 ]
               });
             } else {
-              scope.lineChart = timeSeriesChart(scope.chartdata.dates, scope.chartdata.counts, scope.uniqueId, scope.getDayDetails);
+              scope.lineChart = multiaxesChart(scope.loadedData, scope.uniqueId, scope.getDayDetails);
             }
 
           }
 
         }, false);
-
-        scope.$watch('weatherdata', function(newVal) {
-          if (newVal) {
-            if (scope.lineChart) {
-              //creates chart with second axis for weather data
-              scope.lineChart = multiaxesChart(scope.loadedData, scope.uniqueId, scope.getDayDetails);
-            }
-          }
-
-        }, true);
 
         scope.refresh = function() {
           updateFormatter();
@@ -64,9 +53,6 @@
           $("body").animate({
             scrollTop: el.offset().top
           }, "slow");
-        }
-        scope.loadWeather = function() {
-          scope.loadWeatherData();
         }
       }
     }
