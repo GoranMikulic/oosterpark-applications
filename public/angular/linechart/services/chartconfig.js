@@ -24,4 +24,9 @@
     y2label: 'Weather'
   });
 
+  angular.module('dataAnalizingApp').constant('CHART_MODE', {
+    period: "Period-View",
+    day: "Day-View"
+  });
+
 })();

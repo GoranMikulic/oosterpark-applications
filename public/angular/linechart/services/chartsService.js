@@ -1,12 +1,6 @@
 (function() {
   "use strict";
 
-
-  angular.module('dataAnalizingApp').constant('CHART_MODE', {
-    period: "Period-View",
-    day: "Day-View"
-  });
-
   /**
    * Returns chart with second Y-Axis for weather data
    * @param {Array} loadedData - Datasets to load
