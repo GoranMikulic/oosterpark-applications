@@ -1,9 +1,12 @@
 (function() {
   "use strict";
 
+  /**
+  * Defines the model for a data source
+  */
   angular.module('dataAnalizingApp').factory('DataSource', function() {
     /**
-     * Defines the model for a data source
+     * Constructor
      * @param {String} url - Url for period query
      * @param {String} detailUrl - Url to query data of a day
      * @param {String} resultFieldName - JSON field name for the result list of the requests

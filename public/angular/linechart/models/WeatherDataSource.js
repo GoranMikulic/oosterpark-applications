@@ -1,6 +1,9 @@
 (function() {
   "use strict";
 
+  /**
+  * Model for a weather data source, extends DataSource
+  */
   angular.module('dataAnalizingApp').factory('WeatherDataSource', function(DataSource) {
 
     WeatherDataSource.prototype = new DataSource();
