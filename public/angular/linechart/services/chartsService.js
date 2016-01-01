@@ -14,7 +14,7 @@
    * @param {function} callback - callback function for onClick event for a datapoint
    * @returns chart with second Y-Axis for weather data
    */
-  angular.module('dataAnalizingApp').factory('multiaxesChart', function(updateFormatter, weatherAttributes) {
+  angular.module('dataAnalizingApp').factory('multiaxesChart', function(updateFormatter, chartconfig) {
     return function(loadedData, uniqueId, callback) {
       updateFormatter();
 
@@ -29,16 +29,9 @@
             callback(e.x);
           },
           columns: loadedData,
-          names: weatherAttributes.labels,
-          axes: {
-            x: 'y',
-            temp: 'y2',
-            windspeed: 'y2',
-            rain: 'y2',
-            humidity: 'y2',
-            clouds: 'y2'
-          },
-          hide: weatherAttributes.attributes
+          names: chartconfig.labels,
+          axes: chartconfig.axes,
+          hide: chartconfig.datasetsToHide
         },
         axis: {
           y: {

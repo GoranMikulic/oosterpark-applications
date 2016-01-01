@@ -5,7 +5,7 @@
 
     WeatherDataSource.prototype = new DataSource();
 
-    function WeatherDataSource(url, detailUrl, dataId, resultFieldName, attr) {
+    function WeatherDataSource(url, detailUrl, resultFieldName, attr) {
       DataSource.apply(this, arguments);
       this.attr = attr;
     }
@@ -21,15 +21,4 @@
     return WeatherDataSource;
   });
 
-  angular.module('dataAnalizingApp').constant('weatherAttributes', {
-    attributes: ["temp", "windspeed", "rain", "humidity", "clouds"],
-    labels: {
-      temp: 'Temparature in °C',
-      windspeed: 'Windspeed in m/s',
-      rain: 'Rain in mm',
-      humidity: 'Humidity (%)',
-      clouds: 'Cloudiness (%)'
-    }
-  });
-  
 })();

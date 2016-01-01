@@ -1,0 +1,27 @@
+(function() {
+  "use strict";
+
+  angular.module('dataAnalizingApp').constant('chartconfig', {
+    datasetsToHide: ["temp", "windspeed", "rain", "humidity", "clouds"],
+    labels: {
+      temp: 'Temparature in °C',
+      windspeed: 'Windspeed in m/s',
+      rain: 'Rain in mm',
+      humidity: 'Humidity (%)',
+      clouds: 'Cloudiness (%)',
+      wifidevices: 'Amount of Wifi-Devices',
+      btdevices: 'Amount of Bluetooth-Devices'
+    },
+    axes: {
+      x: 'y',
+      temp: 'y2',
+      windspeed: 'y2',
+      rain: 'y2',
+      humidity: 'y2',
+      clouds: 'y2'
+    },
+    y1label: 'Amount of Devices',
+    y2label: 'Weather'
+  });
+
+})();

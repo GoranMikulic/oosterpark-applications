@@ -27,7 +27,6 @@
           method: 'GET',
           url: dataset.getPeriodUrl(startdate, enddate)
         }).success(function(data) {
-          
           var dates = getConvertedDates(data[dataset.resultFieldName].x);
           $scope.chartdata = ChartResult.createNew(dates, data[dataset.resultFieldName].counts);
           $scope.loadedData.push(dates);

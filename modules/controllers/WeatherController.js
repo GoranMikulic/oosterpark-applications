@@ -44,7 +44,8 @@ module.exports = {
         var datesBetween = Utils.getDatesBetween(new Date(startDate), new Date(endDate));
 
         for (date in datesBetween) {
-          dates.push(datesBetween[date]);
+          //setting hours to 00:00:00 for period data
+          dates.push(datesBetween[date].setHours(0, 0, 0, 0));
 
           var dateToCompare = new Date(datesBetween[date].setHours(13, 0, 0, 0));
           var weatherAttributeToPush = undefined;
