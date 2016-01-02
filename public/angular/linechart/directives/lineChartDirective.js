@@ -20,16 +20,13 @@
         scope.reloadAllDatasets();
 
         //listen for chart data changes and update chart
-        scope.$watch('chartdata', function(newVal) {
+        scope.$watch('loadedData', function(newVal) {
           if (newVal) {
             //if chart already exists just reload data
             if (scope.lineChart) {
 
               scope.lineChart.load({
-                columns: [
-                  scope.chartdata.dates,
-                  scope.chartdata.counts
-                ]
+                columns: scope.loadedData
               });
             } else {
               scope.lineChart = multiaxesChart(scope.loadedData, scope.uniqueId, scope.getDayDetails);

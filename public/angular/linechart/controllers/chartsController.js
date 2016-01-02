@@ -4,10 +4,13 @@
   angular.module('dataAnalizingApp')
     .controller('lineChartController', function($scope, $http, $element, updateFormatter, ChartResult, dataSetFactory, CHART_MODE) {
 
+      var requestsRemaining = dataSetFactory.datasets.length;
+      $scope.loadBuffer = new Array();
       /**
        * Reloads all datasets which are defined in the dataset configuration
        */
       $scope.reloadAllDatasets = function() {
+        $scope.loadBuffer = new Array();
         angular.forEach(dataSetFactory.datasets, function(dataset) {
           $scope.getChartData($scope.startdate, $scope.enddate, dataset);
         });
@@ -27,11 +30,19 @@
           method: 'GET',
           url: dataset.getPeriodUrl(startdate, enddate)
         }).success(function(data) {
+          console.log(dataset.getPeriodUrl(startdate, enddate) + " loaded");
           var dates = getConvertedDates(data[dataset.resultFieldName].x);
           $scope.chartdata = ChartResult.createNew(dates, data[dataset.resultFieldName].counts);
-          $scope.loadedData.push(dates);
-          $scope.loadedData.push(data[dataset.resultFieldName].counts);
+          $scope.loadBuffer.push(dates);
+          $scope.loadBuffer.push(data[dataset.resultFieldName].counts);
           $scope.dataLoading = false;
+
+          requestsRemaining--;
+          if(requestsRemaining == 0) {
+            console.log("all loaded");
+            $scope.loadedData = $scope.loadBuffer;
+            requestsRemaining = dataSetFactory.datasets.length;
+          }
         });
       }
 
@@ -42,6 +53,7 @@
       $scope.getDayDetails = function(daySelected) {
         $scope.chartmode = CHART_MODE.day + " for " + daySelected.getDate() + "." + (daySelected.getMonth() + 1) + "." + daySelected.getFullYear();
         $scope.loadedData = new Array();
+        $scope.loadBuffer = new Array();
 
         angular.forEach(dataSetFactory.datasets, function(dataset, key) {
           getDayDetailsData(dataset, daySelected);
@@ -91,11 +103,19 @@
           //c3 can't parse date format YYYY-MM-DDThh:mm:ss.sTZD
           var dates = getConvertedDates(data[dataset.resultFieldName].x);
 
+          console.log(dataset.getDayDetailUrl(getDateStringForReq(daySelected)) + " loaded");
           $scope.chartdata = ChartResult.createNew(dates, data[dataset.resultFieldName].counts);
-          $scope.loadedData.push(dates);
-          $scope.loadedData.push(data[dataset.resultFieldName].counts);
+          $scope.loadBuffer.push(dates);
+          $scope.loadBuffer.push(data[dataset.resultFieldName].counts);
           updateFormatter(true);
           $scope.dataLoading = false;
+
+          requestsRemaining--;
+          if(requestsRemaining == 0) {
+            console.log("all loaded");
+            $scope.loadedData = $scope.loadBuffer;
+            requestsRemaining = dataSetFactory.datasets.length;
+          }
 
         });
       }
