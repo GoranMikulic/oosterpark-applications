@@ -14,7 +14,7 @@
        */
       $scope.initLiveChart = function() {
         //init chart data
-        $scope.chartdata = ChartResult.createNew(['x'], ['count of devices']);
+        $scope.chartdata = ChartResult.createNew(['x'], ['Amount of Devices']);
         //creating line chart
         $scope.lineChart = LiveChart.createNew($scope.chartdata);
 
