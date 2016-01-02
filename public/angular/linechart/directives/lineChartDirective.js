@@ -15,7 +15,7 @@
       controller: 'lineChartController',
       link: function(scope, element, iAttrs, ctrl) {
         scope.uniqueId = uniqueId++;
-        scope.loadedData = new Array();
+
         //Loading data for every defined dataset
         scope.reloadAllDatasets();
 
@@ -25,6 +25,18 @@
             //if chart already exists just reload data
             if (scope.lineChart) {
 
+              /**
+              * Workaround for chart rendering issue,
+              * if chart loads all datasets at once chart freezes at some point.
+              * First loading x values and one value series. After that loading
+              * all datasets.
+              */
+              scope.lineChart.load({
+                columns: [
+                  scope.loadedData[0],
+                  scope.loadedData[1],
+                ]
+              });
               scope.lineChart.load({
                 columns: scope.loadedData
               });

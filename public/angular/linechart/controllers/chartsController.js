@@ -4,13 +4,20 @@
   angular.module('dataAnalizingApp')
     .controller('lineChartController', function($scope, $http, $element, updateFormatter, ChartResult, dataSetFactory, CHART_MODE) {
 
+      //Counter to determine when all data sources are loaded
       var requestsRemaining = dataSetFactory.datasets.length;
-      $scope.loadBuffer = new Array();
+      //Buffer to collect data until all datasets are loaded
+      var loadBuffer = new Array();
+      //Holding chart data
+      $scope.loadedData = new Array();
+
       /**
        * Reloads all datasets which are defined in the dataset configuration
        */
       $scope.reloadAllDatasets = function() {
-        $scope.loadBuffer = new Array();
+        loadBuffer = new Array();
+        updateFormatter();
+
         angular.forEach(dataSetFactory.datasets, function(dataset) {
           $scope.getChartData($scope.startdate, $scope.enddate, dataset);
         });
@@ -31,19 +38,48 @@
           url: dataset.getPeriodUrl(startdate, enddate)
         }).success(function(data) {
           console.log(dataset.getPeriodUrl(startdate, enddate) + " loaded");
-          var dates = getConvertedDates(data[dataset.resultFieldName].x);
-          $scope.chartdata = ChartResult.createNew(dates, data[dataset.resultFieldName].counts);
-          $scope.loadBuffer.push(dates);
-          $scope.loadBuffer.push(data[dataset.resultFieldName].counts);
-          $scope.dataLoading = false;
-
-          requestsRemaining--;
-          if(requestsRemaining == 0) {
-            console.log("all loaded");
-            $scope.loadedData = $scope.loadBuffer;
-            requestsRemaining = dataSetFactory.datasets.length;
-          }
+          processChartResult(data, dataset);
         });
+      }
+
+      /**
+       * Requesting and fetching data for a particular day
+       * TODO: rename! returns nothing - therefore no get... name
+       * @param {Date} daySelected - The selected Day for the detail view
+       * @param {string|number} chartId - unique id of the chart
+       */
+      function getDayDetailsData(dataset, daySelected) {
+        $scope.dataLoading = true;
+        $scope.selectedDetailDate = daySelected;
+
+        $http({
+          method: 'GET',
+          url: dataset.getDayDetailUrl(getDateStringForReq(daySelected))
+        }).success(function(data) {
+          console.log(dataset.getDayDetailUrl(getDateStringForReq(daySelected)) + " loaded");
+          processChartResult(data, dataset);
+
+        });
+      }
+
+      function processChartResult(data, dataset) {
+        var dates = getConvertedDates(data[dataset.resultFieldName].x);
+
+        //First request loads dates, avoid to load multiple datasets for x-axis
+        if(requestsRemaining == dataSetFactory.datasets.length){
+          loadBuffer.push(dates);
+        }
+        loadBuffer.push(data[dataset.resultFieldName].counts);
+        requestsRemaining--;
+
+        //Waiting until all defined datasets are loaded to create complete result
+        if(requestsRemaining == 0) {
+          console.log("all loaded");
+          $scope.loadedData = loadBuffer;
+          requestsRemaining = dataSetFactory.datasets.length;
+        }
+
+        $scope.dataLoading = false;
       }
 
       /**
@@ -53,8 +89,8 @@
       $scope.getDayDetails = function(daySelected) {
         $scope.chartmode = CHART_MODE.day + " for " + daySelected.getDate() + "." + (daySelected.getMonth() + 1) + "." + daySelected.getFullYear();
         $scope.loadedData = new Array();
-        $scope.loadBuffer = new Array();
-
+        loadBuffer = new Array();
+        updateFormatter(true);
         angular.forEach(dataSetFactory.datasets, function(dataset, key) {
           getDayDetailsData(dataset, daySelected);
         });
@@ -82,42 +118,6 @@
         curdate.setDate(curdate.getDate() - 30);
         var month = curdate.getMonth() + 1;
         return curdate.getFullYear() + '-' + month + '-' + curdate.getDate();
-      }
-
-      /**
-       * Requesting and fetching data for a particular day
-       * TODO: rename! returns nothing - therefore no get... name
-       * @param {Date} daySelected - The selected Day for the detail view
-       * @param {string|number} chartId - unique id of the chart
-       */
-      function getDayDetailsData(dataset, daySelected) {
-        $scope.dataLoading = true;
-        $scope.selectedDetailDate = daySelected;
-
-        $http({
-          method: 'GET',
-          url: dataset.getDayDetailUrl(getDateStringForReq(daySelected))
-        }).success(function(data) {
-
-          //Workaround for date parsing issue
-          //c3 can't parse date format YYYY-MM-DDThh:mm:ss.sTZD
-          var dates = getConvertedDates(data[dataset.resultFieldName].x);
-
-          console.log(dataset.getDayDetailUrl(getDateStringForReq(daySelected)) + " loaded");
-          $scope.chartdata = ChartResult.createNew(dates, data[dataset.resultFieldName].counts);
-          $scope.loadBuffer.push(dates);
-          $scope.loadBuffer.push(data[dataset.resultFieldName].counts);
-          updateFormatter(true);
-          $scope.dataLoading = false;
-
-          requestsRemaining--;
-          if(requestsRemaining == 0) {
-            console.log("all loaded");
-            $scope.loadedData = $scope.loadBuffer;
-            requestsRemaining = dataSetFactory.datasets.length;
-          }
-
-        });
       }
 
       /* Workaround for date parsing issue
