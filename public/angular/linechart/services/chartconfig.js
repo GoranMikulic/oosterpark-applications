@@ -10,7 +10,9 @@
       humidity: 'Humidity (%)',
       clouds: 'Cloudiness (%)',
       wifidevices: 'Amount of Wifi-Devices',
-      btdevices: 'Amount of Bluetooth-Devices'
+      btdevices: 'Amount of Bluetooth-Devices',
+      walkers: 'Amount of walkers',
+      runners: 'Amount of runners'
     },
     axes: {
       x: 'y',
