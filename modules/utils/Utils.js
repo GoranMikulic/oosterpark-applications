@@ -65,61 +65,35 @@ module.exports = {
    * Returns true if the hour matches
    */
   hourComparator: function(deviceCaptureTime, timeToCompare, device) {
-    if (deviceCaptureTime.getHours() == timeToCompare.getHours()) {
-      return true;
-    }
-    return false;
+    return isHourEqual(deviceCaptureTime, timeToCompare);
   },
   /**
    * Compares true if the day matches
    */
   dayComparator: function(deviceCaptureTime, timeToCompare, device) {
-
-    //Set time to 00:00:00 to compare days only
-    deviceCaptureTime.setHours(0, 0, 0, 0);
-    timeToCompare.setHours(0, 0, 0, 0);
-
-    if (deviceCaptureTime.getTime() == timeToCompare.getTime()) {
-      return true;
-    }
-
-    return false;
+    return isDayEqual(deviceCaptureTime, timeToCompare);
   },
   walkerComparator: function(deviceCaptureTime, timeToCompare, device) {
-
-    if (module.exports.dayComparator(deviceCaptureTime, timeToCompare, device)) {
-      if (device.Speed < 0.5) {
-        console.log(deviceCaptureTime + device.Speed);
-        return true;
-      }
+    if (isDayEqual(deviceCaptureTime, timeToCompare) && isWalking(device.Speed)) {
+      return true;
     }
     return false;
   },
   walkerComparatorDay: function(deviceCaptureTime, timeToCompare, device) {
-
-    if (module.exports.hourComparator(deviceCaptureTime, timeToCompare, device)) {
-      if (device.Speed < 0.5) {
-        console.log(deviceCaptureTime + device.Speed);
-        return true;
-      }
+    if (isHourEqual(deviceCaptureTime, timeToCompare) && isWalking(device.Speed)) {
+      return true;
     }
     return false;
   },
   runnerComparator: function(deviceCaptureTime, timeToCompare, device) {
-    if (module.exports.dayComparator(deviceCaptureTime, timeToCompare, device)) {
-      if (device.Speed > 0.5) {
-        console.log(deviceCaptureTime + device.Speed);
-        return true;
-      }
+    if (isDayEqual(deviceCaptureTime, timeToCompare) && !isWalking(device.Speed)) {
+      return true;
     }
     return false;
   },
   runnerComparatorDay: function(deviceCaptureTime, timeToCompare, device) {
-    if (module.exports.hourComparator(deviceCaptureTime, timeToCompare, device)) {
-      if (device.Speed > 0.5) {
-        console.log(deviceCaptureTime + device.Speed);
-        return true;
-      }
+    if (isHourEqual(deviceCaptureTime, timeToCompare) && !isWalking(device.Speed)) {
+      return true;
     }
     return false;
   },
@@ -159,6 +133,32 @@ var getDevicesCount = function(time, devicesArray, datePropertyName, comparator,
   var result = remove_duplicates_safe(buffer);
 
   return result.length;
+}
+
+function isWalking(speed)  {
+  if (speed < 0.5) {
+    return true;
+  }
+  return false;
+}
+
+function isHourEqual(deviceCaptureTime, timeToCompare)  {
+  if (deviceCaptureTime.getHours() == timeToCompare.getHours()) {
+    return true;
+  }
+  return false;
+}
+
+function isDayEqual(deviceCaptureTime, timeToCompare) {
+  //Set time to 00:00:00 to compare days only
+  deviceCaptureTime.setHours(0, 0, 0, 0);
+  timeToCompare.setHours(0, 0, 0, 0);
+
+  if (deviceCaptureTime.getTime() == timeToCompare.getTime()) {
+    return true;
+  }
+
+  return false;
 }
 
 function remove_duplicates_safe(arr) {
