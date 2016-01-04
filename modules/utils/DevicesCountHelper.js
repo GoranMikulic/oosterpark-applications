@@ -18,7 +18,7 @@ module.exports = {
     }
   },
 
-  fetchDevicesForPeriod: function(startDate, endDate, datePropertyName, comparator, dataname, response, dbFunction, entityIdentifier) {
+  returnStatsForPeriod: function(startDate, endDate, datePropertyName, comparator, dataname, response, dbFunction, entityIdentifier) {
     var isValidPeriodQuery = Utils.checkPeriodQuery(startDate, endDate);
 
     if (isValidPeriodQuery) {
@@ -59,7 +59,7 @@ function getDevicesCountsForTimeRange(timeRange, devicesArray, datePropertyName,
  * Returns amount of devices for a particular date,
  * values are compared with the comparator function
  */
-var getDevicesCount = function(time, devicesArray, datePropertyName, comparator, identifier) {
+function getDevicesCount(time, devicesArray, datePropertyName, comparator, identifier) {
 
   var counter = 0;
   var buffer = new Array();
@@ -78,9 +78,9 @@ var getDevicesCount = function(time, devicesArray, datePropertyName, comparator,
 }
 
 /**
-* Removes duplicate elements from Array
-* {Array} arr - Array to clean off duplicates
-*/
+ * Removes duplicate elements from Array
+ * {Array} arr - Array to clean off duplicates
+ */
 function remove_duplicates_safe(arr) {
   var obj = {};
   var arr2 = [];

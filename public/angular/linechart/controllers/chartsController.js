@@ -37,7 +37,6 @@
           method: 'GET',
           url: dataset.getPeriodUrl(startdate, enddate)
         }).success(function(data) {
-          console.log(dataset.getPeriodUrl(startdate, enddate) + " loaded");
           processChartResult(data, dataset);
         });
       }

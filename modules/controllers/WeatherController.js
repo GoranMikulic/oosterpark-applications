@@ -30,8 +30,7 @@ module.exports = {
     var endDate = req.query.enddate;
     var weatherAttribute = req.query.attr;
 
-    var isValidPeriodQuery = Utils.checkPeriodQuery(startDate, endDate);
-    if (isValidPeriodQuery) {
+    if (Utils.checkPeriodQuery(startDate, endDate)) {
 
       Weather.getWeatherForPeriod(startDate, endDate, function(queryResult) {
 
@@ -41,24 +40,9 @@ module.exports = {
         var weatherInfo = new Array();
         weatherInfo.push(weatherAttribute);
 
-        var datesBetween = Utils.getDatesBetween(new Date(startDate), new Date(endDate));
-
-        for (date in datesBetween) {
-          //setting hours to 00:00:00 for period data
-          dates.push(datesBetween[date].setHours(0, 0, 0, 0));
-
-          var dateToCompare = new Date(datesBetween[date].setHours(13, 0, 0, 0));
-          var weatherAttributeToPush = undefined;
-
-          for (element in queryResult) {
-            var winfo = queryResult[element];
-
-            if ((winfo.date.getHours() == 13) && dateToCompare.getTime() === winfo.date.getTime()) {
-              weatherAttributeToPush = winfo[weatherAttribute];
-            }
-          }
-          weatherInfo.push(weatherAttributeToPush);
-        }
+        var weatherStats = getWeatherDataForTimePeriod(startDate, endDate, weatherAttribute, queryResult);
+        dates.push.apply(dates, weatherStats.dates);
+        weatherInfo.push.apply(weatherInfo, weatherStats.weatherData);
 
         var result = {
           x: dates,
@@ -129,6 +113,38 @@ module.exports = {
   }
 
 }
+
+function getWeatherDataForTimePeriod(startDate, endDate, weatherAttribute, queryResult) {
+  var datesBetween = Utils.getDatesBetween(new Date(startDate), new Date(endDate));
+  var dates = new Array();
+  var weatherData = new Array();
+
+  for (date in datesBetween) {
+    //setting hours to 00:00:00 for period data
+    dates.push(datesBetween[date].setHours(0, 0, 0, 0));
+
+    var dateToCompare = new Date(datesBetween[date].setHours(13, 0, 0, 0));
+
+    weatherData.push(getWeatherValueForDate(dateToCompare, weatherAttribute, queryResult));
+  }
+
+  return {
+    dates: dates,
+    weatherData: weatherData
+  }
+}
+
+function getWeatherValueForDate(dateToCompare, weatherAttribute,queryResult) {
+  for (element in queryResult) {
+    var winfo = queryResult[element];
+
+    if (dateToCompare.getTime() === winfo.date.getTime()) {
+      return winfo[weatherAttribute];
+    }
+  }
+  return null;
+}
+
 /**
 * Callback function for weather response, parses JSON object
 */

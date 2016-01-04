@@ -6,14 +6,6 @@ var WifiDeviceService = require('./controllers/WifiDeviceController');
 var BluetoothDeviceController = require('./controllers/BluetoothDeviceController');
 var WeatherController = require('./controllers/WeatherController');
 
-//Route to return all wifi devices
-router.route('/wifidevices')
-  .get(WifiDeviceService.getWifiDevices);
-
-//Route to return device with the given ID
-router.route('/wifidevices/:device_id')
-  .get(WifiDeviceService.getWifiDeviceById);
-
 //Route to return count of wifi devices in a period
 router.route('/wifidevicescount').get(WifiDeviceService.getWifiDevicesCountInPeriod);
 
