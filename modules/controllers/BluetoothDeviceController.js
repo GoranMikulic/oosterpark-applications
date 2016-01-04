@@ -1,5 +1,13 @@
 var BluetoothDevice = require('../db/BluetoothDevice');
 var Utils = require('../utils/Utils');
+var Comparators = require('../utils/Comparators');
+var DevicesCountHelper = require('./DevicesCountHelper');
+var ATTR_NAME_TIME = 'Time';
+var ATTR_NAME_BTDEVICES = 'btdevices';
+var ATTR_NAME_WALKERS = 'walkers';
+var ATTR_NAME_RUNNERS = 'runners';
+var ATTR_NAME_BT_ENTITY_ID = 'runners';
+
 
 module.exports = {
   getDevices: function(req, res) {
@@ -11,68 +19,24 @@ module.exports = {
    *  Returns the amount of wifi devices for every day in the given period
    */
   getDevicesCountInPeriod: function(req, res) {
-    var startDate = req.query.startdate;
-    var endDate = req.query.enddate;
-
-    fetchDevicesForPeriod(startDate, endDate, Utils.dayComparator, 'btdevices', res);
+    DevicesCountHelper.fetchDevicesForPeriod(req.query.startdate, req.query.enddate, ATTR_NAME_TIME, Comparators.dayComparator, ATTR_NAME_BTDEVICES, res, BluetoothDevice.queryDeivcesInPeriod, ATTR_NAME_BT_ENTITY_ID);
   },
   getWalkersCountInPeriod: function(req, res) {
-    var startDate = req.query.startdate;
-    var endDate = req.query.enddate;
-
-    fetchDevicesForPeriod(startDate, endDate, Utils.walkerComparator, 'walkers', res);
+    DevicesCountHelper.fetchDevicesForPeriod(req.query.startdate, req.query.enddate, ATTR_NAME_TIME, Comparators.walkerComparator, ATTR_NAME_WALKERS, res, BluetoothDevice.queryDeivcesInPeriod, ATTR_NAME_BT_ENTITY_ID);
   },
   getRunnersCountInPeriod: function(req, res) {
-    var startDate = req.query.startdate;
-    var endDate = req.query.enddate;
-    fetchDevicesForPeriod(startDate, endDate, Utils.runnerComparator, 'runners', res);
+    DevicesCountHelper.fetchDevicesForPeriod(req.query.startdate, req.query.enddate, ATTR_NAME_TIME, Comparators.runnerComparator, ATTR_NAME_RUNNERS, res, BluetoothDevice.queryDeivcesInPeriod, ATTR_NAME_BT_ENTITY_ID);
   },
   /**
    *  Returns the amount of wifi devices for every day in the given period
    */
   getDevicesCountForDay: function(req, res) {
-    var day = req.query.day;
-    fetchDevicesForDay(day, Utils.hourComparator, 'btdevices', res);
+    DevicesCountHelper.fetchDevicesForDay(req.query.day, ATTR_NAME_TIME, Comparators.hourComparator, ATTR_NAME_BTDEVICES, res, BluetoothDevice.queryDeivcesInPeriod, ATTR_NAME_BT_ENTITY_ID);
   },
   getWalkersCountForDay: function(req, res) {
-    var day = req.query.day;
-    fetchDevicesForDay(day, Utils.walkerComparatorDay, 'walkers', res);
+    DevicesCountHelper.fetchDevicesForDay(req.query.day, ATTR_NAME_TIME, Comparators.walkerComparatorDay, ATTR_NAME_WALKERS, res, BluetoothDevice.queryDeivcesInPeriod, ATTR_NAME_BT_ENTITY_ID);
   },
   getRunnersCountForDay: function(req, res) {
-    var day = req.query.day;
-    fetchDevicesForDay(day, Utils.runnerComparatorDay, 'runners', res);
-  }
-}
-
-function fetchDevicesForDay(day, comparator, dataname, response) {
-
-  if (typeof day !== 'undefined') {
-    var start = day + ' 00:01:00';
-    var end = day + ' 23:59:00';
-
-    BluetoothDevice.queryDeivcesInPeriod(start, end, function(queryResult) {
-      var hours = Utils.getClockHours(day);
-      var result = Utils.getDevicesCountsForTimeRange(hours, queryResult, 'Time', comparator, dataname, 'Bluetooth_Id');
-
-      Utils.returnResult(response, result);
-    });
-  } else {
-    Utils.returnResult(response, {});
-  }
-}
-
-function fetchDevicesForPeriod(startDate, endDate, comparator, dataname, response) {
-  var isValidPeriodQuery = Utils.checkPeriodQuery(startDate, endDate);
-
-  if (isValidPeriodQuery) {
-    BluetoothDevice.queryDeivcesInPeriod(startDate, endDate, function(queryResult) {
-
-      var datesBetween = Utils.getDatesBetween(new Date(startDate), new Date(endDate));
-      var result = Utils.getDevicesCountsForTimeRange(datesBetween, queryResult, 'Time', comparator, dataname, 'Bluetooth_Id');
-
-      Utils.returnResult(response, result);
-    });
-  } else {
-    Utils.returnResult(response, {});
+    DevicesCountHelper.fetchDevicesForDay(req.query.day, ATTR_NAME_TIME, Comparators.runnerComparatorDay, ATTR_NAME_RUNNERS, res, BluetoothDevice.queryDeivcesInPeriod, ATTR_NAME_BT_ENTITY_ID);
   }
 }

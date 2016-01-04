@@ -1,5 +1,7 @@
 var WifiDevice = require('../db/WifiDevice');
 var Utils = require('../utils/Utils');
+var Comparators = require('../utils/Comparators');
+var DevicesCountHelper = require('./DevicesCountHelper');
 
 module.exports = {
   /**
@@ -39,19 +41,7 @@ module.exports = {
     var startDate = req.query.startdate;
     var endDate = req.query.enddate;
 
-    var isValidPeriodQuery = Utils.checkPeriodQuery(startDate, endDate);
-
-    if (isValidPeriodQuery) {
-      WifiDevice.queryDeivcesInPeriod(startDate, endDate, function(queryResult) {
-
-        var datesBetween = Utils.getDatesBetween(new Date(startDate), new Date(endDate));
-        var result = Utils.getDevicesCountsForTimeRange(datesBetween, queryResult, 'first_time_seen', Utils.dayComparator, 'wifidevices', 'address');
-
-        Utils.returnResult(res, result);
-      });
-    } else {
-      Utils.returnResult(res, {});
-    }
+    DevicesCountHelper.fetchDevicesForPeriod(startDate, endDate, 'first_time_seen', Comparators.dayComparator, 'wifidevices', res, WifiDevice.queryDeivcesInPeriod, 'address');
 
   },
   /**
@@ -59,27 +49,14 @@ module.exports = {
    */
   getWifiDevicesCountForDay: function(req, res) {
     var day = req.query.day;
-
-    if (typeof day !== 'undefined') {
-      var start = day + ' 00:01:00';
-      var end = day + ' 23:59:00';
-
-      WifiDevice.queryDeivcesInPeriod(start, end, function(queryResult) {
-        var hours = Utils.getClockHours(day);
-        var result = Utils.getDevicesCountsForTimeRange(hours, queryResult, 'first_time_seen', Utils.hourComparator, 'wifidevices', 'address');
-
-        Utils.returnResult(res, result);
-      });
-    } else {
-      Utils.returnResult(res, {});
-    }
+    DevicesCountHelper.fetchDevicesForDay(day, 'first_time_seen', Comparators.hourComparator, 'wifidevices', res, WifiDevice.queryDeivcesInPeriod, 'address');
   },
   /**
-  * Saves an array of wifi devices
-  * @param {device} devices
-  */
+   * Saves an array of wifi devices
+   * @param {device} devices
+   */
   saveWifiDevices: function(devices) {
-    devices.forEach(function(device){
+    devices.forEach(function(device) {
       WifiDevice.insertDevice(device.mac, device.firsttime, device.lasttime, device.signal_dbm);
     });
   }
