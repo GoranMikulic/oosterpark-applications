@@ -26,6 +26,14 @@ router.route('/btdevices').get(BluetoothDeviceController.getDevices);
 //Route to return count of bluetooth devices in a period
 router.route('/btdevicescount').get(BluetoothDeviceController.getDevicesCountInPeriod);
 
+router.route('/walkers').get(BluetoothDeviceController.getWalkersCountInPeriod);
+
+router.route('/walkersdetail').get(BluetoothDeviceController.getWalkersCountForDay);
+
+router.route('/runners').get(BluetoothDeviceController.getRunnersCountInPeriod);
+
+router.route('/runnersdetail').get(BluetoothDeviceController.getRunnersCountForDay);
+
 //Route to return count of a particular day
 router.route('/btdevicescountdetail').get(BluetoothDeviceController.getDevicesCountForDay);
 

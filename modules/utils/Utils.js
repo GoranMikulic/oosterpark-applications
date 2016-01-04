@@ -2,33 +2,32 @@ var devices = "Result";
 
 module.exports = {
   /*
-  * Returning DB result as JSON Object
-  */
+   * Returning DB result as JSON Object
+   */
   returnResult: function(res, rows) {
     var data = {};
     data["error"] = 1;
     data[devices] = "";
 
-    if(rows.length != 0){
-        data["error"] = 0;
-        data[devices] = rows;
-        res.json(data);
-    }else{
-        data[devices] = 'No devices Found..';
-        res.json(data);
+    if (rows.length != 0) {
+      data["error"] = 0;
+      data[devices] = rows;
+      res.json(data);
+    } else {
+      data[devices] = 'No devices Found..';
+      res.json(data);
     }
   },
 
   checkPeriodQuery: function(startDate, endDate) {
-    return typeof startDate !== 'undefined'
-    && typeof endDate !== 'undefined';
+    return typeof startDate !== 'undefined' && typeof endDate !== 'undefined';
   },
 
   getDatesBetween: function(startDate, stopDate) {
     Date.prototype.addDays = function(days) {
-       var dat = new Date(this.valueOf())
-       dat.setDate(dat.getDate() + days);
-       return dat;
+      var dat = new Date(this.valueOf())
+      dat.setDate(dat.getDate() + days);
+      return dat;
     }
 
     var dateArray = new Array();
@@ -43,7 +42,7 @@ module.exports = {
   /**
    * Returns the amounts of devices for a period of days
    */
-  getDevicesCountsForTimeRange: function(timeRange, devicesArray, datePropertyName, comparator, dataLabel, identifier) {
+  getDevicesCountsForTimeRange: function(timeRange, devicesArray, datePropertyName, comparator, dataLabel, entityId) {
     //array for date values
     var dates = new Array();
     dates.push('x');
@@ -52,7 +51,7 @@ module.exports = {
     counts.push(dataLabel);
 
     for (var time in timeRange) {
-      var counter = getDevicesCount(timeRange[time], devicesArray, datePropertyName, comparator, identifier);
+      var counter = getDevicesCount(timeRange[time], devicesArray, datePropertyName, comparator, entityId);
       dates.push(timeRange[time]);
       counts.push(counter);
     }
@@ -65,7 +64,7 @@ module.exports = {
   /**
    * Returns true if the hour matches
    */
-  isHourEqual: function(deviceCaptureTime, timeToCompare) {
+  hourComparator: function(deviceCaptureTime, timeToCompare, device) {
     if (deviceCaptureTime.getHours() == timeToCompare.getHours()) {
       return true;
     }
@@ -74,7 +73,7 @@ module.exports = {
   /**
    * Compares true if the day matches
    */
-  isDayEqual: function(deviceCaptureTime, timeToCompare) {
+  dayComparator: function(deviceCaptureTime, timeToCompare, device) {
 
     //Set time to 00:00:00 to compare days only
     deviceCaptureTime.setHours(0, 0, 0, 0);
@@ -84,6 +83,44 @@ module.exports = {
       return true;
     }
 
+    return false;
+  },
+  isWalker: function(deviceCaptureTime, timeToCompare, device) {
+
+    if (module.exports.dayComparator(deviceCaptureTime, timeToCompare, device)) {
+      if (device.Speed < 0.5) {
+        console.log(deviceCaptureTime + device.Speed);
+        return true;
+      }
+    }
+    return false;
+  },
+  isWalkerDay: function(deviceCaptureTime, timeToCompare, device) {
+
+    if (module.exports.hourComparator(deviceCaptureTime, timeToCompare, device)) {
+      if (device.Speed < 0.5) {
+        console.log(deviceCaptureTime + device.Speed);
+        return true;
+      }
+    }
+    return false;
+  },
+  isRunner: function(deviceCaptureTime, timeToCompare, device) {
+    if (module.exports.dayComparator(deviceCaptureTime, timeToCompare, device)) {
+      if (device.Speed > 0.5) {
+        console.log(deviceCaptureTime + device.Speed);
+        return true;
+      }
+    }
+    return false;
+  },
+  isRunnerDay: function(deviceCaptureTime, timeToCompare, device) {
+    if (module.exports.hourComparator(deviceCaptureTime, timeToCompare, device)) {
+      if (device.Speed > 0.5) {
+        console.log(deviceCaptureTime + device.Speed);
+        return true;
+      }
+    }
     return false;
   },
   /**
@@ -112,7 +149,7 @@ var getDevicesCount = function(time, devicesArray, datePropertyName, comparator,
   var buffer = new Array();
 
   for (var device in devicesArray) {
-    var compareResult = comparator(devicesArray[device][datePropertyName], time);
+    var compareResult = comparator(devicesArray[device][datePropertyName], time, devicesArray[device]);
     if (compareResult) {
       counter++;
       buffer.push(devicesArray[device][identifier]);
@@ -125,14 +162,14 @@ var getDevicesCount = function(time, devicesArray, datePropertyName, comparator,
 }
 
 function remove_duplicates_safe(arr) {
-    var obj = {};
-    var arr2 = [];
-    for (var i = 0; i < arr.length; i++) {
-        if (!(arr[i] in obj)) {
-            arr2.push(arr[i]);
-            obj[arr[i]] = true;
-        }
+  var obj = {};
+  var arr2 = [];
+  for (var i = 0; i < arr.length; i++) {
+    if (!(arr[i] in obj)) {
+      arr2.push(arr[i]);
+      obj[arr[i]] = true;
     }
-    return arr2;
+  }
+  return arr2;
 
 }
