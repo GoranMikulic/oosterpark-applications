@@ -20,7 +20,7 @@ module.exports = {
       BluetoothDevice.queryDeivcesInPeriod(startDate, endDate, function(queryResult) {
 
         var datesBetween = Utils.getDatesBetween(new Date(startDate), new Date(endDate));
-        var result = Utils.getDevicesCountsForTimeRange(datesBetween, queryResult, 'Time', Utils.isDayEqual, 'btdevices');
+        var result = Utils.getDevicesCountsForTimeRange(datesBetween, queryResult, 'Time', Utils.isDayEqual, 'btdevices', 'Bluetooth_Id');
 
         Utils.returnResult(res, result);
       });
@@ -41,7 +41,7 @@ module.exports = {
 
       BluetoothDevice.queryDeivcesInPeriod(start, end, function(queryResult) {
         var hours = Utils.getClockHours(day);
-        var result = Utils.getDevicesCountsForTimeRange(hours, queryResult, 'Time', Utils.isHourEqual, 'btdevices');
+        var result = Utils.getDevicesCountsForTimeRange(hours, queryResult, 'Time', Utils.isHourEqual, 'btdevices', 'Bluetooth_Id');
 
         Utils.returnResult(res, result);
       });

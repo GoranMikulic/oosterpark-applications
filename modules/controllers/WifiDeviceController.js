@@ -45,7 +45,7 @@ module.exports = {
       WifiDevice.queryDeivcesInPeriod(startDate, endDate, function(queryResult) {
 
         var datesBetween = Utils.getDatesBetween(new Date(startDate), new Date(endDate));
-        var result = Utils.getDevicesCountsForTimeRange(datesBetween, queryResult, 'first_time_seen', Utils.isDayEqual, 'wifidevices');
+        var result = Utils.getDevicesCountsForTimeRange(datesBetween, queryResult, 'first_time_seen', Utils.isDayEqual, 'wifidevices', 'address');
 
         Utils.returnResult(res, result);
       });
@@ -66,7 +66,7 @@ module.exports = {
 
       WifiDevice.queryDeivcesInPeriod(start, end, function(queryResult) {
         var hours = Utils.getClockHours(day);
-        var result = Utils.getDevicesCountsForTimeRange(hours, queryResult, 'first_time_seen', Utils.isHourEqual, 'wifidevices');
+        var result = Utils.getDevicesCountsForTimeRange(hours, queryResult, 'first_time_seen', Utils.isHourEqual, 'wifidevices', 'address');
 
         Utils.returnResult(res, result);
       });

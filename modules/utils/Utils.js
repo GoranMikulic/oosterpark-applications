@@ -43,7 +43,7 @@ module.exports = {
   /**
    * Returns the amounts of devices for a period of days
    */
-  getDevicesCountsForTimeRange: function(timeRange, devicesArray, datePropertyName, comparator, dataLabel) {
+  getDevicesCountsForTimeRange: function(timeRange, devicesArray, datePropertyName, comparator, dataLabel, identifier) {
     //array for date values
     var dates = new Array();
     dates.push('x');
@@ -52,7 +52,7 @@ module.exports = {
     counts.push(dataLabel);
 
     for (var time in timeRange) {
-      var counter = getDevicesCount(timeRange[time], devicesArray, datePropertyName, comparator);
+      var counter = getDevicesCount(timeRange[time], devicesArray, datePropertyName, comparator, identifier);
       dates.push(timeRange[time]);
       counts.push(counter);
     }
@@ -106,13 +106,33 @@ module.exports = {
  * Returns amount of devices for a particular date,
  * values are compared with the comparator function
  */
-var getDevicesCount = function(time, devicesArray, datePropertyName, comparator) {
+var getDevicesCount = function(time, devicesArray, datePropertyName, comparator, identifier) {
+
   var counter = 0;
+  var buffer = new Array();
+
   for (var device in devicesArray) {
     var compareResult = comparator(devicesArray[device][datePropertyName], time);
     if (compareResult) {
       counter++;
+      buffer.push(devicesArray[device][identifier]);
     }
   }
-  return counter;
+
+  var result = remove_duplicates_safe(buffer);
+
+  return result.length;
+}
+
+function remove_duplicates_safe(arr) {
+    var obj = {};
+    var arr2 = [];
+    for (var i = 0; i < arr.length; i++) {
+        if (!(arr[i] in obj)) {
+            arr2.push(arr[i]);
+            obj[arr[i]] = true;
+        }
+    }
+    return arr2;
+
 }

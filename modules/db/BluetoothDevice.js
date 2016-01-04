@@ -9,7 +9,7 @@ module.exports = {
     });
   },
   queryDeivcesInPeriod: function(startDate, endDate, fn) {
-      var query = "SELECT * FROM beacon_sense WHERE Time > ? && Time < ? GROUP BY Bluetooth_Id";
+      var query = "SELECT * FROM beacon_sense WHERE Time > ? && Time < ?";
       var params = [startDate, endDate];
 
       query = mysql.format(query,params);

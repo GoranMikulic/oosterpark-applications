@@ -10,7 +10,7 @@ module.exports = {
     });
   },
   queryDeivcesInPeriod: function(startDate, endDate, fn) {
-    var query = "SELECT * FROM piwifi WHERE first_time_seen > ? && first_time_seen < ? GROUP BY address";
+    var query = "SELECT * FROM piwifi WHERE first_time_seen > ? && first_time_seen < ?";
 
     var params = [startDate, endDate];
     query = mysql.format(query, params);
