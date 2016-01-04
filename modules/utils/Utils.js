@@ -85,7 +85,7 @@ module.exports = {
 
     return false;
   },
-  isWalker: function(deviceCaptureTime, timeToCompare, device) {
+  walkerComparator: function(deviceCaptureTime, timeToCompare, device) {
 
     if (module.exports.dayComparator(deviceCaptureTime, timeToCompare, device)) {
       if (device.Speed < 0.5) {
@@ -95,7 +95,7 @@ module.exports = {
     }
     return false;
   },
-  isWalkerDay: function(deviceCaptureTime, timeToCompare, device) {
+  walkerComparatorDay: function(deviceCaptureTime, timeToCompare, device) {
 
     if (module.exports.hourComparator(deviceCaptureTime, timeToCompare, device)) {
       if (device.Speed < 0.5) {
@@ -105,7 +105,7 @@ module.exports = {
     }
     return false;
   },
-  isRunner: function(deviceCaptureTime, timeToCompare, device) {
+  runnerComparator: function(deviceCaptureTime, timeToCompare, device) {
     if (module.exports.dayComparator(deviceCaptureTime, timeToCompare, device)) {
       if (device.Speed > 0.5) {
         console.log(deviceCaptureTime + device.Speed);
@@ -114,7 +114,7 @@ module.exports = {
     }
     return false;
   },
-  isRunnerDay: function(deviceCaptureTime, timeToCompare, device) {
+  runnerComparatorDay: function(deviceCaptureTime, timeToCompare, device) {
     if (module.exports.hourComparator(deviceCaptureTime, timeToCompare, device)) {
       if (device.Speed > 0.5) {
         console.log(deviceCaptureTime + device.Speed);

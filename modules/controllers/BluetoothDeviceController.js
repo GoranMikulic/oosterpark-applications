@@ -20,12 +20,12 @@ module.exports = {
     var startDate = req.query.startdate;
     var endDate = req.query.enddate;
 
-    fetchDevicesForPeriod(startDate, endDate, Utils.isWalker, 'walkers', res);
+    fetchDevicesForPeriod(startDate, endDate, Utils.walkerComparator, 'walkers', res);
   },
   getRunnersCountInPeriod: function(req, res) {
     var startDate = req.query.startdate;
     var endDate = req.query.enddate;
-    fetchDevicesForPeriod(startDate, endDate, Utils.isRunner, 'runners', res);
+    fetchDevicesForPeriod(startDate, endDate, Utils.runnerComparator, 'runners', res);
   },
   /**
    *  Returns the amount of wifi devices for every day in the given period
@@ -36,11 +36,11 @@ module.exports = {
   },
   getWalkersCountForDay: function(req, res) {
     var day = req.query.day;
-    fetchDevicesForDay(day, Utils.isWalkerDay, 'walkers', res);
+    fetchDevicesForDay(day, Utils.walkerComparatorDay, 'walkers', res);
   },
   getRunnersCountForDay: function(req, res) {
     var day = req.query.day;
-    fetchDevicesForDay(day, Utils.isRunnerDay, 'runners', res);
+    fetchDevicesForDay(day, Utils.runnerComparatorDay, 'runners', res);
   }
 }
 
