@@ -84,19 +84,7 @@ module.exports = {
 
         for (hour in hours) {
           dates.push(hours[hour]);
-
-          var weatherValueToPush = undefined;
-
-          for (element in queryResult) {
-            var winfo = queryResult[element];
-
-            if (winfo.date.getHours() == hours[hour].getHours()) {
-              weatherValueToPush = winfo[weatherAttribute];
-            }
-          }
-
-          weatherInfo.push(weatherValueToPush);
-
+          weatherInfo.push(getWeatherValueForDate(hours[hour], weatherAttribute, queryResult));
         }
 
         var result = {
