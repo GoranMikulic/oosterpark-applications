@@ -15,6 +15,7 @@
 |   |--_third-party --- Third-party frontend modules
 |
 |-- _node_modules ----- Third-party node.js (backend) modules, defined in package.json
+|-- _Gruntfile.js ----- Grunt script for including angular files automatically
 |-- _package.json ----- Defines third-party dependencies for node.js
 |-- _server.js -------- Server configuration and startup script
 
