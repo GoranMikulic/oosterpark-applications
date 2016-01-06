@@ -35,7 +35,7 @@ module.exports = {
   }
 }
 
-function getDevicesCountsForTimeRange(timeRange, devicesArray, datePropertyName, comparator, dataLabel, entityId) {
+function getDevicesCountsForTimeRange(timeRange, devices, datePropertyName, comparator, dataLabel, entityId) {
   //array for date values
   var dates = new Array();
   dates.push('x');
@@ -44,7 +44,7 @@ function getDevicesCountsForTimeRange(timeRange, devicesArray, datePropertyName,
   counts.push(dataLabel);
 
   for (var time in timeRange) {
-    var counter = getDevicesCount(timeRange[time], devicesArray, datePropertyName, comparator, entityId);
+    var counter = getDevicesCount(timeRange[time], devices, datePropertyName, comparator, entityId);
     dates.push(timeRange[time]);
     counts.push(counter);
   }
@@ -59,37 +59,18 @@ function getDevicesCountsForTimeRange(timeRange, devicesArray, datePropertyName,
  * Returns amount of devices for a particular date,
  * values are compared with the comparator function
  */
-function getDevicesCount(time, devicesArray, datePropertyName, comparator, identifier) {
+function getDevicesCount(time, devices, datePropertyName, comparator, identifier) {
 
-  var counter = 0;
-  var buffer = new Array();
+  var result = {};
 
-  for (var device in devicesArray) {
-    var compareResult = comparator(devicesArray[device][datePropertyName], time, devicesArray[device]);
+  for (var device in devices) {
+
+    //if the comparator returns true, the device is relevant and added to the result object
+    var compareResult = comparator(devices[device][datePropertyName], time, devices[device]);
     if (compareResult) {
-      counter++;
-      buffer.push(devicesArray[device][identifier]);
+      result[devices[device][identifier]] = devices[device][identifier];
     }
   }
-
-  var result = remove_duplicates_safe(buffer);
-
-  return result.length;
-}
-
-/**
- * Removes duplicate elements from Array
- * {Array} arr - Array to clean off duplicates
- */
-function remove_duplicates_safe(arr) {
-  var obj = {};
-  var arr2 = [];
-  for (var i = 0; i < arr.length; i++) {
-    if (!(arr[i] in obj)) {
-      arr2.push(arr[i]);
-      obj[arr[i]] = true;
-    }
-  }
-  return arr2;
-
+  var amountOfDevices = Object.keys(result).length;
+  return amountOfDevices;
 }
