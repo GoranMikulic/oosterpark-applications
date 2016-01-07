@@ -14,13 +14,15 @@
       /**
        * Reloads all datasets which are defined in the dataset configuration
        */
-      $scope.reloadAllDatasets = function() {
-        loadBuffer = new Array();
-        updateFormatter();
+      $scope.queryPeriod = function() {
 
-        angular.forEach(dataSetFactory.datasets, function(dataset) {
-          $scope.getChartData($scope.startdate, $scope.enddate, dataset);
-        });
+        updateFormatter(); //TODO this should be in the view, it's representation
+
+        if (dateSelectionChanged()) {
+          reloadLastQueryResult();
+        } else {
+          reloadAllDataSets();
+        }
       }
 
       /**
@@ -65,16 +67,24 @@
         var dates = getConvertedDates(data[dataset.resultFieldName].x);
 
         //First request loads dates, avoid to load multiple datasets for x-axis
-        if(requestsRemaining == dataSetFactory.datasets.length){
+        if (requestsRemaining == dataSetFactory.datasets.length) {
           loadBuffer.push(dates);
         }
         loadBuffer.push(data[dataset.resultFieldName].counts);
         requestsRemaining--;
 
         //Waiting until all defined datasets are loaded to create complete result
-        if(requestsRemaining == 0) {
+        if (requestsRemaining == 0) {
           console.log("all loaded");
           $scope.loadedData = loadBuffer;
+          if ($scope.chartmode == CHART_MODE.period) {
+            $scope.lastQueryResult = {
+              startdate: $scope.startdate,
+              enddate: $scope.enddate,
+              result: $scope.loadedData
+            }
+          }
+
           requestsRemaining = dataSetFactory.datasets.length;
         }
 
@@ -143,5 +153,23 @@
         return year + '-' + month + '-' + day;
       }
 
+      function dateSelectionChanged() {
+        if ($scope.lastQueryResult && $scope.lastQueryResult.enddate == $scope.enddate && $scope.lastQueryResult.startdate == $scope.startdate) {
+          return true;
+        }
+        return false;
+      }
+
+      function reloadLastQueryResult() {
+        $scope.loadedData = null;
+        $scope.loadedData = $scope.lastQueryResult.result;
+      }
+
+      function reloadAllDataSets() {
+        loadBuffer = new Array();
+        angular.forEach(dataSetFactory.datasets, function(dataset) {
+          $scope.getChartData($scope.startdate, $scope.enddate, dataset);
+        });
+      }
     });
 })();

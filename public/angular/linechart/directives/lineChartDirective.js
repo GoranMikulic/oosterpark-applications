@@ -17,12 +17,13 @@
         scope.uniqueId = uniqueId++;
 
         //Loading data for every defined dataset
-        scope.reloadAllDatasets();
+        scope.queryPeriod();
 
         //listen for chart data changes and update chart
         scope.$watch('loadedData', function(newVal) {
           if (newVal) {
             //if chart already exists just reload data
+            console.log("loadedData changed");
             if (scope.lineChart) {
 
               /**
@@ -50,7 +51,7 @@
 
         scope.refresh = function() {
           updateFormatter();
-          scope.reloadAllDatasets();
+          scope.queryPeriod();
         }
         scope.deleteChart = function() {
           element.remove();
