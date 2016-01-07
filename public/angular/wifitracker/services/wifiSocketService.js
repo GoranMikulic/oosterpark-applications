@@ -6,7 +6,7 @@
   angular.module('dataAnalizingApp').factory('socketConnection', function($rootScope, $http) {
 
     //socket conncetion (ip of backend server)- TODO: make easier it configurable
-    var socket = io.connect('ws://nodejs-mikugo.rhcloud.com:8000/');
+    var socket = io.connect('http://127.0.0.1:8080/');
     //for rpi deployment: var socket = io.connect('http://213.124.216.186:80/');
 
     return {
