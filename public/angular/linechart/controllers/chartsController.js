@@ -52,14 +52,12 @@
       function getDayDetailsData(dataset, daySelected) {
         $scope.dataLoading = true;
         $scope.selectedDetailDate = daySelected;
-
+        console.log(daySelected);
         $http({
           method: 'GET',
           url: dataset.getDayDetailUrl(getDateStringForReq(daySelected))
         }).success(function(data) {
-          console.log(dataset.getDayDetailUrl(getDateStringForReq(daySelected)) + " loaded");
           processChartResult(data, dataset);
-
         });
       }
 

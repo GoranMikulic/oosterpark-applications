@@ -27,9 +27,6 @@ module.exports = {
   getRunnersCountInPeriod: function(req, res) {
     DevicesCountHelper.returnStatsForPeriod(req.query.startdate, req.query.enddate, ATTR_NAME_TIME, Comparators.runnerComparator, ATTR_NAME_RUNNERS, res, BluetoothDevice.queryDeivcesInPeriod, ATTR_NAME_BT_ENTITY_ID);
   },
-  /**
-   *  Returns the amount of wifi devices for every day in the given period
-   */
   getDevicesCountForDay: function(req, res) {
     DevicesCountHelper.fetchDevicesForDay(req.query.day, ATTR_NAME_TIME, Comparators.hourComparator, ATTR_NAME_BTDEVICES, res, BluetoothDevice.queryDeivcesInPeriod, ATTR_NAME_BT_ENTITY_ID);
   },

@@ -21,7 +21,7 @@
 
         //listen for chart data changes and update chart
         scope.$watch('loadedData', function(newVal) {
-          if (newVal) {
+          if (newVal && (scope.loadedData.length > 0)) {
             //if chart already exists just reload data
             console.log("loadedData changed");
             if (scope.lineChart) {
