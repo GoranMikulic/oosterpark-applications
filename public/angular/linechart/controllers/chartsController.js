@@ -15,9 +15,6 @@
        * Reloads all datasets which are defined in the dataset configuration
        */
       $scope.queryPeriod = function() {
-
-        updateFormatter(); //TODO this should be in the view, it's representation
-
         if (dateSelectionChanged()) {
           reloadLastQueryResult();
         } else {
@@ -34,12 +31,12 @@
        */
       $scope.getChartData = function(startdate, enddate, dataset) {
         $scope.dataLoading = true;
-        $scope.chartmode = CHART_MODE.period;
         $http({
           method: 'GET',
           url: dataset.getPeriodUrl(startdate, enddate)
         }).success(function(data) {
           processChartResult(data, dataset);
+          $scope.dataLoading = false;
         });
       }
 
@@ -52,13 +49,15 @@
       function getDayDetailsData(dataset, daySelected) {
         $scope.dataLoading = true;
         $scope.selectedDetailDate = daySelected;
-        console.log(daySelected);
+
         $http({
           method: 'GET',
           url: dataset.getDayDetailUrl(getDateStringForReq(daySelected))
         }).success(function(data) {
           processChartResult(data, dataset);
+          $scope.dataLoading = false;
         });
+
       }
 
       function processChartResult(data, dataset) {
@@ -73,7 +72,6 @@
 
         //Waiting until all defined datasets are loaded to create complete result
         if (requestsRemaining == 0) {
-          console.log("all loaded");
           $scope.loadedData = loadBuffer;
           if ($scope.chartmode == CHART_MODE.period) {
             $scope.lastQueryResult = {
@@ -85,8 +83,6 @@
 
           requestsRemaining = dataSetFactory.datasets.length;
         }
-
-        $scope.dataLoading = false;
       }
 
       /**
@@ -94,10 +90,8 @@
        * @param {Date} daySelected - The selected day
        */
       $scope.getDayDetails = function(daySelected) {
-        $scope.chartmode = CHART_MODE.day + " for " + daySelected.getDate() + "." + (daySelected.getMonth() + 1) + "." + daySelected.getFullYear();
         $scope.loadedData = new Array();
         loadBuffer = new Array();
-        updateFormatter(true);
         angular.forEach(dataSetFactory.datasets, function(dataset, key) {
           getDayDetailsData(dataset, daySelected);
         });
@@ -152,7 +146,9 @@
       }
 
       function dateSelectionChanged() {
-        if ($scope.lastQueryResult && $scope.lastQueryResult.enddate == $scope.enddate && $scope.lastQueryResult.startdate == $scope.startdate) {
+        if ($scope.lastQueryResult
+          && $scope.lastQueryResult.enddate == $scope.enddate
+          && $scope.lastQueryResult.startdate == $scope.startdate) {
           return true;
         }
         return false;

@@ -2,56 +2,33 @@ var devices = "Result";
 
 module.exports = {
 
-  /**
-   * Returns true if the hour matches
-   */
   hourComparator: function(deviceCaptureTime, timeToCompare, device) {
     return isHourEqual(deviceCaptureTime, timeToCompare);
   },
-  /**
-   * Compares true if the day matches
-   */
   dayComparator: function(deviceCaptureTime, timeToCompare, device) {
     return isDayEqual(deviceCaptureTime, timeToCompare);
   },
   walkerComparator: function(deviceCaptureTime, timeToCompare, device) {
-    if (isDayEqual(deviceCaptureTime, timeToCompare) && isWalking(device.Speed)) {
-      return true;
-    }
-    return false;
+    return isDayEqual(deviceCaptureTime, timeToCompare) && isWalking(device.Speed);
   },
   walkerComparatorDay: function(deviceCaptureTime, timeToCompare, device) {
-    if (isHourEqual(deviceCaptureTime, timeToCompare) && isWalking(device.Speed)) {
-      return true;
-    }
-    return false;
+    return isHourEqual(deviceCaptureTime, timeToCompare) && isWalking(device.Speed);
   },
   runnerComparator: function(deviceCaptureTime, timeToCompare, device) {
-    if (isDayEqual(deviceCaptureTime, timeToCompare) && !isWalking(device.Speed)) {
-      return true;
-    }
-    return false;
+    return isDayEqual(deviceCaptureTime, timeToCompare) && !isWalking(device.Speed);
   },
   runnerComparatorDay: function(deviceCaptureTime, timeToCompare, device) {
-    if (isHourEqual(deviceCaptureTime, timeToCompare) && !isWalking(device.Speed)) {
-      return true;
-    }
-    return false;
+    return isHourEqual(deviceCaptureTime, timeToCompare) && !isWalking(device.Speed);
   }
 }
 
 function isWalking(speed)  {
-  if (speed < 0.5) {
-    return true;
-  }
-  return false;
+  var maxWalkingSpeed = 3; //in meters per second
+  return speed < maxWalkingSpeed;
 }
 
 function isHourEqual(deviceCaptureTime, timeToCompare)  {
-  if (deviceCaptureTime.getHours() == timeToCompare.getHours()) {
-    return true;
-  }
-  return false;
+  return deviceCaptureTime.getHours() == timeToCompare.getHours();
 }
 
 function isDayEqual(deviceCaptureTime, timeToCompare) {
@@ -59,9 +36,5 @@ function isDayEqual(deviceCaptureTime, timeToCompare) {
   deviceCaptureTime.setHours(0, 0, 0, 0);
   timeToCompare.setHours(0, 0, 0, 0);
 
-  if (deviceCaptureTime.getTime() == timeToCompare.getTime()) {
-    return true;
-  }
-
-  return false;
+  return deviceCaptureTime.getTime() == timeToCompare.getTime();
 }

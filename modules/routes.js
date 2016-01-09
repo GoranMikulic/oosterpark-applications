@@ -12,9 +12,6 @@ router.route('/wifidevicescount').get(WifiDeviceService.getWifiDevicesCountInPer
 //Route to return count of a particulart day
 router.route('/wifidevicescountdetail').get(WifiDeviceService.getWifiDevicesCountForDay);
 
-//Route to return all bluetooth devices
-router.route('/btdevices').get(BluetoothDeviceController.getDevices);
-
 //Route to return count of bluetooth devices in a period
 router.route('/btdevicescount').get(BluetoothDeviceController.getDevicesCountInPeriod);
 

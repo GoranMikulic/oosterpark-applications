@@ -8,9 +8,8 @@
    * @param {function} callback - callback function for onClick event for a datapoint
    * @returns chart with second Y-Axis for weather data
    */
-  angular.module('dataAnalizingApp').factory('multiaxesChart', function(updateFormatter, chartconfig) {
+  angular.module('dataAnalizingApp').factory('multiaxesChart', function(updateFormatter,chartconfig) {
     return function(loadedData, uniqueId, callback) {
-      updateFormatter();
 
       var chart = c3.generate({
         size: {

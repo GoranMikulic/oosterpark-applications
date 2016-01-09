@@ -2,7 +2,7 @@
   /**
    * Custom directive for linecharts
    */
-  angular.module('dataAnalizingApp').directive('ngLinechart', function($compile, dataSetFactory, updateFormatter, multiaxesChart) {
+  angular.module('dataAnalizingApp').directive('ngLinechart', function($compile, dataSetFactory, updateFormatter, multiaxesChart, CHART_MODE) {
     var uniqueId = 1;
 
     return {
@@ -16,40 +16,56 @@
       link: function(scope, element, iAttrs, ctrl) {
         scope.uniqueId = uniqueId++;
 
-        //Loading data for every defined dataset
-        scope.queryPeriod();
+        initChart();
 
         //listen for chart data changes and update chart
         scope.$watch('loadedData', function(newVal) {
-          if (newVal && (scope.loadedData.length > 0)) {
+          if (newVal) {
             //if chart already exists just reload data
-            console.log("loadedData changed");
-            if (scope.lineChart) {
-
-              /**
-              * Workaround for chart rendering issue,
-              * if chart loads all datasets at once chart freezes at some point.
-              * First loading x values and one value series. After that loading
-              * all datasets.
-              */
-              scope.lineChart.load({
-                columns: [
-                  scope.loadedData[0],
-                  scope.loadedData[1],
-                ]
-              });
-              scope.lineChart.load({
-                columns: scope.loadedData
-              });
+            if (scope.lineChart && (scope.loadedData.length > 0)) {
+              loadDatasets(scope.loadedData);
             } else {
-              scope.lineChart = multiaxesChart(scope.loadedData, scope.uniqueId, scope.getDayDetails);
+              scope.lineChart = multiaxesChart(scope.loadedData, scope.uniqueId, scope.loadDayDetails);
             }
-
           }
 
         }, false);
 
+        function initChart() {
+          scope.chartmode = CHART_MODE.period;
+          updateFormatter();
+          scope.queryPeriod();
+        }
+
+        function loadDatasets(datasets) {
+          /**
+          * Workaround for chart rendering issue,
+          * if chart loads all datasets at once chart freezes at some point.
+          * First loading x (time) values and one value series. After that loading
+          * all datasets.
+          */
+          scope.lineChart.load({
+            columns: [
+              datasets[0],
+              datasets[1],
+            ]
+          });
+          scope.lineChart.load({
+            columns: datasets
+          });
+        }
+
+        scope.loadDayDetails = function(daySelected) {
+          scope.chartmode = CHART_MODE.day + " for "
+            + daySelected.getDate() + "."
+            + (daySelected.getMonth() + 1) + "."
+            + daySelected.getFullYear();
+            
+          updateFormatter(true);
+          scope.getDayDetails(daySelected);
+        }
         scope.refresh = function() {
+          scope.chartmode = CHART_MODE.period;
           updateFormatter();
           scope.queryPeriod();
         }
