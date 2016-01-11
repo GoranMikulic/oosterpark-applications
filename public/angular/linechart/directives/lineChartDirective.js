@@ -22,7 +22,7 @@
         scope.$watch('loadedData', function(newVal) {
           if (newVal) {
             //if chart already exists just reload data
-            if (scope.lineChart && (scope.loadedData.length > 0)) {
+            if (scope.lineChart) {
               loadDatasets(scope.loadedData);
             } else {
               scope.lineChart = multiaxesChart(scope.loadedData, scope.uniqueId, scope.loadDayDetails);
@@ -44,15 +44,17 @@
           * First loading x (time) values and one value series. After that loading
           * all datasets.
           */
-          scope.lineChart.load({
-            columns: [
-              datasets[0],
-              datasets[1],
-            ]
-          });
-          scope.lineChart.load({
-            columns: datasets
-          });
+          if(scope.loadedData.length > 0) {
+            scope.lineChart.load({
+              columns: [
+                datasets[0],
+                datasets[1],
+              ]
+            });
+            scope.lineChart.load({
+              columns: datasets
+            });
+          }
         }
 
         scope.loadDayDetails = function(daySelected) {
@@ -60,7 +62,7 @@
             + daySelected.getDate() + "."
             + (daySelected.getMonth() + 1) + "."
             + daySelected.getFullYear();
-            
+
           updateFormatter(true);
           scope.getDayDetails(daySelected);
         }

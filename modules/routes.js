@@ -3,6 +3,7 @@ var serverconfig = require('./utils/serverconfig');
 var router = express.Router();
 
 var WifiDeviceService = require('./controllers/WifiDeviceController');
+var NoiseService = require('./controllers/NoiseController');
 var BluetoothDeviceController = require('./controllers/BluetoothDeviceController');
 var WeatherController = require('./controllers/WeatherController');
 
@@ -15,6 +16,14 @@ router.route('/wifidevicescountdetail').get(WifiDeviceService.getWifiDevicesCoun
 //Route to return count of bluetooth devices in a period
 router.route('/btdevicescount').get(BluetoothDeviceController.getDevicesCountInPeriod);
 
+//Route to return count of a particular day
+router.route('/btdevicescountdetail').get(BluetoothDeviceController.getDevicesCountForDay);
+
+//Route to return count of bluetooth devices in a period
+router.route('/noise').get(NoiseService.getDevicesCountInPeriod);
+
+router.route('/noisedetail').get(NoiseService.getDevicesCountForDay);
+
 router.route('/walkers').get(BluetoothDeviceController.getWalkersCountInPeriod);
 
 router.route('/walkersdetail').get(BluetoothDeviceController.getWalkersCountForDay);
@@ -22,9 +31,6 @@ router.route('/walkersdetail').get(BluetoothDeviceController.getWalkersCountForD
 router.route('/runners').get(BluetoothDeviceController.getRunnersCountInPeriod);
 
 router.route('/runnersdetail').get(BluetoothDeviceController.getRunnersCountForDay);
-
-//Route to return count of a particular day
-router.route('/btdevicescountdetail').get(BluetoothDeviceController.getDevicesCountForDay);
 
 //Route to return weather for a period of time
 router.route('/weatherperiod').get(WeatherController.getWeatherStatsForPeriod);

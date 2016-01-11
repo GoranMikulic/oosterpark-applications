@@ -10,8 +10,25 @@
     .controller('wifiSocketController', function($scope, socketConnection, ChartResult, LiveChart) {
 
       /**
-       * Interval for data handling
+       * Fired on established socket connection
        */
+      socketConnection.on("kismetServerConnectionStatus", function(data) {
+        console.log("connected to socket");
+      });
+
+      /**
+       * Listens to kismet server messages, receiving captured device data
+       */
+      socketConnection.on("kismessage", function(data) {
+        if ($scope.chartInterval) {
+          //converting the timestamp
+          data.firsttime = new Date(data.firsttime * 1000);
+          data.lasttime = new Date(data.lasttime * 1000);
+          checkAndAdd(data);
+        }
+      });
+
+
       $scope.initLiveChart = function() {
         //init chart data
         $scope.chartdata = ChartResult.createNew(['x'], ['Amount of Devices']);
@@ -33,36 +50,16 @@
             removeFirstDeviceInChart();
             addToChart($scope.devices);
           }, $scope.intervaltime * 1000);
-        },
+        }
         /**
          * Returns default update interval time for the chart
          */
-        $scope.getDefaultInterval = function() {
+      $scope.getDefaultInterval = function() {
           return 2;
         }
-
-      /**
-       * Fired on established socket connection
-       */
-      socketConnection.on("kismetServerConnectionStatus", function(data) {
-        console.log("connected to socket");
-      });
-
-      /**
-       * Listens to kismet server messages, receiving captured device data
-       */
-      socketConnection.on("kismessage", function(data) {
-        if ($scope.chartInterval) {
-          //converting the timestamp
-          data.firsttime = new Date(data.firsttime * 1000);
-          data.lasttime = new Date(data.lasttime * 1000);
-          checkAndAdd(data);
-        }
-      });
-
-      /**
-       * Removes first data points in chart to prevent overload in browser
-       */
+        /**
+         * Removes first data points in chart to prevent overload in browser
+         */
       function removeFirstDeviceInChart() {
         if ($scope.chartdata.dates.length > 50) {
           $scope.chartdata.dates.splice(1, 1);
