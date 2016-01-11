@@ -43,6 +43,7 @@
           clearInterval(scope.chartInterval);
           scope.initLiveChart();
         }
+
       }
     }
 

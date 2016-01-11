@@ -44,22 +44,21 @@
        * Interval for data handling
        */
       $scope.startChartUpdateInterval = function() {
-          $scope.chartInterval = setInterval(function() {
+        $scope.chartInterval = setInterval(function() {
 
-            removeLostDevicesFromBuffer(10);
-            removeFirstDeviceInChart();
-            addToChart($scope.devices);
-          }, $scope.intervaltime * 1000);
-        }
-        /**
-         * Returns default update interval time for the chart
-         */
+          removeLostDevicesFromBuffer(10);
+          removeFirstDeviceInChart();
+          addToChart($scope.devices);
+        }, $scope.intervaltime * 1000);
+      }
+
       $scope.getDefaultInterval = function() {
-          return 2;
-        }
-        /**
-         * Removes first data points in chart to prevent overload in browser
-         */
+        return 2;
+      }
+
+      /**
+       * Removes first data points in chart to prevent overload in browser
+       */
       function removeFirstDeviceInChart() {
         if ($scope.chartdata.dates.length > 50) {
           $scope.chartdata.dates.splice(1, 1);
