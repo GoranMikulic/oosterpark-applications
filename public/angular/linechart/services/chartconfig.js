@@ -2,7 +2,7 @@
   "use strict";
 
   angular.module('dataAnalizingApp').constant('chartconfig', {
-    datasetsToHide: ["temp", "windspeed", "rain", "humidity", "clouds"],
+    datasetsToHide: ["temp", "windspeed", "rain", "humidity", "clouds", "decibel"],
     labels: {
       temp: 'Temperature in °C',
       windspeed: 'Windspeed in m/s',

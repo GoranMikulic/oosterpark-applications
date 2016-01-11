@@ -36,7 +36,7 @@ module.exports = {
 
       Noise.queryDeivcesInPeriod(start, end, function(queryResult) {
         var hours = Utils.getClockHours(day);
-        var result = getDevicesCountsForTimeRange(hours, queryResult, ATTR_NAME_TIME, Comparators.hourComparator, ATTR_NAME_DECIBEL, ATTR_NAME_DECIBEL);
+        var result = getValuesForTimeRange(hours, queryResult, ATTR_NAME_TIME, Comparators.hourComparator, ATTR_NAME_DECIBEL, ATTR_NAME_DECIBEL);
 
         Utils.returnResult(res, result);
       });
