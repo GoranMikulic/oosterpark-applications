@@ -10,10 +10,9 @@ var ATTR_NAME_ENTITY_ID = 'id';
 
 module.exports = {
   getDevicesCountInPeriod: function(req, res) {
-    //DevicesCountHelper.returnStatsForPeriod(req.query.startdate, req.query.enddate, ATTR_NAME_TIME, Comparators.dayComparator, ATTR_NAME_DECIBEL, res, Noise.queryDeivcesInPeriod, ATTR_NAME_ENTITY_ID);
     var startDate = req.query.startdate;
     var endDate = req.query.enddate;
-    var isValidPeriodQuery = Utils.checkPeriodQuery(req.query.startdate, req.query.enddate);
+    var isValidPeriodQuery = Utils.checkPeriodQuery(startDate, endDate);
 
     if (isValidPeriodQuery) {
       Noise.queryDeivcesInPeriod(startDate, endDate, function(queryResult) {
@@ -28,7 +27,6 @@ module.exports = {
     }
   },
   getDevicesCountForDay: function(req, res) {
-    //DevicesCountHelper.fetchDevicesForDay(req.query.day, ATTR_NAME_TIME, Comparators.hourComparator, ATTR_NAME_DECIBEL, res, Noise.queryDeivcesInPeriod, ATTR_NAME_ENTITY_ID);
     var day = req.query.day;
     if (typeof day !== 'undefined') {
       var start = day + ' 00:01:00';
@@ -41,7 +39,6 @@ module.exports = {
         Utils.returnResult(res, result);
       });
     } else {
-      console.log("NOTHING");
       Utils.returnResult(res, {});
     }
   }
@@ -56,7 +53,7 @@ function getValuesForTimeRange(timeRange, devices, datePropertyName, comparator,
   counts.push(dataLabel);
 
   for (var time in timeRange) {
-    var counter = getMatchingValue(timeRange[time], devices, datePropertyName, comparator, entityId);
+    var counter = getAverageForTime(timeRange[time], devices, datePropertyName, comparator, entityId);
     dates.push(timeRange[time]);
     counts.push(counter);
   }
@@ -67,18 +64,20 @@ function getValuesForTimeRange(timeRange, devices, datePropertyName, comparator,
   };
 }
 
-function getMatchingValue(time, devices, datePropertyName, comparator, identifier) {
+function getAverageForTime(time, devices, datePropertyName, comparator, identifier) {
 
   var result = new Array();
-
+  var sum = 0;
   for (var device in devices) {
 
     //if the comparator returns true, the device is relevant and added to the result object
     var compareResult = comparator(devices[device][datePropertyName], time, devices[device]);
     if (compareResult) {
       result.push(devices[device][identifier]);
+      sum += parseInt(devices[device][identifier]);
     }
   }
-  var amountOfDevices = result[0];
-  return amountOfDevices;
+
+  var average = sum / result.length;
+  return average;
 }
