@@ -1,10 +1,20 @@
-<script src="https://maps.googleapis.com/maps/api/js" type="text/javascript"></script>
-<script type="text/javascript">
-  //<![CDATA[
+<section id="correlations" class="container col-md-12 fill">
+  <div  id="map" style="  height: 100%;
+    width: 100%;
+    left: 0;
+    position: absolute;
+    top: 0; ">
+  </div>
 
+</section>
+
+<script type="text/javascript">
+  var url = "https://oege.ie.hva.nl/~mikulig001/markers";
+  //<![CDATA[
+  load();
   var customIcons = {
     bluetooth: {
-      icon: 'marker.png'
+      icon: url + '/marker.png'
     },
     bar: {
       icon: 'http://labs.google.com/ridefinder/images/mm_20_red.png'
@@ -12,6 +22,7 @@
   };
 
   function load() {
+
     var map = new google.maps.Map(document.getElementById("map"), {
       center: new google.maps.LatLng(52.36018, 4.92069),
       zoom: 17,
@@ -20,7 +31,7 @@
     var infoWindow = new google.maps.InfoWindow;
 
     //download markers from php database
-    downloadUrl("phpsqlajax_genxml.php", function(data) {
+    downloadUrl(url + "/phpsqlajax_genxml.php", function(data) {
       var xml = data.responseXML;
       var markers = xml.documentElement.getElementsByTagName("marker");
       for (var i = 0; i < markers.length; i++) {
@@ -69,10 +80,3 @@
 
   //]]>
 </script>
-
-
-<div onload="load()" id="map" style="  height: 100%;
-    width: 100%;
-    left: 0;
-    position: absolute;
-    top: 0; "></div>
