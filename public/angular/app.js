@@ -14,6 +14,9 @@
       .when('/livedata', {
         templateUrl: '/angular/views/realtimewifi.html'
       })
+      .when('/map', {
+        templateUrl: '/angular/views/map.html'
+      })
       .otherwise({
         redirectTo: '/'
       });
