@@ -2,6 +2,7 @@ var WifiDevice = require('../db/WifiDevice');
 var Utils = require('../utils/Utils');
 var Comparators = require('../utils/Comparators');
 var DevicesCountHelper = require('../utils/DevicesCountHelper');
+
 var ATTR_NAME_TIME = 'first_time_seen';
 var ATTR_NAME_WIFI_DEVICES = 'wifidevices';
 var ATTR_NAME_WIFI_ENTITY_ID = 'address';
@@ -11,8 +12,10 @@ module.exports = {
    *  Returns the amount of wifi devices for every day in the given period
    */
   getWifiDevicesCountInPeriod: function(req, res) {
-    DevicesCountHelper.returnStatsForPeriod(req.query.startdate, req.query.enddate, ATTR_NAME_TIME, Comparators.dayComparator, ATTR_NAME_WIFI_DEVICES, res, WifiDevice.queryDeivcesInPeriod, ATTR_NAME_WIFI_ENTITY_ID);
+    var startDate = req.query.startdate;
+    var endDate = req.query.enddate;
 
+    DevicesCountHelper.returnStatsForPeriod(startDate, endDate, ATTR_NAME_TIME, Comparators.dayComparator, ATTR_NAME_WIFI_DEVICES, res, WifiDevice.queryDeivcesInPeriod, ATTR_NAME_WIFI_ENTITY_ID);
   },
   /**
    *  Returns the amount of wifi devices for every day in the given period

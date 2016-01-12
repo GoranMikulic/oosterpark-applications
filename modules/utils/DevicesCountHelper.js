@@ -1,4 +1,6 @@
 var Utils = require('../utils/Utils');
+var cache = require('memory-cache');
+var CACHE_TIME = 600000; //600000 miliseconds = 10 minutes
 
 module.exports = {
   fetchDevicesForDay: function(day, datePropertyName, comparator, dataname, response, dbFunction, entityIdentifier) {
@@ -7,12 +9,20 @@ module.exports = {
       var start = day + ' 00:01:00';
       var end = day + ' 23:59:00';
 
-      dbFunction(start, end, function(queryResult) {
-        var hours = Utils.getClockHours(day);
-        var result = getDevicesCountsForTimeRange(hours, queryResult, datePropertyName, comparator, dataname, entityIdentifier);
+      var cacheId = dataname + day;
+      var cachedResult = cache.get(cacheId);
 
-        Utils.returnResult(response, result);
-      });
+      if (cachedResult) {
+        Utils.returnResult(response, cachedResult);
+      } else {
+        dbFunction(start, end, function(queryResult) {
+          var hours = Utils.getClockHours(day);
+          var result = getDevicesCountsForTimeRange(hours, queryResult, datePropertyName, comparator, dataname, entityIdentifier);
+
+          cache.put(cacheId, result, CACHE_TIME);
+          Utils.returnResult(response, result);
+        });
+      }
     } else {
       Utils.returnResult(response, {});
     }
@@ -20,15 +30,23 @@ module.exports = {
 
   returnStatsForPeriod: function(startDate, endDate, datePropertyName, comparator, dataname, response, dbFunction, entityIdentifier) {
     var isValidPeriodQuery = Utils.checkPeriodQuery(startDate, endDate);
+    var cacheId = dataname + startDate + endDate;
+    var cachedResult = cache.get(cacheId);
 
     if (isValidPeriodQuery) {
-      dbFunction(startDate, endDate, function(queryResult) {
+      if (cachedResult) {
+        Utils.returnResult(response, cachedResult);
+      } else {
+        dbFunction(startDate, endDate, function(queryResult) {
 
-        var datesBetween = Utils.getDatesBetween(new Date(startDate), new Date(endDate));
-        var result = getDevicesCountsForTimeRange(datesBetween, queryResult, datePropertyName, comparator, dataname, entityIdentifier);
+          var datesBetween = Utils.getDatesBetween(new Date(startDate), new Date(endDate));
+          var result = getDevicesCountsForTimeRange(datesBetween, queryResult, datePropertyName, comparator, dataname, entityIdentifier);
+          cache.put(cacheId, result, CACHE_TIME);
 
-        Utils.returnResult(response, result);
-      });
+          Utils.returnResult(response, result);
+        });
+      }
+
     } else {
       Utils.returnResult(response, {});
     }
