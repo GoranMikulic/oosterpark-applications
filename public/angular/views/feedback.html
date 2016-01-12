@@ -1,0 +1,101 @@
+<section id="feedback" class="container col-md-10 col-md-offset-1 text-center">
+<h1>Are you male or female?</h1>
+<div id="chart1"></div>
+<h1>In what age group are you?</h1>
+<div id="chart2"></div>
+<h1>What are you doing in the park?</h1>
+<div id="chart3"></div>
+<h1>Do you exercise frequently?</h1>
+<div id="chart4"></div>
+<h1>Are you a local here?</h1>
+<div id="chart5"></div>
+<h1>What continent are you from?</h1>
+<div id="chart6"></div>
+<h1>How far from the park do you live?</h1>
+<div id="chart7"></div>
+<h1>Do you like to exercise in groups?</h1>
+<div id="chart8"></div>
+<h1>What group exercises do you enjoy?</h1>
+<div id="chart9"></div>
+</section>
+<script>
+  //x and y are the coordinates for the questions
+  var x = 100;
+  var y = 100;
+
+  //a is the array for the questions
+  var a = {};
+  a[1] = "Are you male or female?";
+  a[2] = "In what age group are you?";
+  a[3] = "What are you doing in the park?";
+  a[4] = "Do you exercise frequently?";
+  a[5] = "Are you a local here?";
+  a[6] = "What continent are you from?";
+  a[7] = "How far from the park do you live?";
+  a[8] = "Do you like to exercise in groups?";
+  a[9] = "What group exercises do you enjoy?";
+
+  //As soon as the document is ready we call the make_pie function for the first question
+  $(document).ready(function() {
+    make_pie(1);
+  });
+
+  //Using AJAX we get the answers that belong to the question Id an get their percentages
+  //when this information has been picked up we call the make_the_pie_chart(pie_chart_values, question) function.
+  //We then go to the next question and execute the make_pie function again.
+  //This way we know the all the graphs will become visible.
+  function make_pie(question) {
+    if (window.XMLHttpRequest) {
+      // code for IE7+, Firefox, Chrome, Opera, Safari
+      xmlhttp = new XMLHttpRequest();
+    }
+    xmlhttp.onreadystatechange = function() {
+      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        var pie_chart_values = JSON.parse(xmlhttp.responseText);
+        make_the_pie_chart(pie_chart_values, question);
+        question++;
+        if (question < 10) {
+          make_pie(question);
+        }
+      }
+    };
+    xmlhttp.open("GET", "https://oege.ie.hva.nl/~mikulig001/getanswers.php?question_id=" + question, true);
+    xmlhttp.send();
+  }
+
+
+  //Here we make the actual pie charts, because we need dynamic variables we made the array b
+  //This array has the key chart1, chart2, chart3...etc. made dynamically
+  //We use bindto to make sure the piecharts are put in their respective divs
+  function make_the_pie_chart(pie_chart_values, question_id) {
+    var map = $.map(pie_chart_values, function(el) {
+      return el
+    });
+    // alert(map);
+
+    var b = {};
+    b['chart' + question_id] = c3.generate({
+      bindto: "#chart" + question_id,
+      data: {
+        columns: [],
+        type: 'pie'
+      }
+    });
+
+    // d3.select("#chart" + question_id + " svg").append("text")
+    //   .attr("x", x + 200)
+    //   .attr("y", y + 200)
+    //   .style("text-anchor", "middle")
+    //   .text(a[question_id]);
+
+    $.each(pie_chart_values, function(key, value) {
+      var result = new Array();
+      result.push(key);
+      result.push(value);
+      // console.log(result);
+      b['chart' + question_id].load({
+        columns: [result]
+      });
+    });
+  }
+</script>

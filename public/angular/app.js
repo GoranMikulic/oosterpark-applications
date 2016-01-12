@@ -17,6 +17,9 @@
       .when('/map', {
         templateUrl: '/angular/views/map.html'
       })
+      .when('/feedback', {
+        templateUrl: '/angular/views/feedback.html'
+      })
       .otherwise({
         redirectTo: '/'
       });
