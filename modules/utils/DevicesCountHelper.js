@@ -1,6 +1,6 @@
 var Utils = require('../utils/Utils');
 var cache = require('memory-cache');
-var CACHE_TIME = 600000; //600000 miliseconds = 10 minutes
+var CACHE_TIME = 6000000; //6000000 miliseconds = 100 minutes
 
 module.exports = {
   fetchDevicesForDay: function(day, datePropertyName, comparator, dataname, response, dbFunction, entityIdentifier) {
